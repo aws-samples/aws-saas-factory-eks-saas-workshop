@@ -1,0 +1,12 @@
+FROM public.ecr.aws/bitnami/node:16.5.0 AS build
+WORKDIR /app
+COPY package.json yarn.lock ./
+RUN yarn
+COPY . .
+RUN yarn build
+
+FROM public.ecr.aws/bitnami/node:16.5.0
+WORKDIR /app
+COPY --from=build /app ./
+EXPOSE 3003
+CMD ["npm", "run", "start:order"]

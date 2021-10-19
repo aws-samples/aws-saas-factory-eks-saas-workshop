@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tenant-management
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tenant-management
+  template:
+    metadata:
+      labels:
+        app: tenant-management
+    spec:
+      containers:
+        - name: tenant-management
+          image: TENANT_MANGEMENT_ECR_REPO:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3001
+              name: "http"
+          env:
+            - name: AWS_REGION
+              value: "AWS_REGION"
+            - name: COGNITO_USER_POOL_ID
+              value: "COGNITO_USER_POOL_ID"
+            - name: COGNITO_CLIENT_ID
+              value: "COGNITO_CLIENT_ID"
+            - name: COGNITO_REGION
+              value: "COGNITO_REGION"
+            - name: TENANT_TABLE_NAME
+              value: "TENANT_TABLE_NAME"
+            - name: AUTH_TENANT_TABLE_NAME
+              value: "AUTH_TENANT_TABLE_NAME"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tenant-management-service
+spec:
+  selector:
+    app: tenant-management
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 3001
+  type: NodePort
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: tenant-management-service-ingress
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.org/mergeable-ingress-type: "minion"
+spec:
+  rules:
+    - host: ELB_URL
+      http:
+        paths:
+          - backend:
+              service:
+                name: tenant-management-service
+                port:
+                  number: 80
+            path: /api/tenants
+            pathType: Prefix

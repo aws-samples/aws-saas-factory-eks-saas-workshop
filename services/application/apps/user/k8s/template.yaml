@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: order
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: user
+  template:
+    metadata:
+      labels:
+        app: user
+    spec:
+      containers:
+        - name: user
+          image: 812810488948.dkr.ecr.us-west-2.amazonaws.com/user-service-20210722144825:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3010
+              name: "http"
+          env:
+            - name: AWS_REGION
+              value: "us-west-2"
+            - name: COGNITO_USER_POOL_ID
+              value: "us-west-2_YX3LwTgxB"
+            - name: COGNITO_CLIENT_ID
+              value: "7m0fqnholui7bveppdoqqldlh"
+            - name: COGNITO_REGION
+              value: "us-west-2"
+            - name: ORDER_TABLE_NAME
+              value: "Orders-20210722144825"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: order-service
+spec:
+  selector:
+    app: order
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 3010
+  type: NodePort
+
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: order-service-ingress
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.org/mergeable-ingress-type: "minion"
+spec:
+  rules:
+    - host: a09fdadc0e1be4c8b89d86eb601eb6ca-60731ae9d8dc4ef9.elb.us-west-2.amazonaws.com
+      http:
+        paths:
+          - backend:
+              serviceName: order-service
+              servicePort: 80
+            path: /app/api/orders

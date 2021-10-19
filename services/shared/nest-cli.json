@@ -1,0 +1,57 @@
+{
+  "collection": "@nestjs/schematics",
+  "sourceRoot": "apps/tenant-registration/src",
+  "monorepo": true,
+  "root": "apps/tenant-registration",
+  "compilerOptions": {
+    "webpack": true,
+    "tsConfigPath": "apps/tenant-registration/tsconfig.app.json"
+  },
+  "projects": {
+    "tenant-registration": {
+      "type": "application",
+      "root": "apps/tenant-registration",
+      "entryFile": "main",
+      "sourceRoot": "apps/tenant-registration/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/tenant-registration/tsconfig.app.json"
+      }
+    },
+    "tenant-management": {
+      "type": "application",
+      "root": "apps/tenant-management",
+      "entryFile": "main",
+      "sourceRoot": "apps/tenant-management/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/tenant-management/tsconfig.app.json"
+      }
+    },
+    "auth": {
+      "type": "library",
+      "root": "libs/auth",
+      "entryFile": "index",
+      "sourceRoot": "libs/auth/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/auth/tsconfig.lib.json"
+      }
+    },
+    "user-management": {
+      "type": "application",
+      "root": "apps/user-management",
+      "entryFile": "main",
+      "sourceRoot": "apps/user-management/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/user-management/tsconfig.app.json"
+      }
+    },
+    "client-factory": {
+      "type": "library",
+      "root": "libs/client-factory",
+      "entryFile": "index",
+      "sourceRoot": "libs/client-factory/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/client-factory/tsconfig.lib.json"
+      }
+    }
+  }
+}
