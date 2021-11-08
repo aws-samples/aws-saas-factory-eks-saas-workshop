@@ -7,6 +7,7 @@ USERPOOLID=$(aws cloudformation describe-stacks --stack-name RootStack --query "
 APPCLIENTID=$(aws cloudformation describe-stacks --stack-name RootStack --query "Stacks[0].Outputs[?OutputKey=='AdminAppClientId'].OutputValue" --output text)
 ADMINAPPLICATIONECR=$(aws cloudformation describe-stacks --stack-name RootStack --query "Stacks[0].Outputs[?OutputKey=='AdminApplicationECR'].OutputValue" --output text)
 REGION=$(aws cloudformation describe-stacks --stack-name RootStack --query "Stacks[0].Outputs[?OutputKey=='AWSRegion'].OutputValue" --output text)
+mkdir ./client/web/admin/src/environments
 
 cat << EoF > ./client/web/admin/src/environments/environment.prod.ts
 export const environment = {
