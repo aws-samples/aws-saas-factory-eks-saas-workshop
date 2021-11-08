@@ -3,6 +3,8 @@
 # This will load the values for ELBURL, CODEBUILD_ARN and IAM_ROLE_ARN in to the Cloud9 terminal's shell
 source ~/.bash_profile
 
+nvm use 16
+
 if [ "X$1" = "X" ]; then
     echo "usage: $0 ADMIN_EMAIL_ADDR (ex. $0 admin@email.com)"
     exit 2
