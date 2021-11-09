@@ -21,7 +21,7 @@ Parameters:
   WorkerNodeInstanceType:
     Description: Worker Node cluster instances
     Type: String
-    Default: t2.medium
+    Default: t3.medium
 
 Resources:  
   EKSEnvironment:
