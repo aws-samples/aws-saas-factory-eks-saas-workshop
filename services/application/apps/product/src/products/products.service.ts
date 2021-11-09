@@ -56,7 +56,7 @@ export class ProductsService {
         TableName: this.tableName,
         KeyConditionExpression: 'tenant_id=:t_id',
         ExpressionAttributeValues: {
-          ':t_id': 'tenantId',
+          ':t_id': tenantId,
         },
       });
 
