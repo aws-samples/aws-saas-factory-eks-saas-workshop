@@ -1,4 +1,4 @@
-export #!/bin/bash
+#!/bin/bash
 # Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 # SPDX-License-Identifier: MIT-0
 
@@ -10,7 +10,7 @@ export TENANT_TABLE_NAME=$(aws cloudformation describe-stacks --stack-name RootS
 export AUTH_INFO_TABLE_NAME=$(aws cloudformation describe-stacks --stack-name RootStack --query "Stacks[0].Outputs[?OutputKey=='AuthInfoTable'].OutputValue" --output text)
 export TENANT_STACK_MAPPING_TABLE_NAME=$(aws cloudformation describe-stacks --stack-name RootStack --query "Stacks[0].Outputs[?OutputKey=='TenantStackMappingTable'].OutputValue" --output text)
 # ELBURL=$(aws cloudformation describe-stacks --stack-name EksStack --query "Stacks[0].Outputs[?OutputKey=='ELBURL'].OutputValue" --output text)
-
+CWD=$(pwd)
 
 cd ./services/shared
 REGISTRY=$(echo $TENANTREGISTRATIONECR| cut -d'/' -f 1)
@@ -33,3 +33,4 @@ echo 'TENANT_TABLE_NAME:' $TENANT_TABLE_NAME
 echo 'AUTH_TENANT_TABLE_NAME:' $AUTH_INFO_TABLE_NAME
 echo 'TENANT_STACK_MAPPING_TABLE_NAME': $TENANT_STACK_MAPPING_TABLE_NAME
 echo 'ELB_URL:' $ELBURL
+cd $CWD
