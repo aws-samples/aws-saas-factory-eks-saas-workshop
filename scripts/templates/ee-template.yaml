@@ -6,7 +6,7 @@ Parameters:
   Cloud9IDEInstanceType:
     Description: The type of instance to connect to the environment
     Type: String
-    Default: t2.medium
+    Default: m5.large
 
   KubernetesVersion:
     Description: Kubernetes version
