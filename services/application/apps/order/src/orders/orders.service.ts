@@ -28,7 +28,7 @@ export class OrdersService {
     };
     console.log('Creating order:', newOrder);
     try {
-      const client = DynamoDBDocumentClient.from(new DynamoDBClient({}));
+      const client = await this.fetchClient(tenantId);
       const cmd = new PutCommand({
         Item: newOrder,
         TableName: this.tableName,
@@ -49,7 +49,7 @@ export class OrdersService {
   async findAll(tenantId: string) {
     console.log('Get all orders:', tenantId, 'Table Name:', this.tableName);
     try {
-      const client = DynamoDBDocumentClient.from(new DynamoDBClient({}));
+      const client = await this.fetchClient(tenantId);
       const cmd = new QueryCommand({
         TableName: this.tableName,
         KeyConditionExpression: 'tenant_id=:t_id',
@@ -82,7 +82,7 @@ export class OrdersService {
   async findOne(id: string, tenantId: string) {
     console.log('Find order:', id, 'TenantId:', tenantId);
     try {
-      const client = DynamoDBDocumentClient.from(new DynamoDBClient({}));
+      const client = await this.fetchClient(tenantId);
       const cmd = new QueryCommand({
         TableName: this.tableName,
         KeyConditionExpression: 'tenant_id=:t_id AND order_id=:o_id',
@@ -111,5 +111,9 @@ export class OrdersService {
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
+  }
+
+  async fetchClient(tenantId: string) {
+    return DynamoDBDocumentClient.from(new DynamoDBClient({}));
   }
 }

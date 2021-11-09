@@ -30,7 +30,7 @@ export class ProductsService {
     console.log('Creating product:', newProduct);
 
     try {
-      const client = DynamoDBDocumentClient.from(new DynamoDBClient({}));
+      const client = await this.fetchClient(tenantId);
       const cmd = new PutCommand({
         Item: newProduct,
         TableName: this.tableName,
@@ -51,7 +51,7 @@ export class ProductsService {
   async findAll(tenantId: string) {
     console.log('Getting All Products for Tenant:', tenantId);
     try {
-      const client = DynamoDBDocumentClient.from(new DynamoDBClient({}));
+      const client = await this.fetchClient(tenantId);
       const cmd = new QueryCommand({
         TableName: this.tableName,
         KeyConditionExpression: 'tenant_id=:t_id',
@@ -77,7 +77,7 @@ export class ProductsService {
   async findOne(id: string, tenantId: string) {
     try {
       console.log('Getting Product: ', id);
-      const client = DynamoDBDocumentClient.from(new DynamoDBClient({}));
+      const client = await this.fetchClient(tenantId);
       const cmd = new QueryCommand({
         TableName: this.tableName,
         KeyConditionExpression: 'tenant_id=:t_id AND product_id=:p_id',
@@ -107,7 +107,7 @@ export class ProductsService {
   ) {
     try {
       console.log('Updating Product: ', id);
-      const client = DynamoDBDocumentClient.from(new DynamoDBClient({}));
+      const client = await this.fetchClient(tenantId);
       const cmd = new UpdateCommand({
         TableName: this.tableName,
         Key: {
@@ -140,5 +140,9 @@ export class ProductsService {
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
+  }
+
+  async fetchClient(tenantId: string) {
+    return DynamoDBDocumentClient.from(new DynamoDBClient({}));
   }
 }
