@@ -13,6 +13,7 @@ import {
 } from '@aws-sdk/lib-dynamodb';
 import { ClientFactoryService } from '@app/client-factory';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
+import { PolicyType } from '@app/auth/credential-vendor';
 
 @Injectable()
 export class OrdersService {
