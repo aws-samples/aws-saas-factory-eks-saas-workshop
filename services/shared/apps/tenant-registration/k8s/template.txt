@@ -25,9 +25,9 @@ spec:
             - name: AWS_REGION
               value: "$REGION"
             - name: COGNITO_USER_POOL_ID
-              value: "COGNITO_USER_POOL_ID"
+              value: "$USERPOOLID"
             - name: COGNITO_CLIENT_ID
-              value: "COGNITO_CLIENT_ID"
+              value: "$APPCLIENTID"
             - name: COGNITO_REGION
               value: "$REGION"
             - name: TENANT_TABLE_NAME
