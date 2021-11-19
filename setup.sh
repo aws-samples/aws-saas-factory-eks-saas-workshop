@@ -1,7 +1,7 @@
 #!/bin/bash
 # Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 # SPDX-License-Identifier: MIT-0
-CWD=$(PWD)
+CWD=$(pwd)
 
 echo "Installing kubectl"
 curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
@@ -34,9 +34,6 @@ aws configure get default.region
 
 echo Resizing Cloud9 instance EBS Volume
 sh scripts/resize-cloud9-ebs-vol.sh 40
-
-echo "Installing helm"
-curl -sSL https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
 
 echo 'yq() {
   docker run --rm -i -v "${PWD}":/workdir mikefarah/yq yq "$@"

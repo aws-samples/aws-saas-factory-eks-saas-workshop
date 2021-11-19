@@ -22,11 +22,6 @@ docker push $TENANTMANAGEMENTECR:latest
 echo "The following values will need to be plugged into the Tenant Management Kubernetes manifest before deployment."
 echo "**PLEASE DO NOT CLOSE THIS WINDOW**"
 echo 'TENANT_MANGEMENT_ECR_REPO:' $TENANTMANAGEMENTECR
-echo 'AWS_REGION:' $REGION
-echo 'COGNITO_USER_POOL_ID:' $USERPOOLID
-echo 'COGNITO_CLIENT_ID:' $APPCLIENTID
-echo 'COGNITO_REGION:' $REGION
-echo 'TENANT_TABLE_NAME:' $TENANT_TABLE_NAME
-echo 'AUTH_TENANT_TABLE_NAME:' $AUTH_INFO_TABLE_NAME
-echo 'ELB_URL:' $ELBURL
 cd $CWD
+
+envsubst < ./services/shared/apps/tenant-management/k8s/partial-template.txt > ./services/shared/apps/tenant-management/k8s/template.yaml
