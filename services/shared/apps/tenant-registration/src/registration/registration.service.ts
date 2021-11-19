@@ -21,7 +21,6 @@ import { getTimeString } from '../utils/utils';
 @Injectable()
 export class RegistrationService {
   tableName: string = process.env.TENANT_TABLE_NAME;
-  authTableName: string = process.env.AUTH_TENANT_TABLE_NAME;
 
   constructor(
     private clientFac: ClientFactoryService,

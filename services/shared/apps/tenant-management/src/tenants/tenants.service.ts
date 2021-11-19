@@ -52,7 +52,6 @@ export class TenantsService {
   async getAuthInfo(referer: string) {
     try {
       //grab the path of the referer header
-      //TODO write some unit tests around this
       console.log('Referer:', referer);
       const path = this.getPath(referer);
       console.log('Path:', path);

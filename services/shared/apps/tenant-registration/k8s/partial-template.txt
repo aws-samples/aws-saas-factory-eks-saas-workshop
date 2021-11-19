@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: tenant-registration
-          image: $TENANTREGISTRATIONECR:latest
+          image: TENANT_REGISTRATION_ECR_REPO:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 3000

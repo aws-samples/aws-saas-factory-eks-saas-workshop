@@ -49,7 +49,7 @@ docker push $ADMINAPPLICATIONECR:latest
 echo "The following values will need to be plugged into the Admin Service Kubernetes manifest before deployment."
 echo "**PLEASE DO NOT CLOSE THIS WINDOW**"
 echo "";
-echo "APPLICATION_ECR_REPO:" $ADMINAPPLICATIONECR
+echo "ADMIN_APPLICATION_ECR:" $ADMINAPPLICATIONECR
 echo "ELB_URL:" $ELBURL
 
 cd $CWD

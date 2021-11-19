@@ -1,27 +1,25 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: tenant-registration
+  name: tenant-management
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: tenant-registration
+      app: tenant-management
   template:
     metadata:
       labels:
-        app: tenant-registration
+        app: tenant-management
     spec:
       containers:
-        - name: tenant-registration
-          image: $TENANTREGISTRATIONECR:latest
+        - name: tenant-management
+          image: TENANT_MANGEMENT_ECR_REPO:latest
           imagePullPolicy: Always
           ports:
-            - containerPort: 3000
+            - containerPort: 3001
               name: "http"
           env:
-            - name: SERVICE_ADDRESS
-              value: "$ELBURL"
             - name: AWS_REGION
               value: "$REGION"
             - name: COGNITO_USER_POOL_ID
@@ -34,28 +32,25 @@ spec:
               value: "$TENANT_TABLE_NAME"
             - name: AUTH_TENANT_TABLE_NAME
               value: "$AUTH_INFO_TABLE_NAME"
-            - name: TENANT_STACK_MAPPING_TABLE_NAME
-              value: "$TENANT_STACK_MAPPING_TABLE_NAME"
-
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: tenant-registration-service
+  name: tenant-management-service
 spec:
   selector:
-    app: tenant-registration
+    app: tenant-management
   ports:
     - name: http
       protocol: TCP
       port: 80
-      targetPort: 3000
+      targetPort: 3001
   type: NodePort
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: tenant-registration-service-ingress
+  name: tenant-management-service-ingress
   annotations:
     kubernetes.io/ingress.class: "nginx"
     nginx.org/mergeable-ingress-type: "minion"
@@ -66,8 +61,8 @@ spec:
         paths:
           - backend:
               service:
-                name: tenant-registration-service
+                name: tenant-management-service
                 port:
                   number: 80
-            path: /api/registration
+            path: /api/tenants
             pathType: Prefix

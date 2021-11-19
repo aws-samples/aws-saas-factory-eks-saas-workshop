@@ -24,13 +24,9 @@ docker push $TENANTREGISTRATIONECR:latest
 echo "The following values will need to be plugged into the Tenant Registration Kubernetes manifest before deployment."
 echo "**PLEASE DO NOT CLOSE THIS WINDOW**"
 echo 'TENANT_REGISTRATION_ECR_REPO:' $TENANTREGISTRATIONECR
-echo 'SERVICE_ADDRESS:' $ELBURL
-echo 'AWS_REGION:' $REGION
-echo 'COGNITO_USER_POOL_ID:' $USERPOOLID
-echo 'COGNITO_CLIENT_ID:' $APPCLIENTID
-echo 'COGNITO_REGION:' $REGION
-echo 'TENANT_TABLE_NAME:' $TENANT_TABLE_NAME
-echo 'AUTH_TENANT_TABLE_NAME:' $AUTH_INFO_TABLE_NAME
-echo 'TENANT_STACK_MAPPING_TABLE_NAME': $TENANT_STACK_MAPPING_TABLE_NAME
-echo 'ELB_URL:' $ELBURL
+
 cd $CWD
+
+envsubst < ./services/shared/apps/tenant-registration/k8s/partial-template.txt > ./services/shared/apps/tenant-registration/k8s/template.yaml
+
+
