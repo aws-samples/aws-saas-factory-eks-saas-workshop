@@ -8,6 +8,11 @@ sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 chmod +x kubectl && sudo mv kubectl /usr/local/bin/
 echo "source <(kubectl completion bash)" >> ~/.bashrc
 
+echo "Installing Node and CDK"
+nvm install 16 2> 0
+nvm use 16
+npm install -g yarn
+
 # Update awscli v1, just in case it's required
 pip install --user --upgrade awscli
 
@@ -35,7 +40,6 @@ sh scripts/resize-cloud9-ebs-vol.sh 40
 
 echo "Installing helm"
 curl -sSL https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
-
 
 
 echo "Set Environment Variables"
