@@ -21,6 +21,7 @@ docker push $TENANTMANAGEMENTECR:latest
 
 echo "The following values will need to be plugged into the Tenant Management Kubernetes manifest before deployment."
 echo "**PLEASE DO NOT CLOSE THIS WINDOW**"
+echo ""
 echo 'TENANT_MANGEMENT_ECR_REPO:' $TENANTMANAGEMENTECR
 cd $CWD
 
