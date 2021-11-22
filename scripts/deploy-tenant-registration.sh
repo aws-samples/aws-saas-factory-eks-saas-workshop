@@ -23,6 +23,7 @@ docker push $TENANTREGISTRATIONECR:latest
 
 echo "The following values will need to be plugged into the Tenant Registration Kubernetes manifest before deployment."
 echo "**PLEASE DO NOT CLOSE THIS WINDOW**"
+echo ""
 echo 'TENANT_REGISTRATION_ECR_REPO:' $TENANTREGISTRATIONECR
 
 cd $CWD

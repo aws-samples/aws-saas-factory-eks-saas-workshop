@@ -11,3 +11,7 @@ kubectl apply -f ./services/application/apps/product/k8s/template.yaml
 source ./scripts/deploy-order.sh
 TENANTPATH=app envsubst < ./services/application/apps/order/k8s/template.txt > ./services/application/apps/order/k8s/template.yaml
 kubectl apply -f ./services/application/apps/order/k8s/template.yaml
+
+kubectl rollout restart deploy application
+kubectl rollout restart deploy product
+kubectl rollout restart deploy order

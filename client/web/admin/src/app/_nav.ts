@@ -15,9 +15,4 @@ export const navItems: INavData[] = [
     url: '/tenants',
     icon: 'icon-layers',
   },
-  {
-    name: 'Users',
-    url: '/users',
-    icon: 'icon-user',
-  },
 ];

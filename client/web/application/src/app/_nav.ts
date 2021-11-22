@@ -24,11 +24,11 @@ export const navItems: INavData[] = [
     url: '/orders',
     icon: 'icon-basket',
   },
-  {
-    name: 'Users',
-    url: '/users',
-    icon: 'icon-user',
-  },
+  // {
+  //   name: 'Users',
+  //   url: '/users',
+  //   icon: 'icon-user',
+  // },
   // {
   //   name: 'Application',
   //   url: '/application',
