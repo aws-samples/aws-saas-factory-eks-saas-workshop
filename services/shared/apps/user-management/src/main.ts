@@ -3,10 +3,27 @@
  * SPDX-License-Identifier: MIT-0
  */
 import { NestFactory } from '@nestjs/core';
-import { UserManagementModule } from './user-management.module';
+import {
+  Transport,
+  MicroserviceOptions,
+  TcpOptions,
+} from '@nestjs/microservices';
+import { UsersModule } from './users/users.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create(UserManagementModule);
-  await app.listen(3000);
+  const options: TcpOptions = {
+    transport: Transport.TCP,
+    options: {
+      host: '0.0.0.0',
+      port: 3015,
+    },
+  };
+  const app = await NestFactory.createMicroservice<MicroserviceOptions>(
+    UsersModule,
+    options,
+  );
+  await app.listen(() => {
+    console.log('Users microservice is listening...');
+  });
 }
 bootstrap();

@@ -5,6 +5,7 @@
 
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { TenantService } from './tenant.service';
 
 @Component({
@@ -18,7 +19,11 @@ export class CreateComponent implements OnInit {
   error = false;
   success = false;
 
-  constructor(private fb: FormBuilder, private tenantSvc: TenantService) {}
+  constructor(
+    private fb: FormBuilder,
+    private tenantSvc: TenantService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.form = this.fb.group({
@@ -40,6 +45,7 @@ export class CreateComponent implements OnInit {
         this.submitting = false;
         this.success = true;
         this.error = false;
+        this.router.navigate(['tenants']);
       },
       (err) => {
         this.submitting = false;
