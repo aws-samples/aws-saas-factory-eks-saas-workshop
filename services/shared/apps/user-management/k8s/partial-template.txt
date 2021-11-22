@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: user-management
-          image: $USERMANAGEMENTECR:latest
+          image: USER_MANAGEMENT_ECR_REPO:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 3015
