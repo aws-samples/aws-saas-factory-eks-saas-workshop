@@ -1,4 +1,6 @@
 #!/bin/bash
+# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# SPDX-License-Identifier: MIT-0
 
 source ./scripts/deploy-application.sh
 TENANTPATH=app envsubst < ./client/web/application/k8s/template.txt > ./client/web/application/k8s/template.yaml
