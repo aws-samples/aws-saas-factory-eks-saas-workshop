@@ -73,11 +73,15 @@ export class RegistrationService {
 
   private async register(registration: Registration) {
     console.log('Registering tenant:', registration);
-    const userPoolId = await this.idpSvc.getUserPool(
-      registration.tenantId,
-      registration.Path,
-      registration.plan,
-    );
+    const userPoolId = await this.idpSvc.getPooledUserPool();
+
+    /* Uncomment the following 5 lines to introduce siloed isolation */
+    // const userPoolId = await this.idpSvc.getPlanBasedUserPool(
+    //   registration.tenantId,
+    //   registration.Path,
+    //   registration.plan,
+    // );
+
     const user = {
       userPoolId: userPoolId.toString(),
       email: registration.email,
