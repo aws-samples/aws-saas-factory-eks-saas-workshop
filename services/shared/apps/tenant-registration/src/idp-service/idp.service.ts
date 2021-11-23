@@ -19,7 +19,14 @@ export class IdpService {
   tenantStackMappingTable = process.env.TENANT_STACK_MAPPING_TABLE_NAME;
   constructor(private clientFac: ClientFactoryService) {}
 
-  async getUserPool(tenantId: string, path: string, plan: PLAN_TYPE) {
+  // This pool was created as part of our baseline infrastructure
+  // Just return it to start with
+  async getPooledUserPool(): Promise<string> {
+    const existingPoolId = await this.fetchForPath('app');
+    return existingPoolId;
+  }
+
+  async getPlanBasedUserPool(tenantId: string, path: string, plan: PLAN_TYPE) {
     // Our pool type is based solely on Plan
     const poolType =
       plan === PLAN_TYPE.Premium ? USERPOOL_TYPE.Siloed : USERPOOL_TYPE.Pooled;
@@ -35,11 +42,11 @@ export class IdpService {
     if (!!existingPoolId) {
       return existingPoolId;
     }
-    const poolName =
-      plan === PLAN_TYPE.Premium
-        ? `eks-ws-siloed-${tenantId}`
-        : 'eks-ws-pooled';
-    console.log('Existing pool not found. Creating');
+
+    console.log('Existing pool not found. Creating new siloed pool');
+    // If we get here, we're only interested in creating a siloed
+    // tenant's user pool
+    const poolName = `eks-ws-siloed-${tenantId}`;
     const userPool = await this.createUserPool(poolName, pathToUse);
     const userPoolClient = await this.createUserPoolClient(
       tenantId,
