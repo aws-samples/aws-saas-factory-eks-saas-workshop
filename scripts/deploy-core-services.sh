@@ -1,4 +1,6 @@
 #!/bin/bash
+# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# SPDX-License-Identifier: MIT-0
 
 source ./scripts/deploy-admin.sh
 envsubst < ./client/web/admin/k8s/template.txt > ./client/web/admin/k8s/template.yaml
