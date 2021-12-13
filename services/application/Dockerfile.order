@@ -1,6 +1,6 @@
 FROM public.ecr.aws/bitnami/node:16.5.0 AS build
 WORKDIR /app
-COPY package.json yarn.lock ./
+COPY package.json ./
 RUN yarn
 COPY . .
 RUN yarn build
