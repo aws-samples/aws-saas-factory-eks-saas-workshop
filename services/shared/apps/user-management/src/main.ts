@@ -22,8 +22,6 @@ async function bootstrap() {
     UsersModule,
     options,
   );
-  await app.listen(() => {
-    console.log('Users microservice is listening...');
-  });
+  await app.listen();
 }
 bootstrap();
