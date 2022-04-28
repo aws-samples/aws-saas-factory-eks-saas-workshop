@@ -3,12 +3,13 @@
  * SPDX-License-Identifier: MIT-0
  */
 
-import * as cdk from '@aws-cdk/core';
-import * as dynamodb from '@aws-cdk/aws-dynamodb';
-import * as ecr from '@aws-cdk/aws-ecr';
-import * as iam from '@aws-cdk/aws-iam';
+import { Construct } from 'constructs';
+import { NestedStack, NestedStackProps } from 'aws-cdk-lib';
+import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
+import * as iam from 'aws-cdk-lib/aws-iam';
+import * as ecr from 'aws-cdk-lib/aws-ecr';
 
-export interface BaselineStackProps extends cdk.NestedStackProps {
+export interface BaselineStackProps extends NestedStackProps {
   UserPoolId: string;
   AppClientId: string;
   elbUrl: string;
@@ -17,7 +18,7 @@ export interface BaselineStackProps extends cdk.NestedStackProps {
   EksCodeBuildArn: string;
 }
 
-export class BaselineInfraStack extends cdk.NestedStack {
+export class BaselineInfraStack extends NestedStack {
   tenantTable: dynamodb.Table;
   tenantTableName: string;
   authInfoTable: dynamodb.Table;
@@ -40,7 +41,7 @@ export class BaselineInfraStack extends cdk.NestedStack {
   orderServiceUri: string;
   dynamicAssumeRoleArn: string;
 
-  constructor(scope: cdk.Construct, id: string, props?: BaselineStackProps) {
+  constructor(scope: Construct, id: string, props?: BaselineStackProps) {
     super(scope, id, props);
 
     const timeStr = props?.TimeString;

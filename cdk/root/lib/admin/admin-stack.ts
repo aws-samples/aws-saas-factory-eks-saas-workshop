@@ -3,21 +3,21 @@
  * SPDX-License-Identifier: MIT-0
  */
 
-import * as cdk from '@aws-cdk/core';
-import * as cognito from '@aws-cdk/aws-cognito';
-import { CfnUserPoolUser } from '@aws-cdk/aws-cognito';
+import { NestedStackProps, NestedStack } from 'aws-cdk-lib';
+import { Construct } from 'constructs';
+import * as cognito from 'aws-cdk-lib/aws-cognito';
 
-export interface AdminStackProps extends cdk.NestedStackProps {
+export interface AdminStackProps extends NestedStackProps {
   adminEmailAddress: string;
   elbUrl: string;
 }
 
-export class AdminStack extends cdk.NestedStack {
+export class AdminStack extends NestedStack {
   userPoolId: string;
   appClientId: string;
   issuer: string;
 
-  constructor(scope: cdk.Construct, id: string, props?: AdminStackProps) {
+  constructor(scope: Construct, id: string, props?: AdminStackProps) {
     super(scope, id, props);
 
     const adminPool = new cognito.UserPool(this, 'AdminUserPool', {
@@ -64,7 +64,7 @@ export class AdminStack extends cdk.NestedStack {
       preventUserExistenceErrors: true,
     });
 
-    new CfnUserPoolUser(this, 'AdminUser', {
+    new cognito.CfnUserPoolUser(this, 'AdminUser', {
       userPoolId: adminPool.userPoolId,
       desiredDeliveryMediums: ['EMAIL'],
       forceAliasCreation: false,

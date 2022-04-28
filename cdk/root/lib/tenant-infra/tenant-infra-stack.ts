@@ -2,27 +2,33 @@
  * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
  * SPDX-License-Identifier: MIT-0
  */
-import * as cdk from '@aws-cdk/core';
-import * as codebuild from '@aws-cdk/aws-codebuild';
-import * as codecommit from '@aws-cdk/aws-codecommit';
-import * as codepipeline from '@aws-cdk/aws-codepipeline';
-import * as codepipeline_actions from '@aws-cdk/aws-codepipeline-actions';
-import * as cognito from '@aws-cdk/aws-cognito';
-import * as lambda from '@aws-cdk/aws-lambda';
-import * as iam from '@aws-cdk/aws-iam';
+
+import { NestedStack, NestedStackProps } from 'aws-cdk-lib';
+import * as iam from 'aws-cdk-lib/aws-iam';
+import * as lambda from 'aws-cdk-lib/aws-lambda';
+import * as cognito from 'aws-cdk-lib/aws-cognito';
+import * as codebuild from 'aws-cdk-lib/aws-codebuild';
+import * as codepipeline from 'aws-cdk-lib/aws-codepipeline';
+import * as codecommit from 'aws-cdk-lib/aws-codecommit';
+import {
+  CodeCommitSourceAction,
+  LambdaInvokeAction,
+  CodeBuildAction,
+} from 'aws-cdk-lib/aws-codepipeline-actions';
+import { Construct } from 'constructs';
 import { getCodeBuildRole } from './codebuild-role-policy-doc';
 
-export interface TenantInfraStackProps extends cdk.NestedStackProps {
+export interface TenantInfraStackProps extends NestedStackProps {
   elbUrl: string;
 }
 
-export class TenantInfraStack extends cdk.NestedStack {
+export class TenantInfraStack extends NestedStack {
   nodeRole: iam.IRole;
   pipelineFunction: lambda.Function;
   pooledTenantUserPoolId: string;
   pooledTenantAppClientId: string;
 
-  constructor(scope: cdk.Construct, id: string, props?: TenantInfraStackProps) {
+  constructor(scope: Construct, id: string, props?: TenantInfraStackProps) {
     super(scope, id, props);
 
     const pooledTenantPool = new cognito.UserPool(this, 'PooledTenantsPool', {
@@ -88,7 +94,7 @@ export class TenantInfraStack extends cdk.NestedStack {
     pipeline.addStage({
       stageName: 'Source',
       actions: [
-        new codepipeline_actions.CodeCommitSourceAction({
+        new CodeCommitSourceAction({
           actionName: 'CodeCommit_Source',
           repository: codeRepo,
           branch: 'main',
@@ -221,7 +227,7 @@ export class TenantInfraStack extends cdk.NestedStack {
       `),
     });
 
-    const lambdaInvokeAction = new codepipeline_actions.LambdaInvokeAction({
+    const lambdaInvokeAction = new LambdaInvokeAction({
       actionName: 'Lambda',
       lambda: this.pipelineFunction,
       variablesNamespace: 'LambdaVariables',
@@ -248,7 +254,7 @@ export class TenantInfraStack extends cdk.NestedStack {
       },
     });
 
-    const codeBuildAction = new codepipeline_actions.CodeBuildAction({
+    const codeBuildAction = new CodeBuildAction({
       actionName: 'Build-And-Deploy-Tenant-K8s-resources',
       project: buildProject,
       input: sourceOutput,
