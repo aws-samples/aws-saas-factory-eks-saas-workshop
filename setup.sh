@@ -14,7 +14,7 @@ echo "Installing Node and CDK"
 nvm install 16 2> 0
 nvm use 16
 npm install -g yarn
-npm install -g aws-cdk@1.131.0
+npm install -g aws-cdk@2.22.0
 
 echo "Upgrading AWS CLI"
 sudo pip install --upgrade awscli && hash -r
