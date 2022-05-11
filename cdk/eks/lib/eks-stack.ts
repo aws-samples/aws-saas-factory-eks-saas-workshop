@@ -2,18 +2,18 @@
  * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
  * SPDX-License-Identifier: MIT-0
  */
-import * as cdk from '@aws-cdk/core';
-import * as eks from '@aws-cdk/aws-eks';
-import * as iam from '@aws-cdk/aws-iam';
+import * as eks from 'aws-cdk-lib/aws-eks';
+import * as iam from 'aws-cdk-lib/aws-iam';
 import nodeRolePolicyDoc from './node-role-policy-doc';
-import { CfnOutput } from '@aws-cdk/core';
+import { Stack, StackProps, CfnOutput } from 'aws-cdk-lib';
+import { Construct } from 'constructs';
 
-export class EksStack extends cdk.Stack {
+export class EksStack extends Stack {
   elbUrl: string;
   nodeGroupRole: iam.IRole;
   eksCodebuildRole: iam.IRole;
 
-  constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
+  constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
 
     const ingressControllerReleaseName = 'controller';

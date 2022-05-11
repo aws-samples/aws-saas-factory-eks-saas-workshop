@@ -3,27 +3,27 @@
  * SPDX-License-Identifier: MIT-0
  */
 
-import * as cdk from '@aws-cdk/core';
-import { CfnOutput } from '@aws-cdk/core';
+import { Construct } from 'constructs';
+import { Stack, StackProps, CfnParameter, CfnOutput } from 'aws-cdk-lib';
 import { AdminStack } from './admin/admin-stack';
 import { BaselineInfraStack } from './baseline-infra/baseline-infra-stack';
 import { TenantInfraStack } from '../lib/tenant-infra/tenant-infra-stack';
 import getTimeString from './utils';
 
-export class RootStack extends cdk.Stack {
-  constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
+export class RootStack extends Stack {
+  constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
-    const eksElbUrl = new cdk.CfnParameter(this, 'eksElbUrl', {
+    const eksElbUrl = new CfnParameter(this, 'eksElbUrl', {
       type: 'String',
       description: 'The URL of the ELB for our EKS Cluster',
     });
 
-    const eksCodeBuildArn = new cdk.CfnParameter(this, 'eksCodeBuildArn', {
+    const eksCodeBuildArn = new CfnParameter(this, 'eksCodeBuildArn', {
       type: 'String',
       description: 'The AWS ARN of the role that CodeBuild will use to interact with EKS',
     });
 
-    const adminEmailAddr = new cdk.CfnParameter(this, 'adminEmailAddr', {
+    const adminEmailAddr = new CfnParameter(this, 'adminEmailAddr', {
       type: 'String',
       description: 'The email address of the first admin user',
     });
