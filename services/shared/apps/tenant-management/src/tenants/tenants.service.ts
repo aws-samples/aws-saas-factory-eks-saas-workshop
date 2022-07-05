@@ -30,7 +30,7 @@ export class TenantsService {
       throw new HttpException(
         {
           status: HttpStatus.INTERNAL_SERVER_ERROR,
-          error: error,
+          error: 'Something went wrong',
         },
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
@@ -75,7 +75,7 @@ export class TenantsService {
       throw new HttpException(
         {
           status: HttpStatus.INTERNAL_SERVER_ERROR,
-          error: error,
+          error: 'Something went wrong',
         },
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
