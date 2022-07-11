@@ -12,24 +12,17 @@
     "baseUrl": "./",
     "incremental": true,
     "skipLibCheck": true,
+    "resolveJsonModule": true,
     "strictNullChecks": false,
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
     "paths": {
-      "@app/auth": [
-        "libs/auth/src"
-      ],
-      "@app/auth/*": [
-        "libs/auth/src/*"
-      ],
-      "@app/client-factory": [
-        "libs/client-factory/src"
-      ],
-      "@app/client-factory/*": [
-        "libs/client-factory/src/*"
-      ]
+      "@app/auth": ["libs/auth/src"],
+      "@app/auth/*": ["libs/auth/src/*"],
+      "@app/client-factory": ["libs/client-factory/src"],
+      "@app/client-factory/*": ["libs/client-factory/src/*"]
     }
   }
 }

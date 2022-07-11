@@ -9,7 +9,7 @@
     "tsConfigPath": "apps/shared/tenant-management/tsconfig.app.json"
   },
   "projects": {
-    "shared/tenant-management": {
+    "tenant-management": {
       "type": "application",
       "root": "apps/shared/tenant-management",
       "entryFile": "main",
@@ -18,7 +18,7 @@
         "tsConfigPath": "apps/shared/tenant-management/tsconfig.app.json"
       }
     },
-    "shared/tenant-registration": {
+    "tenant-registration": {
       "type": "application",
       "root": "apps/shared/tenant-registration",
       "entryFile": "main",
@@ -27,7 +27,7 @@
         "tsConfigPath": "apps/shared/tenant-registration/tsconfig.app.json"
       }
     },
-    "shared/user-management": {
+    "user-management": {
       "type": "application",
       "root": "apps/shared/user-management",
       "entryFile": "main",
@@ -36,7 +36,7 @@
         "tsConfigPath": "apps/shared/user-management/tsconfig.app.json"
       }
     },
-    "application/product": {
+    "product": {
       "type": "application",
       "root": "apps/application/product",
       "entryFile": "main",
@@ -45,7 +45,7 @@
         "tsConfigPath": "apps/application/product/tsconfig.app.json"
       }
     },
-    "application/order": {
+    "order": {
       "type": "application",
       "root": "apps/application/order",
       "entryFile": "main",
@@ -54,7 +54,7 @@
         "tsConfigPath": "apps/application/order/tsconfig.app.json"
       }
     },
-    "application/user": {
+    "user": {
       "type": "application",
       "root": "apps/application/user",
       "entryFile": "main",
