@@ -1,5 +1,5 @@
 {
-  "extends": "../../tsconfig.json",
+  "extends": "../../../tsconfig.json",
   "compilerOptions": {
     "declaration": false,
     "outDir": "../../dist/apps/shared/tenant-management"

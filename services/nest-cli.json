@@ -1,12 +1,12 @@
 {
   "$schema": "https://json.schemastore.org/nest-cli",
   "collection": "@nestjs/schematics",
-  "sourceRoot": "apps/shared/src",
+  "sourceRoot": "apps/shared/tenant-management/src",
   "monorepo": true,
-  "root": "apps/shared",
+  "root": "apps/shared/tenant-management",
   "compilerOptions": {
     "webpack": true,
-    "tsConfigPath": "apps/shared/tsconfig.app.json"
+    "tsConfigPath": "apps/shared/tenant-management/tsconfig.app.json"
   },
   "projects": {
     "shared/tenant-management": {
@@ -61,6 +61,24 @@
       "sourceRoot": "apps/application/user/src",
       "compilerOptions": {
         "tsConfigPath": "apps/application/user/tsconfig.app.json"
+      }
+    },
+    "auth": {
+      "type": "library",
+      "root": "libs/auth",
+      "entryFile": "index",
+      "sourceRoot": "libs/auth/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/auth/tsconfig.lib.json"
+      }
+    },
+    "client-factory": {
+      "type": "library",
+      "root": "libs/client-factory",
+      "entryFile": "index",
+      "sourceRoot": "libs/client-factory/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/client-factory/tsconfig.lib.json"
       }
     }
   }

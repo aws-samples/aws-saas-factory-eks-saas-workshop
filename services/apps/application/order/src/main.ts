@@ -1,8 +1,14 @@
+/*
+ * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * SPDX-License-Identifier: MIT-0
+ */
+
 import { NestFactory } from '@nestjs/core';
-import { Application/orderModule } from './application/order.module';
+import { OrdersModule } from './orders/orders.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create(Application/orderModule);
-  await app.listen(3000);
+  const app = await NestFactory.create(OrdersModule);
+  app.setGlobalPrefix('/*/api');
+  await app.listen(3010);
 }
 bootstrap();

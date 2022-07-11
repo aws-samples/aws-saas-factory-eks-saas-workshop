@@ -1,8 +1,12 @@
+/*
+ * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * SPDX-License-Identifier: MIT-0
+ */
 import { NestFactory } from '@nestjs/core';
-import { TenantManagementModule } from './shared/tenant-management.module';
+import { TenantsModule } from './tenants/tenants.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create(TenantManagementModule);
+  const app = await NestFactory.create(TenantsModule);
   app.setGlobalPrefix('api');
   app.enableCors({
     allowedHeaders: '*',

@@ -21,12 +21,28 @@
     "test:e2e": "jest --config ./apps/services/test/jest-e2e.json"
   },
   "dependencies": {
+    "@aws-sdk/client-codepipeline": "^3.22.0",
+    "@aws-sdk/client-cognito-identity-provider": "3.17.0",
+    "@aws-sdk/client-dynamodb": "^3.17.0",
+    "@aws-sdk/client-sts": "^3.17.0",
+    "@aws-sdk/lib-dynamodb": "^3.17.0",
+    "@aws-sdk/util-dynamodb": "^3.18.0",
     "@nestjs/common": "^9.0.0",
+    "@nestjs/config": "^2.2.0",
     "@nestjs/core": "^9.0.0",
+    "@nestjs/jwt": "^9.0.0",
+    "@nestjs/mapped-types": "^1.1.0",
+    "@nestjs/microservices": "^9.0.2",
+    "@nestjs/passport": "^9.0.0",
     "@nestjs/platform-express": "^9.0.0",
+    "jwks-rsa": "^2.0.3",
+    "mustache": "^4.2.0",
+    "passport": "^0.4.1",
+    "passport-jwt": "^4.0.0",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
-    "rxjs": "^7.2.0"
+    "rxjs": "^7.2.0",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@nestjs/cli": "^9.0.0",
@@ -34,6 +50,7 @@
     "@nestjs/testing": "^9.0.0",
     "@types/express": "^4.17.13",
     "@types/jest": "28.1.4",
+    "@types/mustache": "^4.1.1",
     "@types/node": "^16.0.0",
     "@types/supertest": "^2.0.11",
     "@typescript-eslint/eslint-plugin": "^5.0.0",
@@ -68,7 +85,12 @@
     "coverageDirectory": "./coverage",
     "testEnvironment": "node",
     "roots": [
-      "<rootDir>/apps/"
-    ]
+      "<rootDir>/apps/",
+      "<rootDir>/libs/"
+    ],
+    "moduleNameMapper": {
+      "^@app/auth(|/.*)$": "<rootDir>/libs/auth/src/$1",
+      "^@app/client-factory(|/.*)$": "<rootDir>/libs/client-factory/src/$1"
+    }
   }
 }
