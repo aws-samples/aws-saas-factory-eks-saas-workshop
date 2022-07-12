@@ -12,7 +12,7 @@ eks-tenant-saas-app-service
 *.userosscache
 *.sln.docstates
 *.zip
-
+.angular/
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs

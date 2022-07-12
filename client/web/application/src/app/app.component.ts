@@ -8,9 +8,9 @@ import { tap, filter } from 'rxjs/operators';
 
 @Component({
   selector: 'body',
-  template: `<amplify-authenticator>
+  template: `
     <router-outlet></router-outlet>
-  </amplify-authenticator>`,
+`,
 })
 export class AppComponent implements OnInit {
   constructor(private router: Router) {}

@@ -81,12 +81,12 @@ import { environment } from '../environments/environment';
       provide: LocationStrategy,
       useClass: HashLocationStrategy,
     },
-    {
-      provide: APP_INITIALIZER,
-      useFactory: initApp,
-      multi: true,
-      deps: [HttpClient],
-    },
+    // {
+    //   provide: APP_INITIALIZER,
+    //   useFactory: initApp,
+    //   multi: true,
+    //   deps: [HttpClient],
+    // },
     httpInterceptorProviders,
   ],
   bootstrap: [AppComponent],
