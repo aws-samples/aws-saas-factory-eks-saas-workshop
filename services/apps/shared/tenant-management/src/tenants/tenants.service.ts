@@ -18,23 +18,12 @@ export class TenantsService {
   async findAll() {
     console.log('Get all tenants');
     const client = this.clientFac.client;
-    try {
-      const cmd = new ScanCommand({
-        TableName: this.tableName,
-      });
-      const response = await client.send(cmd);
-      console.log('Response:', response);
-      return JSON.stringify(response.Items);
-    } catch (error) {
-      console.error(error);
-      throw new HttpException(
-        {
-          status: HttpStatus.INTERNAL_SERVER_ERROR,
-          error: 'Something went wrong',
-        },
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
+    const cmd = new ScanCommand({
+      TableName: this.tableName,
+    });
+    const response = await client.send(cmd);
+    console.log('Response:', response);
+    return JSON.stringify(response.Items);
   }
 
   findOne(id: number) {
@@ -50,42 +39,25 @@ export class TenantsService {
   }
 
   async getAuthInfo(referer: string) {
+    //grab the path of the referer header
+    console.log('Referer:', referer);
+    const path = this.getPath(referer);
+    console.log('Path:', path);
+    console.log('Tablename:', this.authTableName);
+    const client = this.clientFac.client;
+    const cmd = new GetCommand({
+      Key: {
+        tenant_path: path,
+      },
+      TableName: this.authTableName,
+    });
+    const item = await client.send(cmd);
     return {
       aws_project_region: this.region,
       aws_cognito_region: this.region,
-      aws_user_pools_id: 'us-west-2_ulhBQyLxF',
-      aws_user_pools_web_client_id: '4ntb89jlh18erseqrnrtdtlak6',
+      aws_user_pools_id: item.Item.user_pool_id,
+      aws_user_pools_web_client_id: item.Item.client_id,
     };
-    try {
-      //grab the path of the referer header
-      console.log('Referer:', referer);
-      const path = this.getPath(referer);
-      console.log('Path:', path);
-      console.log('Tablename:', this.authTableName);
-      const client = this.clientFac.client;
-      const cmd = new GetCommand({
-        Key: {
-          tenant_path: path,
-        },
-        TableName: this.authTableName,
-      });
-      const item = await client.send(cmd);
-      return {
-        aws_project_region: this.region,
-        aws_cognito_region: this.region,
-        aws_user_pools_id: item.Item.user_pool_id,
-        aws_user_pools_web_client_id: item.Item.client_id,
-      };
-    } catch (error) {
-      console.error(error);
-      throw new HttpException(
-        {
-          status: HttpStatus.INTERNAL_SERVER_ERROR,
-          error: 'Something went wrong',
-        },
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
   }
 
   getPath(referer: string) {

@@ -29,22 +29,11 @@ export class RegistrationService {
     @Inject(USER_SERVICE) private userSvc: ClientProxy,
   ) {}
 
-  async create(dto: CreateRegistrationDto) {
-    try {
-      console.log('Creating tenant:', dto);
-      const tenant = await this.store(dto);
-      this.register(tenant);
-      this.provision(dto.plan);
-    } catch (error) {
-      console.error(error);
-      throw new HttpException(
-        {
-          status: HttpStatus.INTERNAL_SERVER_ERROR,
-          error: 'Something went wrong',
-        },
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
+  async create(dto: CreateRegistrationDto) {    
+    console.log('Creating tenant:', dto);
+    const tenant = await this.store(dto);
+    this.register(tenant);
+    this.provision(dto.plan);  
   }
 
   private async store(dto: CreateRegistrationDto) {
@@ -97,9 +86,8 @@ export class RegistrationService {
   }
 
   private async provision(plan: PLAN_TYPE) {
-    if (plan !== PLAN_TYPE.Premium) {
-      return;
-    }
+    if (plan !== PLAN_TYPE.Premium) return;
+    
     console.log('Provisioning tenant:');
     // TODO - Add this to the ClientFactory
     const client = new CodePipelineClient({ region: process.env.AWS_REGION });
