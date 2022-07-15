@@ -24,10 +24,6 @@ export class NavComponent {
     private configSvc: ConfigAssetLoaderService
   ) {
     console.log('INVOKING CONFIG SERVICE');
-    const foo = configSvc.loadConfigurations(); //.subscribe((val) => console.log(val));
-    console.log('FOO', foo);
-    foo.subscribe((val) => {
-      console.log('VAL:', val);
-    });
+    configSvc.loadConfigurations().subscribe((val) => console.log(val));
   }
 }
