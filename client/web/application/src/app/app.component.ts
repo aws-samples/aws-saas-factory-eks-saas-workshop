@@ -4,7 +4,15 @@ import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-root',
-  template: `<router-outlet></router-outlet>`,
+  template: ` <amplify-authenticator>
+    <ng-template
+      amplifySlot="authenticated"
+      let-user="user"
+      let-signOut="signOut"
+    >
+      <router-outlet></router-outlet>
+    </ng-template>
+  </amplify-authenticator>`,
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
