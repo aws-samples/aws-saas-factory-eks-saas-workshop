@@ -1,88 +1,54 @@
-<div class="container">
-  <form [formGroup]="form">
-    <mat-form-field appearance="standard">
-      <mat-label>Name</mat-label>
-      <input
-        matInput
-        maxlength="15"
-        inputmode="tel"
-        placeholder="Type name"
-        formControlName="name"
-        #nameInput
-      />
-      <mat-hint>Mini character 10: {{ nameInput.value.length }}/10</mat-hint>
-      <mat-error>Name is required</mat-error>
-      <mat-error **ngIf="isError('name', 'minlength')">
-        Please enter more than 10 character
-      </mat-error>
-    </mat-form-field>
-
-    <mat-form-field appearance="legacy">
-      <mat-label>Email Address:</mat-label>
-      <input
-        matInput
-        type="email"
-        formControlName="email"
-        placeholder="Your email"
-      />
-      <mat-icon matSuffix>mail_outline</mat-icon>
-      <mat-hint>Input the fully qualified email address</mat-hint>
-      <mat-error *ngIf="isError('email', 'required')"
-        >Email is required</mat-error
-      >
-      <mat-error *ngIf="isError('email', 'pattern')"
-        >Please enter valid email</mat-error
-      >
-    </mat-form-field>
-
-    <mat-form-field appearance="standard">
-      <mat-label>Address:</mat-label>
-      <textarea
-        matInput
-        placeholder="address"
-        formControlName="address"
-      ></textarea>
-    </mat-form-field>
-
-    <mat-form-field appearance="fill" hintLabel="Country name required">
-      <mat-label>Country</mat-label>
-      <mat-select matNativeControl name="country" formControlName="country">
-        <mat-option value="india">India</mat-option>
-        <mat-option value="france">France</mat-option>
-        <mat-option value="germany">Germany</mat-option>
-        <mat-option value="japan">Japan</mat-option>
-        <mat-option value="Mongolia">Mongolia</mat-option>
-      </mat-select>
-    </mat-form-field>
-
-    <div style="margin-top: 10px">
-      <div style="margin-right: 3%; color: #6b6b6b">
-        <mat-label>Gender</mat-label>
-      </div>
-      <mat-radio-group formControlName="gender">
-        <mat-radio-button value="Male">Male</mat-radio-button>
-        <mat-radio-button value="Female">Female</mat-radio-button>
-      </mat-radio-group>
-    </div>
-
-    <mat-form-field class="example-full-width" appearance="fill">
-      <mat-label>Choose a date</mat-label>
-      <input matInput [matDatepicker]="picker" formControlName="dob" />
-      <mat-datepicker-toggle matSuffix [for]="picker">
-        <mat-icon matDatepickerToggleIcon>keyboard_arrow_down</mat-icon>
-      </mat-datepicker-toggle>
-      <mat-datepicker #picker></mat-datepicker>
-    </mat-form-field>
-    <div mat-dialog-actions align="end">
-      <button
-        mat-raised-button
-        color="primary"
-        type="submit"
-        [disabled]="!form.valid"
-      >
-        Submit
-      </button>
-    </div>
+<div class="product-form">
+  <form [formGroup]="productForm">
+    <mat-card class="card">
+      <mat-card-title>Create new Product</mat-card-title>
+      <mat-card-content>
+        <mat-form-field>
+          <mat-label>Enter product name</mat-label>
+          <input
+            matInput
+            placeholder="Product name"
+            formControlName="name"
+            required
+          />
+          <mat-error *ngIf="name?.invalid">Name is required</mat-error>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Enter product price</mat-label>
+          <input
+            type="number"
+            matInput
+            placeholder="Product price"
+            formControlName="price"
+            required
+          />
+          <mat-error *ngIf="price?.invalid">Price is required</mat-error>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Description</mat-label>
+          <input
+            matInput
+            type="text"
+            formControlName="description"
+            placeholder="Enter product description"
+          />
+        </mat-form-field>
+        <mat-card-footer>
+          <div class="button-panel">
+            <button
+              mat-stroked-button
+              color="primary"
+              (click)="(submit)"
+              [disabled]="!productForm.valid"
+            >
+              Submit
+            </button>
+            <button mat-stroked-button color="warn" (click)="(cancel)">
+              Cancel
+            </button>
+          </div>
+        </mat-card-footer>
+      </mat-card-content>
+    </mat-card>
   </form>
-  <div>{{ form.value | json }}</div>
 </div>

@@ -4,3 +4,24 @@
   flex-direction: column;
   align-items: flex-start;
 }
+
+.product-form {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.mat-form-field {
+  display: flex;
+}
+
+.button-panel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 8px;
+}
+
+.mat-stroked-button {
+  margin: 4px;
+}
