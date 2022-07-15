@@ -24,7 +24,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
   declarations: [CreateComponent, EditComponent, ListComponent],
   imports: [
     CommonModule,
-    FormsModule,
     ReactiveFormsModule,
     ProductsRoutingModule,
     MatButtonModule,
