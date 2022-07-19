@@ -8,6 +8,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
 
+import { NgChartsModule } from 'ng2-charts';
+
 import { DashboardRoutingModule } from './dashboard-routing.module';
 
 @NgModule({
@@ -21,6 +23,7 @@ import { DashboardRoutingModule } from './dashboard-routing.module';
     MatIconModule,
     MatListModule,
     MatMenuModule,
+    NgChartsModule,
   ],
 })
 export class DashboardModule {}
