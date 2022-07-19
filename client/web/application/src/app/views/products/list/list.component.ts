@@ -14,15 +14,7 @@ export class ListComponent implements OnInit {
   displayedColumns: string[] = ['name', 'price', 'description'];
 
   constructor(private productSvc: ProductService, private router: Router) {
-    this.products$ = of([
-      {
-        product_id: '1',
-        name: 'bacon',
-        price: 9.99,
-        description: 'delicious bacon',
-      },
-      { product_id: '2', name: 'milk', price: 3.33, description: '2% Milkfat' },
-    ]);
+    this.products$ = new Observable<Product[]>();
   }
 
   ngOnInit(): void {
@@ -44,6 +36,6 @@ export class ListComponent implements OnInit {
   }
 
   refresh() {
-    // this.products$ = this.productSvc.fetch();
+    this.products$ = this.productSvc.fetch();
   }
 }

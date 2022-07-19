@@ -1,1 +1,64 @@
-<p>create works!</p>
+<div class="order-form">
+  <form [formGroup]="orderForm">
+    <mat-card class="card">
+      <mat-card-title>Create new order</mat-card-title>
+      <mat-card-content>
+        <mat-form-field>
+          <mat-label>Enter order name</mat-label>
+          <input
+            matInput
+            placeholder="order name"
+            formControlName="name"
+            required
+          />
+          <mat-error *ngIf="name?.invalid">Name is required</mat-error>
+        </mat-form-field>
+        <table class="table table-sm">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Price</th>
+              <th>Quantity</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let op of orderProducts">
+              <td>
+                <span triggers="mouseenter" class="dottedUnderline">{{
+                  op.product.name
+                }}</span>
+              </td>
+              <td>{{ op.product.price | currency }}</td>
+              <td>{{ op.quantity || 0 }}</td>
+              <td>
+                <button class="btn btn-primary" (click)="add(op)">
+                  <i class="fa fa-plus"></i>
+                </button>
+                <button class="ml-3 btn btn-danger" (click)="remove(op)">
+                  <i class="fa fa-minus"></i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <mat-card-footer>
+          <div class="button-panel">
+            <button
+              mat-raised-button
+              color="primary"
+              (click)="(submit)"
+              [disabled]="!orderForm?.valid"
+            >
+              Submit
+            </button>
+            <button mat-raised-button color="warn" [routerLink]="['orders']">
+              Cancel
+            </button>
+          </div>
+        </mat-card-footer>
+      </mat-card-content>
+    </mat-card>
+  </form>
+</div>

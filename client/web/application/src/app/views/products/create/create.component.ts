@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+
 import { ProductService } from '../product.service';
 
 @Component({
@@ -39,15 +40,13 @@ export class CreateComponent implements OnInit {
   }
 
   submit() {
-    this.productSvc.post(this.productForm.value).subscribe(
-      () => {
-        this.router.navigate(['products']);
-      },
-      (err) => {
-        alert(err);
+    this.productSvc.post(this.productForm.value).subscribe({
+      next: () => this.router.navigate(['products']),
+      error: (err) => {
+        alert(err.message);
         console.error(err);
-      }
-    );
+      },
+    });
   }
 
   cancel() {

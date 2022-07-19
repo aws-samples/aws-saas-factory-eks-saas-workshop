@@ -1,5 +1,5 @@
 <div class="product-form">
-  <form [formGroup]="productForm">
+  <form [formGroup]="productForm" (submit)="submit()">
     <mat-card class="card">
       <mat-card-title>Create new Product</mat-card-title>
       <mat-card-content>

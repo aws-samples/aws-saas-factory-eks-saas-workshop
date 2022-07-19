@@ -16,9 +16,9 @@ import { ProductService } from '../product.service';
 })
 export class EditComponent implements OnInit {
   productForm: FormGroup | undefined;
-  product$: Observable<Product> | undefined;
+  product$: Observable<Product | undefined> | undefined;
   productId$: Observable<string> | undefined;
-  productName$: Observable<string> | undefined;
+  productName$: Observable<string | undefined> | undefined;
 
   constructor(
     private route: ActivatedRoute,
@@ -32,7 +32,7 @@ export class EditComponent implements OnInit {
     this.product$ = this.productId$.pipe(
       switchMap((p) => this.productSvc.get(p))
     );
-    this.productName$ = this.product$.pipe(map((p) => p.name));
+    this.productName$ = this.product$.pipe(map((p) => p?.name));
 
     this.productForm = this.fb.group({
       product_id: [''],
