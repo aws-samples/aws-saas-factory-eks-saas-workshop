@@ -1,9 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { Observable, of } from 'rxjs';
+import { from, Observable, of } from 'rxjs';
 import { filter, map, shareReplay } from 'rxjs/operators';
-import { ConfigAssetLoaderService } from 'config-asset-loader';
-import { navItems } from '../_nav';
 import {
   NavigationCancel,
   NavigationEnd,
@@ -11,6 +9,11 @@ import {
   NavigationStart,
   Router,
 } from '@angular/router';
+
+import { AuthenticatorService } from '@aws-amplify/ui-angular';
+import { Auth } from 'aws-amplify';
+import { ConfigAssetLoaderService } from 'config-asset-loader';
+import { navItems } from '../_nav';
 
 @Component({
   selector: 'app-nav',
@@ -20,6 +23,9 @@ import {
 export class NavComponent implements OnInit {
   tenantName = '';
   loading$: Observable<boolean> = of(false);
+  isAuthenticated$: Observable<Boolean> | undefined;
+  username$: Observable<string> | undefined;
+  companyName$: Observable<string> | undefined;
   public navItems = navItems;
   isHandset$: Observable<boolean> = this.breakpointObserver
     .observe(Breakpoints.Handset)
@@ -31,10 +37,10 @@ export class NavComponent implements OnInit {
   constructor(
     private breakpointObserver: BreakpointObserver,
     private configSvc: ConfigAssetLoaderService,
-    private router: Router
+    private router: Router,
+    private auth: AuthenticatorService
   ) {
-    console.log('INVOKING CONFIG SERVICE');
-    this.configSvc.loadConfigurations().subscribe((val) => console.log(val));
+    // this.configSvc.loadConfigurations().subscribe((val) => console.log(val));
     this.loading$ = this.router.events.pipe(
       filter(
         (e) =>
@@ -47,5 +53,23 @@ export class NavComponent implements OnInit {
     );
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    try {
+      const s = Auth.currentSession().catch((err) => err);
+      const session$ = from(s);
+      this.isAuthenticated$ = session$.pipe(
+        filter((sesh) => !!sesh),
+        map((sesh) => sesh && sesh.isValid())
+      );
+      const token$ = session$.pipe(map((sesh) => sesh && sesh.getIdToken()));
+      this.username$ = token$.pipe(
+        map((t) => t && t.payload['cognito:username'])
+      );
+      this.companyName$ = token$.pipe(
+        map((t) => t.payload['custom:company-name'])
+      );
+    } catch (err) {
+      console.error('Unable to get current session.');
+    }
+  }
 }

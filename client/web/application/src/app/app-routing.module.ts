@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { NavComponent } from './nav/nav.component';
+import { AuthComponent } from './views/auth/auth.component';
 
 export const routes: Routes = [
   {
@@ -29,11 +30,10 @@ export const routes: Routes = [
       title: 'Home',
     },
     children: [
-      // {
-      //   path: 'auth',
-      //   loadChildren: () =>
-      //     import('./views/auth/auth.module').then((m) => m.AuthModule),
-      // },
+      {
+        path: 'auth/info',
+        component: AuthComponent,
+      },
       {
         path: 'dashboard',
         loadChildren: () =>

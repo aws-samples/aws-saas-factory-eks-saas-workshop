@@ -25,9 +25,10 @@ import { AppRoutingModule } from './app-routing.module';
 import { ConfigAssetLoaderService } from 'config-asset-loader';
 import { NavComponent } from './nav/nav.component';
 import { Amplify } from 'aws-amplify';
+import { AuthComponent } from './views/auth/auth.component';
 
 @NgModule({
-  declarations: [AppComponent, NavComponent],
+  declarations: [AppComponent, NavComponent, AuthComponent],
   imports: [
     AmplifyAuthenticatorModule,
     AppRoutingModule,
