@@ -1,18 +1,19 @@
-.card {
+// .card {
+//   margin: 20px;
+//   display: flex;
+//   flex-direction: column;
+//   align-items: flex-start;
+// }
+
+.order-form {
   margin: 20px;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
 }
 
-.order-form {
+.mat-card-title {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-}
-
-.mat-form-field {
-  display: flex;
+  justify-content: center;
 }
 
 .button-panel {
@@ -20,6 +21,11 @@
   align-items: center;
   justify-content: center;
   margin-bottom: 8px;
+}
+
+.row {
+  width: 100%;
+  align-items: center;
 }
 
 button {

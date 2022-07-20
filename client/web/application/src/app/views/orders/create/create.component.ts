@@ -16,6 +16,7 @@ interface LineItem {
   styleUrls: ['./create.component.scss'],
 })
 export class CreateComponent implements OnInit {
+  displayedColumns = [];
   orderForm: FormGroup;
   orderProducts: LineItem[] = [];
   error = '';
