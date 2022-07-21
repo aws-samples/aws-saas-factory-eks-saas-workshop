@@ -50,6 +50,12 @@ export class TenantsService {
   }
 
   async getAuthInfo(referer: string) {
+    return {
+      aws_project_region: this.region,
+      aws_cognito_region: this.region,
+      aws_user_pools_id: 'us-west-2_ulhBQyLxF',
+      aws_user_pools_web_client_id: '4ntb89jlh18erseqrnrtdtlak6',
+    };
     try {
       //grab the path of the referer header
       console.log('Referer:', referer);
