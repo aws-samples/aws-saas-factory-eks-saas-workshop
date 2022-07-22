@@ -7,13 +7,16 @@
     [mode]="(isHandset$ | async) ? 'over' : 'side'"
     [opened]="(isHandset$ | async) === false"
   >
-    <mat-toolbar>
-      <span><img src="assets/logo.svg" style="height: 38px" /></span>
-    </mat-toolbar>
+    <mat-toolbar
+      ><mat-icon svgIcon="saas-commerce" class="logo"></mat-icon
+    ></mat-toolbar>
     <mat-nav-list>
-      <a mat-list-item href="#">Link 1</a>
-      <a mat-list-item href="#">Link 2</a>
-      <a mat-list-item href="#">Link 3</a>
+      <mat-list-item *ngFor="let navItem of navItems">
+        <mat-icon mat-list-icon class="nav-icon material-symbols-outlined">{{
+          navItem.icon
+        }}</mat-icon>
+        <a mat-list-item routerLink="{{ navItem.url }}">{{ navItem.name }}</a>
+      </mat-list-item>
     </mat-nav-list>
   </mat-sidenav>
   <mat-sidenav-content class="sidenav-content-container">
@@ -31,26 +34,32 @@
       <button
         mat-icon-button
         aria-label="account circle with outlined person icon"
-        [matMenuTriggerFor]="animals"
+        [matMenuTriggerFor]="useroptions"
       >
-        <mat-icon class="material-symbols-outlined">account_circle</mat-icon>
+        <mat-icon class="material-symbols-outlined">person_filled</mat-icon>
       </button>
     </mat-toolbar>
-    <mat-menu #animals="matMenu">
-      <button mat-menu-item>
-        <mat-icon class="material-symbols-outlined">lock_open</mat-icon>
-        <span>Login</span>
-      </button>
+    <mat-menu #useroptions="matMenu">
+      <ng-template #loggedOut>
+        <button mat-menu-item>
+          <mat-icon class="material-symbols-outlined">lock_open</mat-icon>
+          <span>Login</span>
+        </button>
+      </ng-template>
+      <span style="margin: 8px">{{ username$ | async }}</span>
       <mat-divider></mat-divider>
-      <button disabled mat-menu-item>
+      <button mat-menu-item>
         <mat-icon class="material-symbols-outlined">face</mat-icon>
         <span>Profile</span>
       </button>
-      <button disabled mat-menu-item>
+      <button routerLink="/auth/info" mat-menu-item>
         <mat-icon class="material-symbols-outlined">construction</mat-icon>
         <span>Auth Debug</span>
       </button>
     </mat-menu>
-    <app-dashboard></app-dashboard>
+    <div class="spinner-container" *ngIf="loading$ | async">
+      <mat-spinner></mat-spinner>
+    </div>
+    <router-outlet></router-outlet>
   </mat-sidenav-content>
 </mat-sidenav-container>

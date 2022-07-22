@@ -1,0 +1,24 @@
+<!--/.row-->
+<div class="card">
+  <div class="card-body">
+    <div class="row">
+      <div class="col-sm-5">
+        <h4 class="card-title mb-0">Traffic</h4>
+        <div class="small text-muted">December 2020</div>
+      </div>
+      <!--/.col-->
+    </div>
+    <!--/.row-->
+    <div class="chart-wrapper" style="height: 300px; margin-top: 40px">
+      <canvas
+        baseChart
+        class="chart"
+        [type]="lineChartType"
+        [datasets]="lineChartData"
+        [labels]="lineChartLabels"
+        [options]="lineChartOptions"
+        [legend]="lineChartLegend"
+      ></canvas>
+    </div>
+  </div>
+</div>
