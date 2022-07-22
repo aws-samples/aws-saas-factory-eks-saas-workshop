@@ -12,34 +12,21 @@ import {
 } from '@aws-sdk/client-cognito-identity-provider';
 
 @Injectable()
-export class UsersService {
+export class UsersService {  
   async create(
     tenantId: string,
     userPoolId: string,
-    createUserDto: CreateUserDto,
-  ) {
-    try {
-      const client = new CognitoIdentityProviderClient({
-        region: process.env.AWS_REGION,
-      });
-      const cmd = new AdminCreateUserCommand({
-        UserPoolId: userPoolId,
-        Username: createUserDto.email,
-        UserAttributes: [{ Name: 'custom:tenant-id', Value: tenantId }],
-      });
-      await client.send(cmd);
-      return JSON.stringify('success');
-    } catch (error) {
-      console.error(error);
-      throw new HttpException(
-        {
-          status: HttpStatus.INTERNAL_SERVER_ERROR,
-          error: 'Something went wrong',
-        },
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
-    return null;
+    createUserDto: CreateUserDto) {    
+    const client = new CognitoIdentityProviderClient({
+      region: process.env.AWS_REGION,
+    });
+    const cmd = new AdminCreateUserCommand({
+      UserPoolId: userPoolId,
+      Username: createUserDto.email,
+      UserAttributes: [{ Name: 'custom:tenant-id', Value: tenantId }],
+    });
+    await client.send(cmd);
+    return JSON.stringify('success');
   }
 
   async findAll(userPoolId: string, tenantId: string) {
@@ -48,43 +35,32 @@ export class UsersService {
       userPoolId,
       'and tenantId:',
       tenantId,
-    );
-    try {
-      const client = new CognitoIdentityProviderClient({
-        region: process.env.AWS_REGION,
+    );    
+    const client = new CognitoIdentityProviderClient({
+      region: process.env.AWS_REGION,
+    });
+    const cmd = new ListUsersCommand({
+      UserPoolId: userPoolId,
+    });
+    const res = await client.send(cmd);
+    const allUsers = res.Users;
+    const users = allUsers
+      .filter((user) => {
+        user.Attributes.some(
+          (attr) =>
+            attr.Name === 'custom:tenant-id' && attr.Value === tenantId,
+        );
+      })
+      .map((user) => {
+        return {
+          email: user.Attributes.find((a) => a.Name === 'email').Value,
+          enabled: user.Enabled,
+          createdDate: user.UserCreateDate,
+          modifiedDate: user.UserLastModifiedDate,
+          status: user.UserStatus,
+        };
       });
-      const cmd = new ListUsersCommand({
-        UserPoolId: userPoolId,
-      });
-      const res = await client.send(cmd);
-      const allUsers = res.Users;
-      const users = allUsers
-        .filter((user) => {
-          user.Attributes.some(
-            (attr) =>
-              attr.Name === 'custom:tenant-id' && attr.Value === tenantId,
-          );
-        })
-        .map((user) => {
-          return {
-            email: user.Attributes.find((a) => a.Name === 'email').Value,
-            enabled: user.Enabled,
-            createdDate: user.UserCreateDate,
-            modifiedDate: user.UserLastModifiedDate,
-            status: user.UserStatus,
-          };
-        });
-      return users;
-    } catch (error) {
-      console.error(error);
-      throw new HttpException(
-        {
-          status: HttpStatus.INTERNAL_SERVER_ERROR,
-          error: 'Something went wrong',
-        },
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
+    return users;    
   }
 
   findOne(id: number) {
