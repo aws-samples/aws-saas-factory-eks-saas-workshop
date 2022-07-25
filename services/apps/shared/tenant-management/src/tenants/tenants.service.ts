@@ -17,7 +17,7 @@ export class TenantsService {
 
   async findAll() {
     console.log('Get all tenants');
-    const client = this.clientFac.client;    
+    const client = this.clientFac.client;
     const cmd = new ScanCommand({
       TableName: this.tableName,
     });

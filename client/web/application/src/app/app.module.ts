@@ -1,81 +1,54 @@
-/*
- * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
- * SPDX-License-Identifier: MIT-0
- */
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule, APP_INITIALIZER } from '@angular/core';
-import { LocationStrategy, HashLocationStrategy, APP_BASE_HREF } from '@angular/common';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { LayoutModule } from '@angular/cdk/layout';
+import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 
-import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
-import { PerfectScrollbarConfigInterface } from 'ngx-perfect-scrollbar';
-// RECOMMENDED
-import { CarouselModule } from 'ngx-bootstrap/carousel';
+import { AmplifyAuthenticatorModule } from '@aws-amplify/ui-angular';
 
-const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
-  suppressScrollX: true,
-};
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatGridListModule } from '@angular/material/grid-list';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatToolbarModule } from '@angular/material/toolbar';
+
+import { map, shareReplay, switchMap } from 'rxjs/operators';
 
 import { AppComponent } from './app.component';
-
-// Import containers
-import { DefaultLayoutComponent } from './containers';
-
-import { P404Component } from './views/error/404.component';
-import { P500Component } from './views/error/500.component';
-
-const APP_CONTAINERS = [DefaultLayoutComponent];
-
-import {
-  AppAsideModule,
-  AppBreadcrumbModule,
-  AppHeaderModule,
-  AppFooterModule,
-  AppSidebarModule,
-} from '@coreui/angular';
-
-// Import routing module
-import { AppRoutingModule } from './app.routing';
-
-// Import 3rd party components
-import { AlertModule } from 'ngx-bootstrap/alert';
-import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
-import { TabsModule } from 'ngx-bootstrap/tabs';
-import { ChartsModule } from 'ng2-charts';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { httpInterceptorProviders } from './interceptors';
-import { CollapseModule } from 'ngx-bootstrap/collapse';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { AmplifyUIAngularModule } from '@aws-amplify/ui-angular';
-import { map } from 'rxjs/operators';
-import { AuthInfo } from './auth-info';
-import Amplify from 'aws-amplify';
-import { environment } from '../environments/environment';
+import { AppRoutingModule } from './app-routing.module';
+import { ConfigAssetLoaderService } from 'config-asset-loader';
+import { NavComponent } from './nav/nav.component';
+import { Amplify } from 'aws-amplify';
+import { AuthComponent } from './views/auth/auth.component';
 
 @NgModule({
+  declarations: [AppComponent, NavComponent, AuthComponent],
   imports: [
-    AlertModule,
-    AmplifyUIAngularModule,
-    AppAsideModule,
-    AppBreadcrumbModule.forRoot(),
-    AppFooterModule,
-    AppHeaderModule,
+    AmplifyAuthenticatorModule,
     AppRoutingModule,
-    AppSidebarModule,
     BrowserAnimationsModule,
     BrowserModule,
-    BsDropdownModule.forRoot(),
-    CarouselModule.forRoot(),
-    ChartsModule,
-    CollapseModule.forRoot(),
-    FormsModule,
     HttpClientModule,
-    PerfectScrollbarModule,
-    ReactiveFormsModule,
-    TabsModule.forRoot(),
+    LayoutModule,
+    MatButtonModule,
+    MatCardModule,
+    MatGridListModule,
+    MatIconModule,
+    MatListModule,
+    MatMenuModule,
+    MatNativeDateModule,
+    MatProgressSpinnerModule,
+    MatSidenavModule,
+    MatToolbarModule,
   ],
-  declarations: [AppComponent, ...APP_CONTAINERS, P404Component, P500Component],
   providers: [
+    ConfigAssetLoaderService,
     HttpClientModule,
     {
       provide: LocationStrategy,
@@ -83,27 +56,40 @@ import { environment } from '../environments/environment';
     },
     {
       provide: APP_INITIALIZER,
-      useFactory: initApp,
-      multi: true,
+      useFactory: InitAuthSettings,
       deps: [HttpClient],
+      multi: true,
     },
-    httpInterceptorProviders,
   ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
 
-export function initApp(http: HttpClient) {
+export function InitAuthSettings(http: HttpClient) {
+  console.log('IN INIT AUTH SETTINGS');
   return () => {
-    const apiUrl = `${environment.apiUrl}/api/tenants/auth-info`;
-    return http
-      .get<AuthInfo>(apiUrl)
-      .pipe(
-        map((res) => {
-          console.log(res);
-          Amplify.configure(res);
-        })
-      )
-      .toPromise();
+    return http.get<Configuration>('./assets/config/config.json').pipe(
+      switchMap((config) => {
+        const apiUrl = `${config.apiUrl}/api/tenants/auth-info`;
+        return http.get<AuthInfo>(apiUrl);
+      }),
+      map((authInfo) => {
+        console.log(authInfo);
+        Amplify.configure(authInfo);
+      }),
+      shareReplay(1)
+    );
   };
+}
+
+interface Configuration {
+  apiUrl: string;
+  stage: string;
+}
+
+export interface AuthInfo {
+  aws_project_region: string;
+  aws_cognito_region: string;
+  aws_user_pools_id: string;
+  aws_user_pools_web_client_id: string;
 }

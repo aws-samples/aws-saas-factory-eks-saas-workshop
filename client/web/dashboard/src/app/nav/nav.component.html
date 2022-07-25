@@ -1,0 +1,56 @@
+<mat-sidenav-container class="sidenav-container">
+  <mat-sidenav
+    #drawer
+    class="sidenav"
+    fixedInViewport
+    [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
+    [mode]="(isHandset$ | async) ? 'over' : 'side'"
+    [opened]="(isHandset$ | async) === false"
+  >
+    <mat-toolbar>
+      <span><img src="assets/logo.svg" style="height: 38px" /></span>
+    </mat-toolbar>
+    <mat-nav-list>
+      <a mat-list-item href="#">Link 1</a>
+      <a mat-list-item href="#">Link 2</a>
+      <a mat-list-item href="#">Link 3</a>
+    </mat-nav-list>
+  </mat-sidenav>
+  <mat-sidenav-content class="sidenav-content-container">
+    <mat-toolbar>
+      <button
+        type="button"
+        aria-label="Toggle sidenav"
+        mat-icon-button
+        (click)="drawer.toggle()"
+      >
+        <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+      </button>
+      <span>{{ tenantName || "Tenant" }}</span>
+      <span class="spacer"></span>
+      <button
+        mat-icon-button
+        aria-label="account circle with outlined person icon"
+        [matMenuTriggerFor]="animals"
+      >
+        <mat-icon class="material-symbols-outlined">account_circle</mat-icon>
+      </button>
+    </mat-toolbar>
+    <mat-menu #animals="matMenu">
+      <button mat-menu-item>
+        <mat-icon class="material-symbols-outlined">lock_open</mat-icon>
+        <span>Login</span>
+      </button>
+      <mat-divider></mat-divider>
+      <button disabled mat-menu-item>
+        <mat-icon class="material-symbols-outlined">face</mat-icon>
+        <span>Profile</span>
+      </button>
+      <button disabled mat-menu-item>
+        <mat-icon class="material-symbols-outlined">construction</mat-icon>
+        <span>Auth Debug</span>
+      </button>
+    </mat-menu>
+    <app-dashboard></app-dashboard>
+  </mat-sidenav-content>
+</mat-sidenav-container>
