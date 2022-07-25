@@ -1,82 +1,94 @@
-/*
- * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
- * SPDX-License-Identifier: MIT-0
- */
 import { APP_INITIALIZER, NgModule } from '@angular/core';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { LocationStrategy, HashLocationStrategy } from '@angular/common';
+import { LayoutModule } from '@angular/cdk/layout';
+import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 
-import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
-import { PerfectScrollbarConfigInterface } from 'ngx-perfect-scrollbar';
+import { AmplifyAuthenticatorModule } from '@aws-amplify/ui-angular';
 
-import { filter } from 'rxjs/operators';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatGridListModule } from '@angular/material/grid-list';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatToolbarModule } from '@angular/material/toolbar';
 
-import { AppRoutingModule } from './app-routing.module';
+import { map, shareReplay, switchMap } from 'rxjs/operators';
+
 import { AppComponent } from './app.component';
-
-// Import containers
-import { DefaultLayoutComponent } from './containers';
-
-import { P404Component } from './views/error/404.component';
-import { P500Component } from './views/error/500.component';
-import { AmplifyUIAngularModule } from '@aws-amplify/ui-angular';
-
-const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
-  suppressScrollX: true,
-};
-
-const APP_CONTAINERS = [DefaultLayoutComponent];
-
-// Import 3rd party components
-import {
-  AppAsideModule,
-  AppBreadcrumbModule,
-  AppHeaderModule,
-  AppFooterModule,
-  AppSidebarModule,
-} from '@coreui/angular';
-
-import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
-import { TabsModule } from 'ngx-bootstrap/tabs';
-import { ChartsModule } from 'ng2-charts';
-
-import { UnauthorizedComponent } from './views/error/unauthorized.component';
-import { HttpInterceptorProviders } from './interceptors';
+import { AppRoutingModule } from './app-routing.module';
+import { ConfigAssetLoaderService } from 'config-asset-loader';
+import { NavComponent } from './nav/nav.component';
+import { Amplify } from 'aws-amplify';
+import { AuthComponent } from './views/auth/auth.component';
+import { environment } from 'src/environments/environment';
 
 @NgModule({
+  declarations: [AppComponent, NavComponent, AuthComponent],
   imports: [
-    AppAsideModule,
-    AmplifyUIAngularModule,
-    AppBreadcrumbModule.forRoot(),
-    AppFooterModule,
-    AppHeaderModule,
+    AmplifyAuthenticatorModule,
     AppRoutingModule,
-    AppSidebarModule,
     BrowserAnimationsModule,
     BrowserModule,
-    BsDropdownModule.forRoot(),
-    ChartsModule,
     HttpClientModule,
-    PerfectScrollbarModule,
-    TabsModule.forRoot(),
-  ],
-  declarations: [
-    AppComponent,
-    ...APP_CONTAINERS,
-    P404Component,
-    P500Component,
-    UnauthorizedComponent,
+    LayoutModule,
+    MatButtonModule,
+    MatCardModule,
+    MatGridListModule,
+    MatIconModule,
+    MatListModule,
+    MatMenuModule,
+    MatNativeDateModule,
+    MatProgressSpinnerModule,
+    MatSidenavModule,
+    MatToolbarModule,
   ],
   providers: [
+    ConfigAssetLoaderService,
+    HttpClientModule,
     {
       provide: LocationStrategy,
       useClass: HashLocationStrategy,
     },
-    HttpClientModule,
-    HttpInterceptorProviders,
+    {
+      provide: APP_INITIALIZER,
+      useFactory: InitAuthSettings,
+      deps: [HttpClient],
+      multi: true,
+    },
   ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
+
+export function InitAuthSettings(http: HttpClient) {
+  console.log('IN INIT AUTH SETTINGS');
+  return () => {
+    return http.get<Configuration>('./assets/config/config.json').pipe(
+      map((config) => {
+        const amplifyConfig = config.amplifyConfig;
+        Amplify.configure(amplifyConfig);
+        environment.apiUrl = config.apiUrl;
+      }),
+      shareReplay(1)
+    );
+  };
+}
+
+interface Configuration {
+  apiUrl: string;
+  amplifyConfig: AuthInfo;
+  stage: string;
+}
+
+export interface AuthInfo {
+  aws_project_region: string;
+  aws_cognito_region: string;
+  aws_user_pools_id: string;
+  aws_user_pools_web_client_id: string;
+}
