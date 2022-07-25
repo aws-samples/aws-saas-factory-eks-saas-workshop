@@ -1,4 +1,4 @@
-FROM public.ecr.aws/bitnami/node:16.13.1 AS build
+FROM public.ecr.aws/bitnami/node:16.16.0 AS build
 WORKDIR /app
 COPY package.json ./
 COPY yarn.lock ./
@@ -6,7 +6,7 @@ RUN yarn
 COPY . .
 RUN yarn build product
 
-FROM public.ecr.aws/bitnami/node:16.13.1
+FROM public.ecr.aws/bitnami/node:16.16.0
 WORKDIR /app
 COPY --from=build /app ./
 EXPOSE 3005

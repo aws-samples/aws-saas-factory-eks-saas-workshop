@@ -5,6 +5,6 @@ RUN yarn
 COPY . .
 RUN yarn build --configuration production
 
-FROM public.ecr.aws/nginx/nginx:1.21
+FROM public.ecr.aws/nginx/nginx:1.23
 COPY nginx.conf /etc/nginx/conf.d/default.conf
-COPY --from=build /usr/src/app/dist/admin /usr/share/nginx/html/admin
+COPY --from=build /usr/src/app/dist /usr/share/nginx/html/admin
