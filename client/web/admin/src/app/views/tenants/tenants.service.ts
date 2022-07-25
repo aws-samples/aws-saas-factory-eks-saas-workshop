@@ -19,11 +19,11 @@ export class TenantsService {
   registrationApiUrl = `${this.baseUrl}/registration`;
 
   // TODO strongly-type these anys as tenants once we dial in what the tenant call should return
-  getTenants(): Observable<any[]> {
-    return this.http.get<any[]>(this.tenantsApiUrl);
+  getTenants(): Observable<Tenant[]> {
+    return this.http.get<Tenant[]>(this.tenantsApiUrl);
   }
 
-  createTenant(tenant: any): Observable<any[]> {
-    return this.http.post<any[]>(this.registrationApiUrl, tenant);
+  createTenant(tenant: Tenant): Observable<Tenant[]> {
+    return this.http.post<Tenant[]>(this.registrationApiUrl, tenant);
   }
 }
