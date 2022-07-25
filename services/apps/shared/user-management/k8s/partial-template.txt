@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: user-management
-          image: USER_MANAGEMENT_ECR_REPO:latest
+          image: public.ecr.aws/o2b5n0j5/eks-saas-user:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 3015

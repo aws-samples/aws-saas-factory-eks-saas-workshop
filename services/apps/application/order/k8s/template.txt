@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: order
-          image: $ORDERSERVICEECR:latest
+          image: public.ecr.aws/o2b5n0j5/eks-saas-order:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 3010

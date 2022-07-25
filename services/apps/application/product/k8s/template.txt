@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: product
-          image: $PRODUCTSERVICEECR:latest
+          image: public.ecr.aws/o2b5n0j5/eks-saas-product:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 3005

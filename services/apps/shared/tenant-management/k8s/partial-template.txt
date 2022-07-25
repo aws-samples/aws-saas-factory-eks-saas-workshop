@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: tenant-management
-          image: TENANT_MANGEMENT_ECR_REPO:latest
+          image: public.ecr.aws/o2b5n0j5/eks-saas-tenant-management:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 3001
