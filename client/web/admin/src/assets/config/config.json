@@ -1,4 +1,10 @@
 {
   "apiUrl": "http://localhost:3001",
-  "stage": "develop"
+  "stage": "develop",
+  "amplifyConfig": {
+    "aws_project_region": "us-west-2",
+    "aws_cognito_region": "us-west-2",
+    "aws_user_pools_id": "us-west-2_ulhBQyLxF",
+    "aws_user_pools_web_client_id": "4ntb89jlh18erseqrnrtdtlak6"
+  }
 }

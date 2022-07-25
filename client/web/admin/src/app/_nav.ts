@@ -11,13 +11,8 @@ export const navItems: INavData[] = [
     icon: 'insights',
   },
   {
-    name: 'Products',
-    url: '/products',
-    icon: 'sell',
-  },
-  {
-    name: 'Orders',
-    url: '/orders',
-    icon: 'shopping_cart',
+    name: 'Tenants',
+    url: '/tenants',
+    icon: 'groups',
   },
 ];

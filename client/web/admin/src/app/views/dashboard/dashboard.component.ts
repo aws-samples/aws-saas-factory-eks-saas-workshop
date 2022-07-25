@@ -4,9 +4,7 @@
  */
 import { Component, OnInit } from '@angular/core';
 import { ChartConfiguration, ChartType } from 'chart.js';
-// import { getStyle, hexToRgba } from '@coreui/coreui/dist/js/coreui-utilities';
-// import { CustomTooltips } from '@coreui/coreui-plugin-chartjs-custom-tooltips';
-import { TenantService } from '../tenants/tenant.service';
+import { TenantsService } from '../tenants/tenants.service';
 
 interface DataSet {
   label: string;
@@ -24,7 +22,7 @@ interface ChartData {
   selector: 'app-dashboard',
 })
 export class DashboardComponent implements OnInit {
-  constructor(private tenantSvc: TenantService) {}
+  constructor(private tenantSvc: TenantsService) {}
 
   data: ChartData[] = [];
 
@@ -107,6 +105,7 @@ export class DashboardComponent implements OnInit {
   public lineChartType: ChartType = 'line';
 
   public lineChartOptions: ChartConfiguration['options'] = {
+    maintainAspectRatio: false,
     elements: {
       line: {
         tension: 0.5,

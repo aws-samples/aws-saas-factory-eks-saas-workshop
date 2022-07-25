@@ -26,6 +26,7 @@ import { ConfigAssetLoaderService } from 'config-asset-loader';
 import { NavComponent } from './nav/nav.component';
 import { Amplify } from 'aws-amplify';
 import { AuthComponent } from './views/auth/auth.component';
+import { environment } from 'src/environments/environment';
 
 @NgModule({
   declarations: [AppComponent, NavComponent, AuthComponent],
@@ -69,13 +70,10 @@ export function InitAuthSettings(http: HttpClient) {
   console.log('IN INIT AUTH SETTINGS');
   return () => {
     return http.get<Configuration>('./assets/config/config.json').pipe(
-      switchMap((config) => {
-        const apiUrl = `${config.apiUrl}/api/tenants/auth-info`;
-        return http.get<AuthInfo>(apiUrl);
-      }),
-      map((authInfo) => {
-        console.log(authInfo);
-        Amplify.configure(authInfo);
+      map((config) => {
+        const amplifyConfig = config.amplifyConfig;
+        Amplify.configure(amplifyConfig);
+        environment.apiUrl = config.apiUrl;
       }),
       shareReplay(1)
     );
@@ -84,6 +82,7 @@ export function InitAuthSettings(http: HttpClient) {
 
 interface Configuration {
   apiUrl: string;
+  amplifyConfig: AuthInfo;
   stage: string;
 }
 

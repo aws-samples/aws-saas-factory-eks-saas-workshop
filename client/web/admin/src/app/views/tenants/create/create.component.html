@@ -1,0 +1,65 @@
+<div fxLayout="column" class="tenant-form">
+  <form [formGroup]="tenantForm" (submit)="submit()">
+    <mat-card class="card">
+      <mat-card-title>Provision tenant</mat-card-title>
+      <mat-card-content>
+        <mat-form-field>
+          <mat-label>Enter full name</mat-label>
+          <input
+            matInput
+            placeholder="John Smith"
+            formControlName="name"
+            required
+          />
+          <mat-error *ngIf="name?.invalid">Name is required</mat-error>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Enter email</mat-label>
+          <input
+            matInput
+            placeholder="jsmith@example.com"
+            formControlName="email"
+            required
+          />
+          <mat-error *ngIf="email?.invalid">Email is required</mat-error>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Enter company name</mat-label>
+          <input
+            matInput
+            placeholder="Example, LLC."
+            formControlName="companyName"
+            required
+          />
+          <mat-error *ngIf="companyName?.invalid"
+            >Company is required</mat-error
+          >
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Enter product plan</mat-label>
+          <select matNativeControl required formControlName="plan">
+            <option>Select one...</option>
+            <option value="basic">Basic</option>
+            <option value="standard">Standard</option>
+            <option value="premium">Premium</option>
+          </select>
+        </mat-form-field>
+        <mat-card-footer>
+          <div class="button-panel">
+            <button
+              mat-raised-button
+              color="primary"
+              (click)="(submit)"
+              [disabled]="!tenantForm.valid"
+            >
+              Submit
+            </button>
+            <button mat-raised-button color="warn" [routerLink]="['/list']">
+              Cancel
+            </button>
+          </div>
+        </mat-card-footer>
+      </mat-card-content>
+    </mat-card>
+  </form>
+</div>
