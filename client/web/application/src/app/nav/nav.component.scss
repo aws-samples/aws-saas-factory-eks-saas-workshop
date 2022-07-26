@@ -8,7 +8,7 @@
 }
 
 .sidebar-icon-container {
-  height: 62px;
+  height: 64px;
   background-color: whitesmoke;
   display: flex;
   align-items: center;
@@ -32,35 +32,26 @@
   color: #20a8d8;
 }
 
-// .spinner-container {
-//   height: 80%;
-//   display: flex;
-//   justify-content: center;
-//   align-items: center;
-//   box-sizing: border-box;
-// }
-
 .footer {
-  display: flex;
   position: fixed;
   bottom: 0;
   width: 100%;
   height: 40px;
-  background-color: lightgray;
-  color: #2f353a;
+  background-color: whitesmoke;
+  color: #2d3337;
   // text-align: center;
   margin: 0px;
 }
 
 .footer-text {
-  margin-left: 20px;
+  display: flex;
 }
 
 .content {
   position: absolute;
-  width: 98%;
-  margin: 5px;
-  height: 80%;
-  max-height: 80%;
+  width: 100%;
+  height: 90%;
+  max-height: 90%;
   overflow: auto;
+  background-color: lightgray;
 }
