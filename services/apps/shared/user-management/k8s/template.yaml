@@ -14,15 +14,15 @@ spec:
     spec:
       containers:
         - name: user-management
-          image: $USERMANAGEMENTECR:latest
+          image: public.ecr.aws/o2b5n0j5/eks-saas-user:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 3015
           env:
             - name: AWS_REGION
-              value: "$REGION"
+              value: "us-west-2"
             - name: COGNITO_USER_POOL_ID
-              value: "$USERPOOLID"
+              value: "us-west-2_aw33YGjZo"
 ---
 apiVersion: v1
 kind: Service

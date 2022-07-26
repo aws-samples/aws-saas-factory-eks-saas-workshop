@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Tenant } from '../models/tenant';
+import { TenantsService } from '../tenants.service';
 
 @Component({
   selector: 'app-list',
@@ -10,7 +11,9 @@ import { Tenant } from '../models/tenant';
 export class ListComponent implements OnInit {
   tenants$ = new Observable<Tenant[]>();
   displayedColumns = ['tenant_id', 'companyName', 'email', 'plan'];
-  constructor() {}
+  constructor(private tenantSvc: TenantsService) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.tenants$ = this.tenantSvc.fetch();
+  }
 }
