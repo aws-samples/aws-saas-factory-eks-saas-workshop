@@ -14,24 +14,24 @@ spec:
     spec:
       containers:
         - name: product
-          image: PRODUCT_SERVICE_ECR_REPO:latest
+          image: public.ecr.aws/o2b5n0j5/eks-saas-product:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 3005
               name: "http"
           env:
             - name: AWS_REGION
-              value: "INSERT_AWS_REGION"
+              value: "us-west-2"
             - name: IAM_ROLE_ARN
-              value: "INSERT_IAM_ROLE_ARN"
+              value: ""
             - name: COGNITO_USER_POOL_ID
-              value: "INSERT_COGNITO_USER_POOL_ID"
+              value: "us-west-2_pwhlbgL09"
             - name: COGNITO_CLIENT_ID
-              value: "INSERT_COGNITO_CLIENT_ID"
+              value: "t278btubmqb1hgan2afaut02g"
             - name: COGNITO_REGION
-              value: "INSERT_COGNITO_REGION"
+              value: "us-west-2"
             - name: PRODUCT_TABLE_NAME
-              value: "INSERT_PRODUCT_TABLE_NAME"
+              value: "Products-Pooled-20220725142746"
 ---
 apiVersion: v1
 kind: Service
@@ -56,7 +56,7 @@ metadata:
     nginx.org/mergeable-ingress-type: "minion"
 spec:
   rules:
-    - host: ELB_URL
+    - host: a6827acb0d6ef4172b966aa6ba3da833-2faefb68832aa130.elb.us-west-2.amazonaws.com
       http:
         paths:
           - backend:
@@ -64,5 +64,5 @@ spec:
                 name: product-service
                 port:
                   number: 80
-            path: /TENANT_PATH/api/products
+            path: /app/api/products
             pathType: Prefix

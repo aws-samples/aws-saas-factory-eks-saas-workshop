@@ -26,7 +26,7 @@ import { ConfigAssetLoaderService } from 'config-asset-loader';
 import { NavComponent } from './nav/nav.component';
 import { Amplify } from 'aws-amplify';
 import { AuthComponent } from './views/auth/auth.component';
-
+import { httpInterceptorProviders } from './interceptors';
 @NgModule({
   declarations: [AppComponent, NavComponent, AuthComponent],
   imports: [
@@ -60,6 +60,7 @@ import { AuthComponent } from './views/auth/auth.component';
       deps: [HttpClient],
       multi: true,
     },
+    httpInterceptorProviders,
   ],
   bootstrap: [AppComponent],
 })

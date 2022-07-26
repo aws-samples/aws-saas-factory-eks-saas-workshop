@@ -1,3 +1,15 @@
+apiVersion: v1
+data:
+  config.json: |
+    {
+      "apiUrl": "//a6827acb0d6ef4172b966aa6ba3da833-2faefb68832aa130.elb.us-west-2.amazonaws.com",
+      "stage": "develop"
+    }
+kind: ConfigMap
+metadata:
+  name: app-config
+  namespace: default
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -14,11 +26,18 @@ spec:
     spec:
       containers:
         - name: application
-          image: public.ecr.aws/o2b5n0j5/eks-saas-admin:latest
+          image: public.ecr.aws/o2b5n0j5/eks-saas-application:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 80
               name: "http"
+          volumeMounts:
+            - name: config-volume
+              mountPath: /usr/share/nginx/html/app/assets/config
+      volumes:
+        - name: config-volume
+          configMap:
+            name: app-config
 ---
 apiVersion: v1
 kind: Service
@@ -43,7 +62,7 @@ metadata:
     nginx.org/mergeable-ingress-type: "minion"
 spec:
   rules:
-    - host: ELB_URL
+    - host: a6827acb0d6ef4172b966aa6ba3da833-2faefb68832aa130.elb.us-west-2.amazonaws.com
       http:
         paths:
           - backend:
@@ -51,5 +70,5 @@ spec:
                 name: application-service
                 port:
                   number: 80
-            path: /TENANT_PATH
+            path: /app
             pathType: Prefix
