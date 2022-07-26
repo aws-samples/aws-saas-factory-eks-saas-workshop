@@ -67,10 +67,11 @@ import { httpInterceptorProviders } from './interceptors';
 export class AppModule {}
 
 export function InitAuthSettings(http: HttpClient) {
-  console.log('IN INIT AUTH SETTINGS');
+  console.log('In INITAUTHSETTINGS');
   return () => {
     return http.get<Configuration>('./assets/config/config.json').pipe(
       switchMap((config) => {
+        console.log('CONFIG: ', JSON.stringify(config));
         const apiUrl = `${config.apiUrl}/api/tenants/auth-info`;
         return http.get<AuthInfo>(apiUrl);
       }),

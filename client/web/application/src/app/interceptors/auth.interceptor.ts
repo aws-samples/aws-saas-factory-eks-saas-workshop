@@ -22,7 +22,7 @@ export class AuthInterceptor implements HttpInterceptor {
     req: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
-    if (req.url.includes('auth-info')) {
+    if (req.url.includes('auth-info') || req.url.includes('config.json')) {
       return next.handle(req);
     }
     const s = Auth.currentSession().catch((err) => console.log(err));
