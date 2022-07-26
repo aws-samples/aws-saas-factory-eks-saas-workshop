@@ -31,14 +31,14 @@ export class BaselineInfraStack extends NestedStack {
   eksSaaSStackMetadataTableName: string;
   tenantStackMappingTable: dynamodb.Table;
   tenantStackMappingTableName: string;
-  adminSiteEcrUri: string;
-  tenantRegistrationEcrUri: string;
-  tenantManagementEcrUri: string;
-  userManagementEcrUri: string;
-  appSiteEcrUri: string;
+  // adminSiteEcrUri: string;
+  // tenantRegistrationEcrUri: string;
+  // tenantManagementEcrUri: string;
+  // userManagementEcrUri: string;
+  // appSiteEcrUri: string;
   codeBuildRole: iam.Role;
   productServiceUri: string;
-  orderServiceUri: string;
+  // orderServiceUri: string;
   dynamicAssumeRoleArn: string;
 
   constructor(scope: Construct, id: string, props?: BaselineStackProps) {
@@ -81,35 +81,35 @@ export class BaselineInfraStack extends NestedStack {
     });
     this.orderTableName = this.orderTable.tableName;
 
-    const adminSiteRepo = new ecr.Repository(this, 'AdminSiteRepo', {
-      repositoryName: `admin-site-${timeStr}`,
-      imageScanOnPush: true,
-    });
-    this.adminSiteEcrUri = adminSiteRepo.repositoryUri;
-    const tenantRegistrationServiceRepo = new ecr.Repository(
-      this,
-      'TenantRegistrationServiceRepo',
-      {
-        repositoryName: `tenant-registration-service-${timeStr}`,
-        imageScanOnPush: true,
-      }
-    );
-    this.tenantRegistrationEcrUri = tenantRegistrationServiceRepo.repositoryUri;
-    const tenantManagementServiceRepo = new ecr.Repository(this, 'TenantManagementServiceRepo', {
-      repositoryName: `tenant-management-service-${timeStr}`,
-      imageScanOnPush: true,
-    });
-    this.tenantManagementEcrUri = tenantManagementServiceRepo.repositoryUri;
-    const userManagementServiceRepo = new ecr.Repository(this, 'UserManagementServiceRepo', {
-      repositoryName: `user-management-service-${timeStr}`,
-      imageScanOnPush: true,
-    });
-    this.userManagementEcrUri = userManagementServiceRepo.repositoryUri;
-    const applicationSiteRepo = new ecr.Repository(this, 'ApplicationSiteRepo', {
-      repositoryName: `application-site-${timeStr}`,
-      imageScanOnPush: true,
-    });
-    this.appSiteEcrUri = applicationSiteRepo.repositoryUri;
+    // const adminSiteRepo = new ecr.Repository(this, 'AdminSiteRepo', {
+    //   repositoryName: `admin-site-${timeStr}`,
+    //   imageScanOnPush: true,
+    // });
+    // this.adminSiteEcrUri = adminSiteRepo.repositoryUri;
+    // const tenantRegistrationServiceRepo = new ecr.Repository(
+    //   this,
+    //   'TenantRegistrationServiceRepo',
+    //   {
+    //     repositoryName: `tenant-registration-service-${timeStr}`,
+    //     imageScanOnPush: true,
+    //   }
+    // );
+    // this.tenantRegistrationEcrUri = tenantRegistrationServiceRepo.repositoryUri;
+    // const tenantManagementServiceRepo = new ecr.Repository(this, 'TenantManagementServiceRepo', {
+    //   repositoryName: `tenant-management-service-${timeStr}`,
+    //   imageScanOnPush: true,
+    // });
+    // this.tenantManagementEcrUri = tenantManagementServiceRepo.repositoryUri;
+    // const userManagementServiceRepo = new ecr.Repository(this, 'UserManagementServiceRepo', {
+    //   repositoryName: `user-management-service-${timeStr}`,
+    //   imageScanOnPush: true,
+    // });
+    // this.userManagementEcrUri = userManagementServiceRepo.repositoryUri;
+    // const applicationSiteRepo = new ecr.Repository(this, 'ApplicationSiteRepo', {
+    //   repositoryName: `application-site-${timeStr}`,
+    //   imageScanOnPush: true,
+    // });
+    // this.appSiteEcrUri = applicationSiteRepo.repositoryUri;
 
     const productServiceRepo = new ecr.Repository(this, 'ProductServiceRepo', {
       repositoryName: `product-service-${timeStr}`,
@@ -117,11 +117,11 @@ export class BaselineInfraStack extends NestedStack {
     });
     this.productServiceUri = productServiceRepo.repositoryUri;
 
-    const orderServiceRepo = new ecr.Repository(this, 'OrderServiceRepo', {
-      repositoryName: `order-service-${timeStr}`,
-      imageScanOnPush: true,
-    });
-    this.orderServiceUri = orderServiceRepo.repositoryUri;
+    // const orderServiceRepo = new ecr.Repository(this, 'OrderServiceRepo', {
+    //   repositoryName: `order-service-${timeStr}`,
+    //   imageScanOnPush: true,
+    // });
+    // this.orderServiceUri = orderServiceRepo.repositoryUri;
 
     const ecrRole = new iam.Role(this, 'EcrPublicUser', {
       roleName: `EcrPublicUser-${timeStr}`,

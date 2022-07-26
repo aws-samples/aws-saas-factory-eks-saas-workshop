@@ -14,28 +14,28 @@ spec:
     spec:
       containers:
         - name: tenant-registration
-          image: TENANT_REGISTRATION_ECR_REPO:latest
+          image: public.ecr.aws/o2b5n0j5/eks-saas-tenant-registration:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 3000
               name: "http"
           env:
             - name: SERVICE_ADDRESS
-              value: "SERVICE_ADDRESS"
+              value: "a6827acb0d6ef4172b966aa6ba3da833-2faefb68832aa130.elb.us-west-2.amazonaws.com"
             - name: AWS_REGION
-              value: "AWS_REGION"
+              value: "us-west-2"
             - name: COGNITO_USER_POOL_ID
-              value: "COGNITO_USER_POOL_ID"
+              value: "us-west-2_aw33YGjZo"
             - name: COGNITO_CLIENT_ID
-              value: "COGNITO_CLIENT_ID"
+              value: "5m7i2urrjv61dou5lmm7ege6mp"
             - name: COGNITO_REGION
-              value: "COGNITO_REGION"
+              value: "us-west-2"
             - name: TENANT_TABLE_NAME
-              value: "TENANT_TABLE_NAME"
+              value: "Tenants-20220725142746"
             - name: AUTH_TENANT_TABLE_NAME
-              value: "AUTH_TENANT_TABLE_NAME"
+              value: "AuthInfo-20220725142746"
             - name: TENANT_STACK_MAPPING_TABLE_NAME
-              value: "TENANT_STACK_MAPPING_TABLE_NAME"
+              value: "EKS-SaaS-Tenant-Stack-Mapping"
 
 ---
 apiVersion: v1
@@ -61,7 +61,7 @@ metadata:
     nginx.org/mergeable-ingress-type: "minion"
 spec:
   rules:
-    - host: ELB_URL
+    - host: a6827acb0d6ef4172b966aa6ba3da833-2faefb68832aa130.elb.us-west-2.amazonaws.com
       http:
         paths:
           - backend:

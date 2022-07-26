@@ -1,38 +1,38 @@
 #!/bin/bash
 
 # This will load the values for ELBURL, CODEBUILD_ARN and IAM_ROLE_ARN in to the Cloud9 terminal's shell
-source ~/.bash_profile
+# source ~/.bash_profile
 
-nvm use 16
+# nvm use 16
 
-if [ "X$1" = "X" ]; then
-    echo "usage: $0 ADMIN_EMAIL_ADDR (ex. $0 admin@email.com)"
-    exit 2
-fi
-ADMIN_EMAIL_ADDR=$1
+# if [ "X$1" = "X" ]; then
+#     echo "usage: $0 ADMIN_EMAIL_ADDR (ex. $0 admin@email.com)"
+#     exit 2
+# fi
+# ADMIN_EMAIL_ADDR=$1
 
-#Create CodeCommit repo
-export AWS_PAGER=""
-REGION=$(aws configure get region)
-aws codecommit get-repository --repository-name aws-saas-factory-eks-workshop
-if [[ $? -ne 0 ]]; then
-     echo "aws-saas-factory-eks-workshop codecommit repo is not present, will create one now"
-     aws codecommit create-repository --repository-name aws-saas-factory-eks-workshop --repository-description "CodeCommit repo for SaaS Factory EKS Workshop"
-fi
+# #Create CodeCommit repo
+# export AWS_PAGER=""
+# REGION=$(aws configure get region)
+# aws codecommit get-repository --repository-name aws-saas-factory-eks-workshop
+# if [[ $? -ne 0 ]]; then
+#      echo "aws-saas-factory-eks-workshop codecommit repo is not present, will create one now"
+#      aws codecommit create-repository --repository-name aws-saas-factory-eks-workshop --repository-description "CodeCommit repo for SaaS Factory EKS Workshop"
+# fi
 
-REPO_URL="codecommit::${REGION}://aws-saas-factory-eks-workshop"
-git remote add cc $REPO_URL
-if [[ $? -ne 0 ]]; then
-    echo "Setting url to remote cc"
-    git remote set-url cc $REPO_URL
-fi
-pip3 install git-remote-codecommit    
-git push --set-upstream cc main --force
-git remote rm cc
-git branch -u origin/main main
+# REPO_URL="codecommit::${REGION}://aws-saas-factory-eks-workshop"
+# git remote add cc $REPO_URL
+# if [[ $? -ne 0 ]]; then
+#     echo "Setting url to remote cc"
+#     git remote set-url cc $REPO_URL
+# fi
+# pip3 install git-remote-codecommit    
+# git push --set-upstream cc main --force
+# git remote rm cc
+# git branch -u origin/main main
 
-#ELBURL=$(aws cloudformation describe-stacks --stack-name EksStack --query "Stacks[0].Outputs[?OutputKey=='ELBURL'].OutputValue" --output text)
-#EKSCODEBUILDARN=$(aws cloudformation describe-stacks --stack-name EksStack --query "Stacks[0].Outputs[?OutputKey=='EksCodebuildArn'].OutputValue" --output text)
+ELBURL=$(aws cloudformation describe-stacks --stack-name EksStack --query "Stacks[0].Outputs[?OutputKey=='ELBURL'].OutputValue" --output text)
+CODEBUILD_ARN=$(aws cloudformation describe-stacks --stack-name EksStack --query "Stacks[0].Outputs[?OutputKey=='EksCodebuildArn'].OutputValue" --output text)
 
 cd cdk/root
 yarn && yarn run build 
@@ -40,7 +40,7 @@ cdk bootstrap
 cdk deploy \
   --parameters eksElbUrl=$ELBURL \
   --parameters eksCodeBuildArn=$CODEBUILD_ARN \
-  --parameters adminEmailAddr=$ADMIN_EMAIL_ADDR
+  --parameters adminEmailAddr=tobuck@amazon.com
 
 if [[ $? -ne 0 ]]; then
     exit 1

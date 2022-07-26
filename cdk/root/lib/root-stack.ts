@@ -56,13 +56,13 @@ export class RootStack extends Stack {
     new CfnOutput(this, 'IssuerURL', { value: issuer });
     new CfnOutput(this, 'AWSRegion', { value: this.region });
 
-    new CfnOutput(this, 'TenantRegistrationECR', { value: baseline.tenantRegistrationEcrUri });
-    new CfnOutput(this, 'TenantMangementECR', { value: baseline.tenantManagementEcrUri });
-    new CfnOutput(this, 'UserManagementECR', { value: baseline.userManagementEcrUri });
-    new CfnOutput(this, 'AdminApplicationECR', { value: baseline.adminSiteEcrUri });
-    new CfnOutput(this, 'ApplicationECR', { value: baseline.appSiteEcrUri });
+    // new CfnOutput(this, 'TenantRegistrationECR', { value: baseline.tenantRegistrationEcrUri });
+    // new CfnOutput(this, 'TenantMangementECR', { value: baseline.tenantManagementEcrUri });
+    // new CfnOutput(this, 'UserManagementECR', { value: baseline.userManagementEcrUri });
+    // new CfnOutput(this, 'AdminApplicationECR', { value: baseline.adminSiteEcrUri });
+    // new CfnOutput(this, 'ApplicationECR', { value: baseline.appSiteEcrUri });
     new CfnOutput(this, 'ProductServiceECR', { value: baseline.productServiceUri });
-    new CfnOutput(this, 'OrderServiceECR', { value: baseline.orderServiceUri });
+    // new CfnOutput(this, 'OrderServiceECR', { value: baseline.orderServiceUri });
     new CfnOutput(this, 'ProductTable', { value: baseline.productTableName });
     new CfnOutput(this, 'OrderTable', { value: baseline.orderTableName });
     new CfnOutput(this, 'PooledTenantUserPoolId', { value: tenantInfra.pooledTenantUserPoolId });

@@ -18,10 +18,9 @@ import { navItems } from '../_nav';
 @Component({
   selector: 'app-nav',
   templateUrl: './nav.component.html',
-  styleUrls: ['./nav.component.css'],
+  styleUrls: ['./nav.component.scss'],
 })
 export class NavComponent implements OnInit {
-  tenantName = '';
   loading$: Observable<boolean> = of(false);
   isAuthenticated$: Observable<Boolean> | undefined;
   username$: Observable<string> | undefined;
@@ -71,5 +70,9 @@ export class NavComponent implements OnInit {
     } catch (err) {
       console.error('Unable to get current session.');
     }
+  }
+
+  async logout() {
+    await Auth.signOut({ global: true });
   }
 }

@@ -26,7 +26,7 @@ import { ConfigAssetLoaderService } from 'config-asset-loader';
 import { NavComponent } from './nav/nav.component';
 import { Amplify } from 'aws-amplify';
 import { AuthComponent } from './views/auth/auth.component';
-
+import { httpInterceptorProviders } from './interceptors';
 @NgModule({
   declarations: [AppComponent, NavComponent, AuthComponent],
   imports: [
@@ -60,16 +60,18 @@ import { AuthComponent } from './views/auth/auth.component';
       deps: [HttpClient],
       multi: true,
     },
+    httpInterceptorProviders,
   ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
 
 export function InitAuthSettings(http: HttpClient) {
-  console.log('IN INIT AUTH SETTINGS');
+  console.log('In INITAUTHSETTINGS');
   return () => {
     return http.get<Configuration>('./assets/config/config.json').pipe(
       switchMap((config) => {
+        console.log('CONFIG: ', JSON.stringify(config));
         const apiUrl = `${config.apiUrl}/api/tenants/auth-info`;
         return http.get<AuthInfo>(apiUrl);
       }),

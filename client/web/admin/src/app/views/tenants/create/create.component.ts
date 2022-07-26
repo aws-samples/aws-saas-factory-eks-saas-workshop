@@ -32,7 +32,7 @@ export class CreateComponent implements OnInit {
       ...this.tenantForm.value,
     };
 
-    this.tenantSvc.createTenant(user).subscribe({
+    this.tenantSvc.post(user).subscribe({
       next: () => {
         this.submitting = false;
         this.router.navigate(['tenants']);

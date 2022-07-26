@@ -11,25 +11,11 @@ import { OrdersService } from '../orders.service';
 })
 export class ListComponent implements OnInit {
   displayedColumns: string[] = ['name', 'lineItems', 'total'];
-  orders$: Observable<Order[]>;
-  constructor(private orderSvc: OrdersService, private router: Router) {
-    this.orders$ = of([
-      {
-        id: '1',
-        name: 'first order',
-        products: [
-          {
-            productId: '2',
-            price: 3.33,
-            quantity: 1,
-          },
-        ],
-      },
-    ]);
-  }
+  orders$ = new Observable<Order[]>();
+  constructor(private orderSvc: OrdersService, private router: Router) {}
 
   ngOnInit(): void {
-    // this.orders$ = this.orderSvc.fetch();
+    this.orders$ = this.orderSvc.fetch();
   }
 
   sum(order: Order): number {

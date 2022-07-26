@@ -22,7 +22,7 @@ export class AppComponent {
   ) {
     this.matIconRegistry.addSvgIcon(
       'saas-commerce',
-      this.domSanitizer.bypassSecurityTrustResourceUrl('../assets/logo.svg')
+      this.domSanitizer.bypassSecurityTrustResourceUrl('./assets/logo.svg')
     );
   }
   title = 'dashboard';

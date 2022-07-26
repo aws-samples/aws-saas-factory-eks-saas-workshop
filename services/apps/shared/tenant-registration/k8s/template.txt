@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: tenant-registration
-          image: $TENANTREGISTRATIONECR:latest
+          image: public.ecr.aws/o2b5n0j5/eks-saas-tenant-registration:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 3000
