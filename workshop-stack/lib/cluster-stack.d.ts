@@ -1,9 +1,4 @@
-import * as cdk from '@aws-cdk/core';
-export interface ClusterStackProps extends cdk.StackProps {
-    vpcId: string;
-    cloud9EnvironmentId: string;
-    codeBuildRoleArn: string;
-}
-export declare class ClusterStack extends cdk.Stack {
-    constructor(scope: cdk.Construct, id: string, props: ClusterStackProps);
+import { Stack, StackProps, Construct } from '@aws-cdk/core';
+export declare class ClusterStack extends Stack {
+    constructor(scope: Construct, id: string, props?: StackProps);
 }

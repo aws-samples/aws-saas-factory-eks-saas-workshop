@@ -372,3 +372,4 @@ __debug_bin
 *.env
 
 output.json
+workshop-stack/cdk.out/
