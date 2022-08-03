@@ -9,6 +9,7 @@ import { BootstrapStack } from './bootstrap-stack';
 import { EksStack } from './eks-stack';
 import { AdminStack } from './admin-stack';
 import { BaselineInfraStack } from './baseline-infra-stack';
+import { TenantInfraStack } from './tenant-infra-stack';
 
 import getTimeString from './utils';
 
@@ -45,5 +46,41 @@ export class ClusterStack extends Stack {
       TimeString: timeStr,
       EksCodeBuildArn: codeBuildRole.roleArn,
     });
+
+    const tenantInfra = new TenantInfraStack(this, 'TenantInfraStack', {
+      elbUrl: elbUrl,
+    });
+
+    /* TenantInfra Code pipeline needs a different version of CDK. Researching. Commenting out for now until
+     * we figure that out.
+    */
+    //baseline.tenantStackMappingTable.grantReadData(tenantInfra.pipelineFunction.grantPrincipal);
+    //baseline.eksSaaSStackMetadataTable.grantReadData(tenantInfra.pipelineFunction.grantPrincipal);
+
+
+    new CfnOutput(this, 'AdminUserPoolId', { value: userPoolId });
+    new CfnOutput(this, 'AdminAppClientId', { value: appClientId });
+    new CfnOutput(this, 'IssuerURL', { value: issuer });
+    new CfnOutput(this, 'AWSRegion', { value: this.region });
+
+    /*
+     * Outputs from the BaselineInfraStack
+    */
+    new CfnOutput(this, 'ProductServiceECR', { value: baseline.productServiceUri });
+    new CfnOutput(this, 'ProductTable', { value: baseline.productTableName });
+    new CfnOutput(this, 'OrderTable', { value: baseline.orderTableName });
+    new CfnOutput(this, 'TenantTable', { value: baseline.tenantTableName });
+    new CfnOutput(this, 'AuthInfoTable', { value: baseline.authInfoTableName });
+    new CfnOutput(this, 'EksSaaSStackMetadataTable', {
+      value: baseline.eksSaaSStackMetadataTableName,
+    });
+    new CfnOutput(this, 'TenantStackMappingTable', { value: baseline.tenantStackMappingTableName });
+
+    /*
+     * Outputs from the TenantInfraStack
+    */
+    new CfnOutput(this, 'PooledTenantUserPoolId', { value: tenantInfra.pooledTenantUserPoolId });
+    new CfnOutput(this, 'PooledTenantAppClientId', { value: tenantInfra.pooledTenantAppClientId });
+
   }
 }
