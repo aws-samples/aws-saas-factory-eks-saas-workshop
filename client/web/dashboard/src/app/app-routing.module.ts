@@ -1,11 +1,26 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { NavComponent } from './nav/nav.component';
+import { RegisterComponent } from './views/register/register.component';
+import { LandingComponent } from './views/landing/landing.component';
 
-const routes: Routes = [
+export const routes: Routes = [
   {
     path: '',
-    component: NavComponent,
+    redirectTo: 'landing',
+    pathMatch: 'full',
+  },
+  {
+    path: 'landing',
+    component: LandingComponent,
+  },
+  {
+    path: 'register',
+    component: RegisterComponent,
+  },
+  {
+    path: '**',
+    redirectTo: 'landing',
+    pathMatch: 'full',
   },
 ];
 
