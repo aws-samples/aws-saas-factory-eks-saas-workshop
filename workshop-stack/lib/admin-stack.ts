@@ -72,10 +72,10 @@ export class AdminStack extends NestedStack {
       username: "admin@eks-saas.com",
       */
       userAttributes: [
-        { name: 'email', value: "tobuck@amazon.com" },
+        { name: 'email', value: "ranraman@amazon.com" },
         { name: 'email_verified', value: 'true' },
       ],
-      username: "tobuck@amazon.com",
+      username: "ranraman@amazon.com",
 
     });
     this.userPoolId = adminPool.userPoolId;
