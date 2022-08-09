@@ -82,5 +82,13 @@ export class ClusterStack extends Stack {
     new CfnOutput(this, 'PooledTenantUserPoolId', { value: tenantInfra.pooledTenantUserPoolId });
     new CfnOutput(this, 'PooledTenantAppClientId', { value: tenantInfra.pooledTenantAppClientId });
 
+    /*
+     * Outputs from the EksStack
+    */
+    new CfnOutput(this, 'ELBURL', { value: eksStack.elbUrl });
+    new CfnOutput(this, 'EksCodebuildArn', { value: eksStack.codeBuildRole.roleArn });
+    new CfnOutput(this, 'RoleUsedByTVM', { value: eksStack.roleUsedByTokenVendingMachine.roleArn });
+
+
   }
 }

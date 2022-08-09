@@ -22,6 +22,7 @@ export class EksStack extends NestedStack {
   elbUrl: string;
   nodeGroupRole: iam.IRole;
   codeBuildRole: iam.IRole;
+  roleUsedByTokenVendingMachine: iam.IRole;
 
   constructor(scope: Construct, id: string, props: EksStackProps) {
     super(scope, id, props);
@@ -374,7 +375,7 @@ export class EksStack extends NestedStack {
       ],
     });
 
-    const roleUsedByTokenVendingMachine = new iam.Role(this, 'DynamicAssumeRole', {
+     this.roleUsedByTokenVendingMachine = new iam.Role(this, 'DynamicAssumeRole', {
       assumedBy: this.nodeGroupRole,
       inlinePolicies: {
         dynamoPolicy: dynamoDbDoc,
@@ -383,7 +384,7 @@ export class EksStack extends NestedStack {
 
     new CfnOutput(this, 'ELBURL', { value: this.elbUrl });
     new CfnOutput(this, 'EksCodebuildArn', { value: this.codeBuildRole.roleArn });
-    new CfnOutput(this, 'RoleUsedByTVM', { value: roleUsedByTokenVendingMachine.roleArn });
+    new CfnOutput(this, 'RoleUsedByTVM', { value: this.roleUsedByTokenVendingMachine.roleArn });
 
   }
 }
