@@ -2,8 +2,9 @@
  * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
  * SPDX-License-Identifier: MIT-0
  */
-import { NestedStack, NestedStackProps, Construct} from '@aws-cdk/core';
-import * as cognito from '@aws-cdk/aws-cognito';
+import { NestedStack, NestedStackProps} from 'aws-cdk-lib/core';
+import { Construct } from 'constructs';
+import * as cognito from 'aws-cdk-lib/aws-cognito';
 
 export interface AdminStackProps extends NestedStackProps {
   elbUrl: string;
