@@ -146,7 +146,7 @@ exports.handler = async function (event, context) {
     const environmentArn = event.ResourceProperties.EnvironmentId;
     const arnSplit = environmentArn.split(':');
     const environmentId = arnSplit[6];
-    console.log("EnvironmentId =====> + environmentId);
+    console.log("EnvironmentId =====>" + environmentId);
 
     if (event.RequestType === "Create" || event.RequestType === "Update") {
       const eeTeamRoleArn = event.ResourceProperties.EETeamRoleArn;
