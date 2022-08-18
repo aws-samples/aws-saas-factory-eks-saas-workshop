@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: MIT-0
  */
 
-import { Stack, StackProps, CfnOutput } from 'aws-cdk-lib/core';
+import { Stack, StackProps, CfnOutput } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 
 import { BootstrapStack } from './bootstrap-stack';

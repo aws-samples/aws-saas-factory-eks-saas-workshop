@@ -1,12 +1,13 @@
-import * as cdk from '@aws-cdk/core';
-import * as codebuild from '@aws-cdk/aws-codebuild';
-import * as s3 from '@aws-cdk/aws-s3';
-import * as iam from '@aws-cdk/aws-iam';
-import * as cloud9 from '@aws-cdk/aws-cloud9';
-import * as ec2 from '@aws-cdk/aws-ec2';
-import * as lambda from '@aws-cdk/aws-lambda';
-import * as events from '@aws-cdk/aws-events';
-import { LambdaFunction as LambdaTarget } from '@aws-cdk/aws-events-targets';
+import * as cdk from 'aws-cdk-lib';
+import { Construct } from 'constructs';
+import * as codebuild from 'aws-cdk-lib/aws-codebuild';
+import * as s3 from 'aws-cdk-lib/aws-s3';
+import * as iam from 'aws-cdk-lib/aws-iam';
+import * as cloud9 from 'aws-cdk-lib/aws-cloud9';
+import * as ec2 from 'aws-cdk-lib/aws-ec2';
+import * as lambda from 'aws-cdk-lib/aws-lambda';
+import * as events from 'aws-cdk-lib/aws-events';
+import { LambdaFunction as LambdaTarget } from 'aws-cdk-lib/aws-events-targets';
 
 // This function is based on the cfnresponse JS module that is published
 // by CloudFormation. It's an async function that makes coding much easier.
@@ -63,7 +64,7 @@ export interface BootstrapStackProps extends cdk.StackProps {
 }
 
 export class BootstrapStack extends cdk.Stack {
-  constructor(scope: cdk.Construct, id: string, props: BootstrapStackProps) {
+  constructor(scope: Construct, id: string, props: BootstrapStackProps) {
     super(scope, id, props);
 
     // These parameters appear to be supplied by Event Engine. We'll
@@ -128,12 +129,10 @@ export class BootstrapStack extends cdk.Stack {
     vpc.publicSubnets.forEach(subnet => cdk.Tags.of(subnet).add('kubernetes.io/role/elb', '1'));
 
     // Create the Cloud9 Environment.
-    const workspace = new cloud9.Ec2Environment(this, 'Workspace', {
-      vpc: vpc,
-      ec2EnvironmentName: 'eks-saas-workshop',
+    const workspace = new cloud9.CfnEnvironmentEC2(this, 'Workspace', {
+      name: 'eks-saas-workshop',
       description: 'EKS SaaS Workshop',
-      instanceType: ec2.InstanceType.of(ec2.InstanceClass.M5, ec2.InstanceSize.LARGE),
-      subnetSelection: { subnetType: ec2.SubnetType.PUBLIC },
+      instanceType: 'm5.large',
     });
 
     const updateWorkspaceMembershipFunction = new lambda.Function(this, 'UpdateWorkspaceMembershipFunction', {
@@ -143,7 +142,11 @@ exports.handler = async function (event, context) {
   const AWS = require('aws-sdk');
 
   try {
-    const environmentId = event.ResourceProperties.EnvironmentId;
+
+    const environmentArn = event.ResourceProperties.EnvironmentId;
+    const arnSplit = environmentArn.split(':');
+    const environmentId = arnSplit[6];
+    console.log("EnvironmentId =====> + environmentId);
 
     if (event.RequestType === "Create" || event.RequestType === "Update") {
       const eeTeamRoleArn = event.ResourceProperties.EETeamRoleArn;
@@ -183,10 +186,13 @@ exports.handler = async function (event, context) {
       resources: ['*']
     }));
 
+    //const length = workspace.attrName.length;
+    //const envId = workspace.attrName.substring(length - 32);
+
     new cdk.CustomResource(this, 'UpdateWorkspaceMembership', {
       serviceToken: updateWorkspaceMembershipFunction.functionArn,
       properties: {
-        EnvironmentId: workspace.environmentId,
+        EnvironmentId: workspace.attrArn,
         EETeamRoleArn: teamRoleArn.valueAsString
       }
     });
@@ -354,13 +360,16 @@ exports.handler = async function (event, context) {
       ]
     });
 
+    const cloud9EnvironmentArn = workspace.attrArn;
+    const components = cdk.Arn.split(cloud9EnvironmentArn,cdk.ArnFormat.COLON_RESOURCE_NAME);
+
     // Kick off the build (CDK deployment).
     const clusterStack = new cdk.CustomResource(this, 'ClusterStack', {
       serviceToken: startBuildFunction.functionArn,
       properties: {
         ProjectName: buildProject.projectName,
         VpcId: vpc.vpcId,
-        Cloud9EnvironmentId: workspace.environmentId,
+        Cloud9EnvironmentId: components.resourceName,
         BuildRoleArn: buildProjectRole.roleArn,
         ZipFileChecksum: sourceZipFileChecksum.valueAsString,
       }

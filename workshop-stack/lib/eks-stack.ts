@@ -1,5 +1,5 @@
-import { NestedStack, NestedStackProps, CfnOutput} from 'aws-cdk-lib/core';
-import * as cdk from 'aws-cdk-lib/core';
+import { NestedStack, NestedStackProps, CfnOutput} from 'aws-cdk-lib';
+import * as cdk from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 
 import * as eks from 'aws-cdk-lib/aws-eks';

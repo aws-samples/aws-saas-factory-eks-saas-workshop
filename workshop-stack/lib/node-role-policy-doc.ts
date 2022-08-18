@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: MIT-0
  */
 
-import * as iam from '@aws-cdk/aws-iam';
+import * as iam from 'aws-cdk-lib/aws-iam';
 
 const nodeRolePolicyDoc = new iam.PolicyDocument({
   assignSids: false,

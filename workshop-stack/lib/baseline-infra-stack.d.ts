@@ -1,6 +1,7 @@
-import { Construct, NestedStack, NestedStackProps } from '@aws-cdk/core';
-import * as dynamodb from '@aws-cdk/aws-dynamodb';
-import * as iam from '@aws-cdk/aws-iam';
+import { NestedStack, NestedStackProps } from 'aws-cdk-lib';
+import { Construct } from 'constructs';
+import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
+import * as iam from 'aws-cdk-lib/aws-iam';
 export interface BaselineStackProps extends NestedStackProps {
     UserPoolId: string;
     AppClientId: string;

@@ -13,7 +13,7 @@
   "devDependencies": {
     "@types/jest": "^26.0.10",
     "@types/node": "^10.17.60",
-    "aws-cdk": "2.22.0",
+    "aws-cdk": "2.38.0",
     "jest": "^26.4.2",
     "ts-jest": "^26.2.0",
     "ts-node": "^9.0.0",
@@ -22,7 +22,7 @@
   "dependencies": {
     "@types/aws-lambda": "^8.10.84",
     "@types/js-yaml": "^4.0.4",
-    "aws-cdk-lib": "^2.22.0",
+    "aws-cdk-lib": "^2.38.0",
     "constructs": "^10.0.127",
     "aws-sdk": "^2.1010.0",
     "js-yaml": "^4.1.0",

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: MIT-0
  */
 
-import { NestedStack, NestedStackProps } from 'aws-cdk-lib/core';
+import { NestedStack, NestedStackProps } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 
 import * as iam from 'aws-cdk-lib/aws-iam';

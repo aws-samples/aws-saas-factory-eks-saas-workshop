@@ -1,5 +1,6 @@
-import { NestedStack, NestedStackProps, Construct } from '@aws-cdk/core';
-import * as iam from '@aws-cdk/aws-iam';
+import { NestedStack, NestedStackProps } from 'aws-cdk-lib';
+import { Construct } from 'constructs';
+import * as iam from 'aws-cdk-lib/aws-iam';
 export interface EksStackProps extends NestedStackProps {
     vpcId: string;
     cloud9EnvironmentId: string;
