@@ -107,3 +107,11 @@ echo Set EKS node group name
 #  --arn arn:aws:iam::${ACCOUNT_ID}:role/TeamRole \
 #  --username cluster-admin \
 #  --group system:masters
+
+export ELBURL=$(aws cloudformation describe-stacks --stack-name ClusterStack --query "Stacks[0].Outputs[?OutputKey=='ELBURL'].OutputValue" --output text)
+export CODEBUILD_ARN=$(aws cloudformation describe-stacks --stack-name ClusterStack --query "Stacks[0].Outputs[?OutputKey=='EksCodebuildArn'].OutputValue" --output text)
+export IAM_ROLE_ARN=$(aws cloudformation describe-stacks --stack-name ClusterStack --query "Stacks[0].Outputs[?OutputKey=='RoleUsedByTVM'].OutputValue" --output text)
+
+echo "export ELBURL=${ELBURL}" | tee -a ~/.bash_profile
+echo "export IAM_ROLE_ARN=${IAM_ROLE_ARN}" | tee -a ~/.bash_profile
+echo "export CODEBUILD_ARN=${CODEBUILD_ARN}" | tee -a ~/.bash_profile
