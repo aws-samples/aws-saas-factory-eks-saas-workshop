@@ -382,10 +382,5 @@ export class EksStack extends NestedStack {
         dynamoPolicy: dynamoDbDoc,
       },
     });
-
-    new CfnOutput(this, 'ELBURL', { value: this.elbUrl });
-    new CfnOutput(this, 'EksCodebuildArn', { value: this.codeBuildRole.roleArn });
-    new CfnOutput(this, 'RoleUsedByTVM', { value: this.roleUsedByTokenVendingMachine.roleArn });
-
   }
 }
