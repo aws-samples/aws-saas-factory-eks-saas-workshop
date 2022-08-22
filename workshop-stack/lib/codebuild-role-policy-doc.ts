@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: MIT-0
  */
 
-import { Construct } from '@aws-cdk/core';
-import * as iam from '@aws-cdk/aws-iam';
+import { Construct } from 'constructs';
+import * as iam from 'aws-cdk-lib/aws-iam';
 
 export function getCodeBuildRole(parent: Construct, account: string, region: string): iam.Role {
   return new iam.Role(parent, 'CodeBuildRole', {

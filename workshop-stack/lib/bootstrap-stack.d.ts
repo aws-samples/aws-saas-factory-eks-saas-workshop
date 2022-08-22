@@ -1,8 +1,9 @@
-import * as cdk from '@aws-cdk/core';
+import * as cdk from 'aws-cdk-lib';
+import { Construct } from 'constructs';
 export interface BootstrapStackProps extends cdk.StackProps {
     sourceZipFile: string;
     sourceZipFileChecksum: string;
 }
 export declare class BootstrapStack extends cdk.Stack {
-    constructor(scope: cdk.Construct, id: string, props: BootstrapStackProps);
+    constructor(scope: Construct, id: string, props: BootstrapStackProps);
 }

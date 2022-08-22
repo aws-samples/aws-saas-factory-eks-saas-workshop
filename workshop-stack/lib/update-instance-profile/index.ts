@@ -1,4 +1,4 @@
-import type { OnEventRequest, OnEventResponse } from '@aws-cdk/custom-resources/lib/provider-framework/types';
+import type { OnEventRequest, OnEventResponse } from 'aws-cdk-lib/custom-resources/lib/provider-framework/types';
 import { EC2 } from 'aws-sdk';
 
 export async function onEventHandler(event: OnEventRequest): Promise<OnEventResponse> {

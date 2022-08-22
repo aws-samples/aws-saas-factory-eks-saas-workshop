@@ -2,8 +2,9 @@
  * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
  * SPDX-License-Identifier: MIT-0
  */
-import { NestedStack, NestedStackProps, Construct} from '@aws-cdk/core';
-import * as cognito from '@aws-cdk/aws-cognito';
+import { NestedStack, NestedStackProps} from 'aws-cdk-lib';
+import { Construct } from 'constructs';
+import * as cognito from 'aws-cdk-lib/aws-cognito';
 
 export interface AdminStackProps extends NestedStackProps {
   elbUrl: string;
@@ -72,10 +73,10 @@ export class AdminStack extends NestedStack {
       username: "admin@eks-saas.com",
       */
       userAttributes: [
-        { name: 'email', value: "ranraman@amazon.com" },
+        { name: 'email', value: "admin@saas.com" },
         { name: 'email_verified', value: 'true' },
       ],
-      username: "ranraman@amazon.com",
+      username: "admin@saas.com",
 
     });
     this.userPoolId = adminPool.userPoolId;

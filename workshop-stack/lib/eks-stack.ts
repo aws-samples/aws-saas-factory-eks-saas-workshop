@@ -1,13 +1,14 @@
-import { NestedStack, NestedStackProps, Construct, CfnOutput} from '@aws-cdk/core';
-import * as cdk from '@aws-cdk/core';
+import { NestedStack, NestedStackProps, CfnOutput} from 'aws-cdk-lib';
+import * as cdk from 'aws-cdk-lib';
+import { Construct } from 'constructs';
 
-import * as eks from '@aws-cdk/aws-eks';
-import * as ec2 from '@aws-cdk/aws-ec2';
-import * as s3 from '@aws-cdk/aws-s3';
-import * as iam from '@aws-cdk/aws-iam';
-import * as cr from '@aws-cdk/custom-resources';
-import * as logs from '@aws-cdk/aws-logs';
-import * as lambda from '@aws-cdk/aws-lambda';
+import * as eks from 'aws-cdk-lib/aws-eks';
+import * as ec2 from 'aws-cdk-lib/aws-ec2';
+import * as s3 from 'aws-cdk-lib/aws-s3';
+import * as iam from 'aws-cdk-lib/aws-iam';
+import * as cr from 'aws-cdk-lib/custom-resources';
+import * as logs from 'aws-cdk-lib/aws-logs';
+import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as path from 'path';
 import nodeRolePolicyDoc from './node-role-policy-doc';
 
@@ -381,10 +382,5 @@ export class EksStack extends NestedStack {
         dynamoPolicy: dynamoDbDoc,
       },
     });
-
-    new CfnOutput(this, 'ELBURL', { value: this.elbUrl });
-    new CfnOutput(this, 'EksCodebuildArn', { value: this.codeBuildRole.roleArn });
-    new CfnOutput(this, 'RoleUsedByTVM', { value: this.roleUsedByTokenVendingMachine.roleArn });
-
   }
 }

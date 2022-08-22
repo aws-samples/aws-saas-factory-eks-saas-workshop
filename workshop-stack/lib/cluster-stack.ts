@@ -3,7 +3,8 @@
  * SPDX-License-Identifier: MIT-0
  */
 
-import { Stack, StackProps, Construct, CfnOutput } from '@aws-cdk/core';
+import { Stack, StackProps, CfnOutput } from 'aws-cdk-lib';
+import { Construct } from 'constructs';
 
 import { BootstrapStack } from './bootstrap-stack';
 import { EksStack } from './eks-stack';
@@ -54,8 +55,8 @@ export class ClusterStack extends Stack {
     /* TenantInfra Code pipeline needs a different version of CDK. Researching. Commenting out for now until
      * we figure that out.
     */
-    //baseline.tenantStackMappingTable.grantReadData(tenantInfra.pipelineFunction.grantPrincipal);
-    //baseline.eksSaaSStackMetadataTable.grantReadData(tenantInfra.pipelineFunction.grantPrincipal);
+    baseline.tenantStackMappingTable.grantReadData(tenantInfra.pipelineFunction.grantPrincipal);
+    baseline.eksSaaSStackMetadataTable.grantReadData(tenantInfra.pipelineFunction.grantPrincipal);
 
 
     new CfnOutput(this, 'AdminUserPoolId', { value: userPoolId });

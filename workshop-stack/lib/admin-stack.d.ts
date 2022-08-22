@@ -1,4 +1,5 @@
-import { NestedStack, NestedStackProps, Construct } from '@aws-cdk/core';
+import { NestedStack, NestedStackProps } from 'aws-cdk-lib';
+import { Construct } from 'constructs';
 export interface AdminStackProps extends NestedStackProps {
     elbUrl: string;
 }

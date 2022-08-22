@@ -1,6 +1,7 @@
-import { Construct, NestedStack, NestedStackProps } from '@aws-cdk/core';
-import * as iam from '@aws-cdk/aws-iam';
-import * as lambda from '@aws-cdk/aws-lambda';
+import { NestedStack, NestedStackProps } from 'aws-cdk-lib';
+import { Construct } from 'constructs';
+import * as iam from 'aws-cdk-lib/aws-iam';
+import * as lambda from 'aws-cdk-lib/aws-lambda';
 export interface TenantInfraStackProps extends NestedStackProps {
     elbUrl: string;
 }
