@@ -113,7 +113,7 @@ export CODEBUILD_ARN=$(aws cloudformation describe-stacks --stack-name ClusterSt
 export IAM_ROLE_ARN=$(aws cloudformation describe-stacks --stack-name ClusterStack --query "Stacks[0].Outputs[?OutputKey=='RoleUsedByTVM'].OutputValue" --output text)
 export ADMINUSERPOOLID=$(aws cloudformation describe-stacks --stack-name ClusterStack --query "Stacks[0].Outputs[?OutputKey=='AdminUserPoolId'].OutputValue" --output text)
 
-aws cognito-idp admin-set-user-password --user-pool-id ${ADMINUSERPOOLID} --username ranraman@amazon.com --password "Admin123*" --permanent
+aws cognito-idp admin-set-user-password --user-pool-id ${ADMINUSERPOOLID} --username admin@saas.com --password "Admin123*" --permanent
 
 echo "export ELBURL=${ELBURL}" | tee -a ~/.bash_profile
 echo "export IAM_ROLE_ARN=${IAM_ROLE_ARN}" | tee -a ~/.bash_profile
