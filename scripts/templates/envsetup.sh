@@ -139,14 +139,14 @@ aws dynamodb put-item \
 
 #Create CodeCommit repo
 export AWS_PAGER=""
-REGION=$(aws configure get region)
+#REGION=$(aws configure get region)
 aws codecommit get-repository --repository-name aws-saas-factory-eks-workshop
 if [[ $? -ne 0 ]]; then
      echo "aws-saas-factory-eks-workshop codecommit repo is not present, will create one now"
      aws codecommit create-repository --repository-name aws-saas-factory-eks-workshop --repository-description "CodeCommit repo for SaaS Factory EKS Workshop"
 fi
 
-REPO_URL="codecommit::${REGION}://aws-saas-factory-eks-workshop"
+REPO_URL="codecommit::${AWS_REGION}://aws-saas-factory-eks-workshop"
 git remote add cc $REPO_URL
 if [[ $? -ne 0 ]]; then
     echo "Setting url to remote cc"
