@@ -107,3 +107,60 @@ echo Set EKS node group name
 #  --arn arn:aws:iam::${ACCOUNT_ID}:role/TeamRole \
 #  --username cluster-admin \
 #  --group system:masters
+export STACKS=$(aws cloudformation describe-stacks)
+export ELBURL=$(echo $STACKS | jq -r '.Stacks[]?.Outputs[]? | select(.OutputKey=="ELBURL") | .OutputValue')
+export CODEBUILD_ARN=$(echo $STACKS | jq -r '.Stacks[]?.Outputs[]? | select(.OutputKey=="EksCodebuildArn") | .OutputValue')
+export IAM_ROLE_ARN=$(echo $STACKS | jq -r '.Stacks[]?.Outputs[]? | select(.OutputKey=="RoleUsedByTVM") | .OutputValue')
+export ADMINUSERPOOLID=$(echo $STACKS | jq -r '.Stacks[]?.Outputs[]? | select(.OutputKey=="AdminUserPoolId") | .OutputValue')
+# export ELBURL=$(aws cloudformation describe-stacks --stack-name ClusterStack --query "Stacks[0].Outputs[?OutputKey=='ELBURL'].OutputValue" --output text)
+# export CODEBUILD_ARN=$(aws cloudformation describe-stacks --stack-name ClusterStack --query "Stacks[0].Outputs[?OutputKey=='EksCodebuildArn'].OutputValue" --output text)
+# export IAM_ROLE_ARN=$(aws cloudformation describe-stacks --stack-name ClusterStack --query "Stacks[0].Outputs[?OutputKey=='RoleUsedByTVM'].OutputValue" --output text)
+# export ADMINUSERPOOLID=$(aws cloudformation describe-stacks --stack-name ClusterStack --query "Stacks[0].Outputs[?OutputKey=='AdminUserPoolId'].OutputValue" --output text)
+
+aws cognito-idp admin-set-user-password --user-pool-id ${ADMINUSERPOOLID} --username admin@saas.com --password "Admin123*" --permanent
+
+echo "export ELBURL=${ELBURL}" | tee -a ~/.bash_profile
+echo "export IAM_ROLE_ARN=${IAM_ROLE_ARN}" | tee -a ~/.bash_profile
+echo "export CODEBUILD_ARN=${CODEBUILD_ARN}" | tee -a ~/.bash_profile
+
+export AUTH_INFO_TABLE=$(echo $STACKS | jq -r '.Stacks[]?.Outputs[]? | select(.OutputKey=="AuthInfoTable") | .OutputValue')
+export POOLED_TENANT_USERPOOL_ID=$(echo $STACKS | jq -r '.Stacks[]?.Outputs[]? | select(.OutputKey=="PooledTenantUserPoolId") | .OutputValue')
+export POOLED_TENANT_APPCLIENT_ID=$(echo $STACKS | jq -r '.Stacks[]?.Outputs[]? | select(.OutputKey=="PooledTenantAppClientId") | .OutputValue')
+export EKSSAAS_STACKMETADATA_TABLE=$(echo $STACKS | jq -r '.Stacks[]?.Outputs[]? | select(.OutputKey=="EksSaaSStackMetadataTable") | .OutputValue')
+
+# AUTH_INFO_TABLE=$(aws cloudformation describe-stacks --stack-name ClusterStack --query "Stacks[0].Outputs[?OutputKey=='AuthInfoTable'].OutputValue" --output text)
+# POOLED_TENANT_USERPOOL_ID=$(aws cloudformation describe-stacks --stack-name ClusterStack --query "Stacks[0].Outputs[?OutputKey=='PooledTenantUserPoolId'].OutputValue" --output text)
+# POOLED_TENANT_APPCLIENT_ID=$(aws cloudformation describe-stacks --stack-name ClusterStack --query "Stacks[0].Outputs[?OutputKey=='PooledTenantAppClientId'].OutputValue" --output text)
+# EKSSAAS_STACKMETADATA_TABLE=$(aws cloudformation describe-stacks --stack-name ClusterStack --query "Stacks[0].Outputs[?OutputKey=='EksSaaSStackMetadataTable'].OutputValue" --output text)
+
+aws dynamodb put-item \
+--table-name ${AUTH_INFO_TABLE} \
+--item "{\"tenant_path\": {\"S\": \"app\"}, \"user_pool_type\": {\"S\": \"pooled\"}, \"user_pool_id\": {\"S\": \"$POOLED_TENANT_USERPOOL_ID\"}, \"client_id\": {\"S\": \"$POOLED_TENANT_APPCLIENT_ID\"}}" \
+--return-consumed-capacity TOTAL        
+
+# Record the EKS SaaS stack metadata in the dynamo table that was made in root-stack
+aws dynamodb put-item \
+--table-name $EKSSAAS_STACKMETADATA_TABLE \
+--item "{\"StackName\": {\"S\": \"eks-saas\"}, \"ELBURL\": {\"S\": \"$ELBURL\"}, \"CODEBUILD_ARN\": {\"S\": \"$CODEBUILD_ARN\"}, \"IAM_ROLE_ARN\": {\"S\": \"$IAM_ROLE_ARN\"}}" \
+--return-consumed-capacity TOTAL
+
+
+#Create CodeCommit repo
+export AWS_PAGER=""
+#REGION=$(aws configure get region)
+aws codecommit get-repository --repository-name aws-saas-factory-eks-workshop
+if [[ $? -ne 0 ]]; then
+     echo "aws-saas-factory-eks-workshop codecommit repo is not present, will create one now"
+     aws codecommit create-repository --repository-name aws-saas-factory-eks-workshop --repository-description "CodeCommit repo for SaaS Factory EKS Workshop"
+fi
+
+REPO_URL="codecommit::${AWS_REGION}://aws-saas-factory-eks-workshop"
+git remote add cc $REPO_URL
+if [[ $? -ne 0 ]]; then
+    echo "Setting url to remote cc"
+    git remote set-url cc $REPO_URL
+fi
+pip3 install git-remote-codecommit    
+git push --set-upstream cc feature-workshop-prep --force
+git remote rm cc
+git branch -u origin/feature-workshop-prep feature-workshop-prep

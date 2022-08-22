@@ -45,7 +45,7 @@ git branch -u origin/main main
 #if [[ $? -ne 0 ]]; then
 #    exit 1
 #fi
-
+export STACKS=$(aws cloudformation describe-stacks)
 AUTH_INFO_TABLE=$(aws cloudformation describe-stacks --stack-name ClusterStack --query "Stacks[0].Outputs[?OutputKey=='AuthInfoTable'].OutputValue" --output text)
 POOLED_TENANT_USERPOOL_ID=$(aws cloudformation describe-stacks --stack-name ClusterStack --query "Stacks[0].Outputs[?OutputKey=='PooledTenantUserPoolId'].OutputValue" --output text)
 POOLED_TENANT_APPCLIENT_ID=$(aws cloudformation describe-stacks --stack-name ClusterStack --query "Stacks[0].Outputs[?OutputKey=='PooledTenantAppClientId'].OutputValue" --output text)
