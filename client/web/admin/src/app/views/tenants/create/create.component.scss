@@ -12,7 +12,12 @@
   align-items: flex-start;
 }
 
+.mat-card-content {
+  width: 100%;
+}
+
 .mat-form-field {
+  flex-flow: column;
   display: flex;
 }
 
