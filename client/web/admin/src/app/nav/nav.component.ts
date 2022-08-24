@@ -72,4 +72,8 @@ export class NavComponent implements OnInit {
       console.error('Unable to get current session.');
     }
   }
+
+  async logout() {
+    await Auth.signOut({ global: true });
+  }
 }

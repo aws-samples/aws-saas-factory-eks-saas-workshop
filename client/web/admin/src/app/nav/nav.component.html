@@ -51,6 +51,10 @@
         <mat-icon class="material-symbols-outlined">face</mat-icon>
         <span>Profile</span>
       </button>
+      <button mat-menu-item (click)="logout()">
+        <mat-icon class="material-symbols-outlined">logout</mat-icon>
+        <span>Logout</span>
+      </button>
       <button routerLink="/auth/info" mat-menu-item>
         <mat-icon class="material-symbols-outlined">construction</mat-icon>
         <span>Auth Debug</span>

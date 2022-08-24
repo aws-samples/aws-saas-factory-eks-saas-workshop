@@ -27,13 +27,13 @@ export class ProductsService {
       product_id: uuid(),
       tenant_id: tenantId,
     };
-    console.log('Creating product:', newProduct);    
+    console.log('Creating product:', newProduct);
     const client = await this.fetchClient(tenantId);
     const cmd = new PutCommand({
       Item: newProduct,
       TableName: this.tableName,
     });
-    client.send(cmd);   
+    client.send(cmd);
   }
 
   async findAll(tenantId: string) {
@@ -47,10 +47,10 @@ export class ProductsService {
       },
     });
     const response = await client.send(cmd);
-    return JSON.stringify(response.Items);    
+    return JSON.stringify(response.Items);
   }
 
-  async findOne(id: string, tenantId: string) {    
+  async findOne(id: string, tenantId: string) {
     console.log('Getting Product: ', id);
     const client = await this.fetchClient(tenantId);
     const cmd = new QueryCommand({
@@ -62,13 +62,14 @@ export class ProductsService {
       },
     });
     const response = await client.send(cmd);
-    return JSON.stringify(response.Items && response.Items[0]);    
+    return JSON.stringify(response.Items && response.Items[0]);
   }
 
   async update(
     id: string,
     tenantId: string,
-    updateProductDto: UpdateProductDto) {    
+    updateProductDto: UpdateProductDto,
+  ) {
     console.log('Updating Product: ', id);
     const client = await this.fetchClient(tenantId);
     const cmd = new UpdateCommand({
@@ -91,7 +92,7 @@ export class ProductsService {
     });
     const response = await client.send(cmd);
     console.log('Update Response:', response);
-    return JSON.stringify(updateProductDto);      
+    return JSON.stringify(updateProductDto);
   }
 
   async fetchClient(tenantId: string) {
