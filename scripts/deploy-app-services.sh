@@ -7,7 +7,7 @@ TENANTPATH=app envsubst < ./client/web/application/k8s/template.txt > ./client/w
 kubectl apply -f ./client/web/application/k8s/template.yaml
 
 source ./scripts/setenv-product.sh
-TENANTPATH=app envsubst < ./services/apps/application/product/k8s/template.txt > ./services/apps/application/product/k8s/template.yaml
+TENANTPATH=app CONTAINERIMAGE=public.ecr.aws/o2b5n0j5/eks-saas-product:latest envsubst < ./services/apps/application/product/k8s/template.txt > ./services/apps/application/product/k8s/template.yaml
 kubectl apply -f ./services/apps/application/product/k8s/template.yaml
 
 source ./scripts/setenv-order.sh
