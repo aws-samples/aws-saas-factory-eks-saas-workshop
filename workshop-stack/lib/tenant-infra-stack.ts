@@ -98,7 +98,7 @@ export class TenantInfraStack extends NestedStack {
             new CodeCommitSourceAction({
               actionName: 'CodeCommit_Source',
               repository: codeRepo,
-              branch: 'main',
+              branch: 'feature-workshop-prep',
               output: sourceOutput,
               variablesNamespace: 'SourceVariables',
             }),
