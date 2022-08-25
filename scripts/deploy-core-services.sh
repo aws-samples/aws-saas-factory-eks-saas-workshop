@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: MIT-0
 
 source ./scripts/setenv-tenant-registration.sh
-envsubst < ./services/apps/shared/tenant-registration/k8s/template.txt > ./services/apps/shared/tenant-registration/k8s/template.yaml
+CONTAINERIMAGE=public.ecr.aws/o2b5n0j5/eks-saas-tenant-registration:latest envsubst < ./services/apps/shared/tenant-registration/k8s/template.txt > ./services/apps/shared/tenant-registration/k8s/template.yaml
 kubectl apply -f ./services/apps/shared/tenant-registration/k8s/template.yaml
 
 source ./scripts/setenv-tenant-management.sh

@@ -33,7 +33,7 @@ export class BaselineInfraStack extends NestedStack {
   tenantStackMappingTable: dynamodb.Table;
   tenantStackMappingTableName: string;
   // adminSiteEcrUri: string;
-  // tenantRegistrationEcrUri: string;
+  tenantRegistrationEcrUri: string;
   // tenantManagementEcrUri: string;
   // userManagementEcrUri: string;
   // appSiteEcrUri: string;
@@ -87,15 +87,15 @@ export class BaselineInfraStack extends NestedStack {
     //   imageScanOnPush: true,
     // });
     // this.adminSiteEcrUri = adminSiteRepo.repositoryUri;
-    // const tenantRegistrationServiceRepo = new ecr.Repository(
-    //   this,
-    //   'TenantRegistrationServiceRepo',
-    //   {
-    //     repositoryName: `tenant-registration-service-${timeStr}`,
-    //     imageScanOnPush: true,
-    //   }
-    // );
-    // this.tenantRegistrationEcrUri = tenantRegistrationServiceRepo.repositoryUri;
+    const tenantRegistrationServiceRepo = new ecr.Repository(
+      this,
+      'TenantRegistrationServiceRepo',
+      {
+        repositoryName: `tenant-registration-service-${timeStr}`,
+        imageScanOnPush: true,
+      }
+    );
+    this.tenantRegistrationEcrUri = tenantRegistrationServiceRepo.repositoryUri;
     // const tenantManagementServiceRepo = new ecr.Repository(this, 'TenantManagementServiceRepo', {
     //   repositoryName: `tenant-management-service-${timeStr}`,
     //   imageScanOnPush: true,

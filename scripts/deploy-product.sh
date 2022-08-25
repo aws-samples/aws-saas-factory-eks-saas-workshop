@@ -12,7 +12,6 @@ export PRODUCTSERVICEECR=$(echo $STACKS | jq -r '.Stacks[]?.Outputs[]? | select(
 CWD=$(pwd)
 cd ./services
 REGISTRY=$(echo $PRODUCTSERVICEECR| cut -d'/' -f 1)
-TENANTREGCONTAINERNAME=$(echo $PRODUCTSERVICEECR| cut -d'/' -f 2)
 
 #Logs into our private ECR so we can push this image
 aws ecr get-login-password --region $REGION | docker login --username AWS --password-stdin $REGISTRY

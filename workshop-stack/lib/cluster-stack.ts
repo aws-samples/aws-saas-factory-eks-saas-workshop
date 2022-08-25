@@ -67,6 +67,7 @@ export class ClusterStack extends Stack {
     /*
      * Outputs from the BaselineInfraStack
     */
+    new CfnOutput(this, 'TenantRegistrationServiceECR', { value: baseline.tenantRegistrationEcrUri });
     new CfnOutput(this, 'ProductServiceECR', { value: baseline.productServiceUri });
     new CfnOutput(this, 'ProductTable', { value: baseline.productTableName });
     new CfnOutput(this, 'OrderTable', { value: baseline.orderTableName });
