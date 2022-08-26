@@ -193,7 +193,7 @@ export class EksStack extends NestedStack {
     const nodegroup = new eks.Nodegroup(this, 'ng-1', {
       cluster,
       desiredSize: 3,
-      instanceTypes: [ec2.InstanceType.of(ec2.InstanceClass.M5, ec2.InstanceSize.LARGE)],
+      instanceTypes: [ec2.InstanceType.of(ec2.InstanceClass.M4, ec2.InstanceSize.LARGE)],
       launchTemplateSpec: {
         // See https://github.com/aws/aws-cdk/issues/6734
         id: (launchTemplate.node.defaultChild as ec2.CfnLaunchTemplate).ref,

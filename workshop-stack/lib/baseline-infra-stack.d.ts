@@ -22,6 +22,7 @@ export declare class BaselineInfraStack extends NestedStack {
     eksSaaSStackMetadataTableName: string;
     tenantStackMappingTable: dynamodb.Table;
     tenantStackMappingTableName: string;
+    tenantRegistrationEcrUri: string;
     codeBuildRole: iam.Role;
     productServiceUri: string;
     dynamicAssumeRoleArn: string;

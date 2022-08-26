@@ -132,7 +132,7 @@ export class BootstrapStack extends cdk.Stack {
     const workspace = new cloud9.CfnEnvironmentEC2(this, 'Workspace', {
       name: 'eks-saas-workshop',
       description: 'EKS SaaS Workshop',
-      instanceType: 'm5.large',
+      instanceType: 'm4.large',
     });
 
     const updateWorkspaceMembershipFunction = new lambda.Function(this, 'UpdateWorkspaceMembershipFunction', {
