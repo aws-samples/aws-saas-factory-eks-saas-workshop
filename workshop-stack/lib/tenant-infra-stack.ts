@@ -262,7 +262,7 @@ export class TenantInfraStack extends NestedStack {
           outputs: [buildOutput],
           environmentVariables: {
             TENANT_PATH: { value: lambdaInvokeAction.variable('TENANT_PATH') },
-            COGNITO_USER_POOL_ID: { value: lambdaInvokeAction.variable('UserPoolId') },
+            COGNITO_USER_POOL_ID: { value: lambdaInvokeAction.variable('COGNITO_USER_POOL_ID') },
             COGNITO_CLIENT_ID: { value: lambdaInvokeAction.variable('COGNITO_CLIENT_ID') },
             ELBURL: { value: lambdaInvokeAction.variable('ELBURL') },
             CODEBUILDARN: { value: lambdaInvokeAction.variable('CODEBUILDARN') },
