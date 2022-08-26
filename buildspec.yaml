@@ -18,15 +18,12 @@ phases:
 
   post_build:
     commands:
-      - REGION=$(aws cloudformation describe-stacks --stack-name RootStack --query "Stacks[0].Outputs[?OutputKey=='AWSRegion'].OutputValue" --output text)
-      - APPLICATIONECR=$(aws cloudformation describe-stacks --stack-name RootStack --query "Stacks[0].Outputs[?OutputKey=='ApplicationECR'].OutputValue" --output text)
-      - ORDERECR=$(aws cloudformation describe-stacks --stack-name RootStack --query "Stacks[0].Outputs[?OutputKey=='OrderServiceECR'].OutputValue" --output text)
-      - PRODUCTECR=$(aws cloudformation describe-stacks --stack-name RootStack --query "Stacks[0].Outputs[?OutputKey=='ProductServiceECR'].OutputValue" --output text)
-      - ORDERTABLE=$(aws cloudformation describe-stacks --stack-name RootStack --query "Stacks[0].Outputs[?OutputKey=='OrderTable'].OutputValue" --output text)
-      - PRODUCTTABLE=$(aws cloudformation describe-stacks --stack-name RootStack --query "Stacks[0].Outputs[?OutputKey=='ProductTable'].OutputValue" --output text)
-      - TENANTSTACKTABLE=$(aws cloudformation describe-stacks --stack-name RootStack --query "Stacks[0].Outputs[?OutputKey=='TenantStackMappingTable'].OutputValue" --output text)
+      - REGION=$(aws cloudformation describe-stacks --stack-name ClusterStack --query "Stacks[0].Outputs[?OutputKey=='AWSRegion'].OutputValue" --output text)
+      - ORDERTABLE=$(aws cloudformation describe-stacks --stack-name ClusterStack --query "Stacks[0].Outputs[?OutputKey=='OrderTable'].OutputValue" --output text)
+      - PRODUCTTABLE=$(aws cloudformation describe-stacks --stack-name ClusterStack --query "Stacks[0].Outputs[?OutputKey=='ProductTable'].OutputValue" --output text)
+      - TENANTSTACKTABLE=$(aws cloudformation describe-stacks --stack-name ClusterStack --query "Stacks[0].Outputs[?OutputKey=='TenantStackMappingTable'].OutputValue" --output text)
 
-      - CREDENTIALS=$(aws sts assume-role --role-arn $CodeBuildArn --role-session-name codebuild-kubectl --duration-seconds 900)
+      - CREDENTIALS=$(aws sts assume-role --role-arn $CODEBUILDARN --role-session-name codebuild-kubectl --duration-seconds 900)
       - echo "${CREDENTIALS}"
       - export AWS_ACCESS_KEY_ID="$(echo ${CREDENTIALS} | jq -r '.Credentials.AccessKeyId')"
       - export AWS_SECRET_ACCESS_KEY="$(echo ${CREDENTIALS} | jq -r '.Credentials.SecretAccessKey')"
@@ -36,44 +33,33 @@ phases:
       - kubectl version
       - cat $HOME/.kube/config
       - kubectl config view
-      - echo "${TenantName}"
+      - echo "${TENANT_PATH}"
 
-      - kubectl create ns ${TenantName}
+      # Create a new Namespace for the Tenant
+      - kubectl create ns ${TENANT_PATH}
 
+      # Create Silo Tenant Product table
       - echo "Create Silo Tenant Product table"
-      - CREATE_PRODUCT_TABLE=$(aws dynamodb create-table --table-name Products-silo-$TenantName --attribute-definitions AttributeName=tenant_id,AttributeType=S AttributeName=product_id,AttributeType=S --key-schema AttributeName=tenant_id,KeyType=HASH AttributeName=product_id,KeyType=RANGE --provisioned-throughput ReadCapacityUnits=5,WriteCapacityUnits=5)
+      - CREATE_PRODUCT_TABLE=$(aws dynamodb create-table --table-name Products-silo-$TENANT_PATH --attribute-definitions AttributeName=tenant_id,AttributeType=S AttributeName=product_id,AttributeType=S --key-schema AttributeName=tenant_id,KeyType=HASH AttributeName=product_id,KeyType=RANGE --provisioned-throughput ReadCapacityUnits=5,WriteCapacityUnits=5)
       - PRODUCTTABLE="$(echo ${CREATE_PRODUCT_TABLE} | jq -r '.TableDescription.TableName')"
 
+      # Create Silo Tenant Order table
       - echo "Create Silo Tenant Order table"
-      - CREATE_ORDER_TABLE=$(aws dynamodb create-table --table-name Orders-silo-$TenantName --attribute-definitions AttributeName=tenant_id,AttributeType=S AttributeName=order_id,AttributeType=S --key-schema AttributeName=tenant_id,KeyType=HASH AttributeName=order_id,KeyType=RANGE --provisioned-throughput ReadCapacityUnits=5,WriteCapacityUnits=5)
+      - CREATE_ORDER_TABLE=$(aws dynamodb create-table --table-name Orders-silo-$TENANT_PATH --attribute-definitions AttributeName=tenant_id,AttributeType=S AttributeName=order_id,AttributeType=S --key-schema AttributeName=tenant_id,KeyType=HASH AttributeName=order_id,KeyType=RANGE --provisioned-throughput ReadCapacityUnits=5,WriteCapacityUnits=5)
       - ORDERTABLE="$(echo ${CREATE_ORDER_TABLE} | jq -r '.TableDescription.TableName')"
 
-      - sed -i -e 's,APPLICATION_ECR_REPO,'$APPLICATIONECR',g' client/web/application/k8s/template.yaml
-      - sed -i -e 's,ELB_URL,'$ElbUrl',g' client/web/application/k8s/template.yaml
-      - sed -i -e 's,TENANT_PATH,'$TenantName',g' client/web/application/k8s/template.yaml
-      - kubectl apply -f client/web/application/k8s/template.yaml -n ${TenantName}
+      # Deploy Application Service
+      - envsubst < ./client/web/application/k8s/template.txt > ./client/web/application/k8s/template.yaml
+      - kubectl apply -f client/web/application/k8s/template.yaml -n ${TENANT_PATH}
 
-      - sed -i -e 's,ORDER_SERVICE_ECR_REPO,'$ORDERECR',g' services/application/apps/order/k8s/template.yaml
-      - sed -i -e 's,ELB_URL,'$ElbUrl',g' services/application/apps/order/k8s/template.yaml
-      - sed -i -e 's,INSERT_AWS_REGION,'$REGION',g' services/application/apps/order/k8s/template.yaml
-      - sed -i -e 's,INSERT_IAM_ROLE_ARN,'$IamRoleArn',g' services/application/apps/order/k8s/template.yaml
-      - sed -i -e 's,INSERT_COGNITO_USER_POOL_ID,'$UserPoolId',g' services/application/apps/order/k8s/template.yaml
-      - sed -i -e 's,INSERT_COGNITO_CLIENT_ID,'$AppClientId',g' services/application/apps/order/k8s/template.yaml
-      - sed -i -e 's,INSERT_COGNITO_REGION,'$REGION',g' services/application/apps/order/k8s/template.yaml
-      - sed -i -e 's,INSERT_ORDER_TABLE_NAME,'$ORDERTABLE',g' services/application/apps/order/k8s/template.yaml
-      - sed -i -e 's,TENANT_PATH,'$TenantName',g' services/application/apps/order/k8s/template.yaml
-      - kubectl apply -f services/application/apps/order/k8s/template.yaml -n ${TenantName}
+      # Deploy Order Service
+      - CONTAINERIMAGE=public.ecr.aws/o2b5n0j5/eks-saas-order:withtvm envsubst < services/apps/application/order/k8s/template.txt > services/apps/application/order/k8s/template.yaml
+      - kubectl apply -f services/apps/application/order/k8s/template.yaml -n ${TENANT_PATH}
 
-      - sed -i -e 's,PRODUCT_SERVICE_ECR_REPO,'$PRODUCTECR',g' services/application/apps/product/k8s/template.yaml
-      - sed -i -e 's,ELB_URL,'$ElbUrl',g' services/application/apps/product/k8s/template.yaml
-      - sed -i -e 's,INSERT_AWS_REGION,'$REGION',g' services/application/apps/product/k8s/template.yaml
-      - sed -i -e 's,INSERT_IAM_ROLE_ARN,'$IamRoleArn',g' services/application/apps/product/k8s/template.yaml
-      - sed -i -e 's,INSERT_COGNITO_USER_POOL_ID,'$UserPoolId',g' services/application/apps/product/k8s/template.yaml
-      - sed -i -e 's,INSERT_COGNITO_CLIENT_ID,'$AppClientId',g' services/application/apps/product/k8s/template.yaml
-      - sed -i -e 's,INSERT_COGNITO_REGION,'$REGION',g' services/application/apps/product/k8s/template.yaml
-      - sed -i -e 's,INSERT_PRODUCT_TABLE_NAME,'$PRODUCTTABLE',g' services/application/apps/product/k8s/template.yaml
-      - sed -i -e 's,TENANT_PATH,'$TenantName',g' services/application/apps/product/k8s/template.yaml
-      - kubectl apply -f services/application/apps/product/k8s/template.yaml -n ${TenantName}
+      # Deploy Product Service
+      - CONTAINERIMAGE=public.ecr.aws/o2b5n0j5/eks-saas-product:withtvm envsubst < services/apps/application/product/k8s/template.txt > services/apps/application/product/k8s/template.yaml
+      - kubectl apply -f services/apps/application/product/k8s/template.yaml -n ${TENANT_PATH}
 
+      # Update the Silo tenant stack provisioning status to complete
       - chmod +x update-provisioning-status.sh
-      - ./update-provisioning-status.sh $TENANTSTACKTABLE $TenantName
+      - ./update-provisioning-status.sh $TENANTSTACKTABLE $TENANT_PATH

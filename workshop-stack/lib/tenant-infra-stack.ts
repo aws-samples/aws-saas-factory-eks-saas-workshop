@@ -178,12 +178,12 @@ export class TenantInfraStack extends NestedStack {
             outputParams = {
                 jobId: jobId,
                 outputVariables: {
-                    TenantName: tenantName,
-                    UserPoolId: userPoolId,
-                    AppClientId: appClientId,
-                    ElbUrl: elbUrl,
-                    CodeBuildArn: codeBuildArn,
-                    IamRoleArn: iamRoleArn,
+                    TENANT_PATH: tenantName,
+                    COGNITO_USER_POOL_ID: userPoolId,
+                    COGNITO_CLIENT_ID: appClientId,
+                    ELBURL: elbUrl,
+                    CODEBUILDARN: codeBuildArn,
+                    IAM_ROLE_ARN: iamRoleArn,
                     Region: region,
                     dateTime: Date(Date.now()).toString(),
                 }
@@ -261,12 +261,12 @@ export class TenantInfraStack extends NestedStack {
           input: sourceOutput,
           outputs: [buildOutput],
           environmentVariables: {
-            TenantName: { value: lambdaInvokeAction.variable('TenantName') },
-            UserPoolId: { value: lambdaInvokeAction.variable('UserPoolId') },
-            AppClientId: { value: lambdaInvokeAction.variable('AppClientId') },
-            ElbUrl: { value: lambdaInvokeAction.variable('ElbUrl') },
-            CodeBuildArn: { value: lambdaInvokeAction.variable('CodeBuildArn') },
-            IamRoleArn: { value: lambdaInvokeAction.variable('IamRoleArn') },
+            TENANT_PATH: { value: lambdaInvokeAction.variable('TENANT_PATH') },
+            COGNITO_USER_POOL_ID: { value: lambdaInvokeAction.variable('UserPoolId') },
+            COGNITO_CLIENT_ID: { value: lambdaInvokeAction.variable('COGNITO_CLIENT_ID') },
+            ELBURL: { value: lambdaInvokeAction.variable('ELBURL') },
+            CODEBUILDARN: { value: lambdaInvokeAction.variable('CODEBUILDARN') },
+            IAM_ROLE_ARN: { value: lambdaInvokeAction.variable('IAM_ROLE_ARN') },
           },
         });
     
