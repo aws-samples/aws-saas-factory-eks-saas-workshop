@@ -11,9 +11,5 @@ TENANTPATH=app CONTAINERIMAGE=public.ecr.aws/o2b5n0j5/eks-saas-product:latest en
 kubectl apply -f ./services/apps/application/product/k8s/template.yaml
 
 source ./scripts/setenv-order.sh
-TENANTPATH=app envsubst < ./services/apps/application/order/k8s/template.txt > ./services/apps/application/order/k8s/template.yaml
+TENANTPATH=app CONTAINERIMAGE=public.ecr.aws/o2b5n0j5/eks-saas-order:latest envsubst < ./services/apps/application/order/k8s/template.txt > ./services/apps/application/order/k8s/template.yaml
 kubectl apply -f ./services/apps/application/order/k8s/template.yaml
-
-kubectl rollout restart deploy application
-kubectl rollout restart deploy product
-kubectl rollout restart deploy order

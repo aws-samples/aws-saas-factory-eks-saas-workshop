@@ -5,5 +5,3 @@
 source ./scripts/setenv-admin.sh
 envsubst < ./client/web/admin/k8s/template.txt > ./client/web/admin/k8s/template.yaml
 kubectl apply -f ./client/web/admin/k8s/template.yaml
-
-kubectl rollout restart deploy admin-application
