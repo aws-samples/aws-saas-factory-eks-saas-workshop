@@ -53,11 +53,11 @@ phases:
       - kubectl apply -f client/web/application/k8s/template.yaml -n ${TENANT_PATH}
 
       # Deploy Order Service
-      - CONTAINERIMAGE=public.ecr.aws/o2b5n0j5/eks-saas-order:withtvm envsubst < services/apps/application/order/k8s/template.txt > services/apps/application/order/k8s/template.yaml
+      - TENANTPATH=$TENANT_PATH CONTAINERIMAGE=public.ecr.aws/o2b5n0j5/eks-saas-order:withtvm envsubst < services/apps/application/order/k8s/template.txt > services/apps/application/order/k8s/template.yaml
       - kubectl apply -f services/apps/application/order/k8s/template.yaml -n ${TENANT_PATH}
 
       # Deploy Product Service
-      - CONTAINERIMAGE=public.ecr.aws/o2b5n0j5/eks-saas-product:withtvm envsubst < services/apps/application/product/k8s/template.txt > services/apps/application/product/k8s/template.yaml
+      - TENANTPATH=$TENANT_PATH CONTAINERIMAGE=public.ecr.aws/o2b5n0j5/eks-saas-product:withtvm envsubst < services/apps/application/product/k8s/template.txt > services/apps/application/product/k8s/template.yaml
       - kubectl apply -f services/apps/application/product/k8s/template.yaml -n ${TENANT_PATH}
 
       # Update the Silo tenant stack provisioning status to complete
