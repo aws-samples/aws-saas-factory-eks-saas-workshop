@@ -49,7 +49,7 @@ phases:
       - ORDERTABLE="$(echo ${CREATE_ORDER_TABLE} | jq -r '.TableDescription.TableName')"
 
       # Deploy Application Service
-      - envsubst < ./client/web/application/k8s/template.txt > ./client/web/application/k8s/template.yaml
+      - TENANTPATH=$TENANT_PATH envsubst < ./client/web/application/k8s/template.txt > ./client/web/application/k8s/template.yaml
       - kubectl apply -f client/web/application/k8s/template.yaml -n ${TENANT_PATH}
 
       # Deploy Order Service
