@@ -8,7 +8,6 @@ data:
 kind: ConfigMap
 metadata:
   name: app-config
-  namespace: default
 ---
 apiVersion: apps/v1
 kind: Deployment

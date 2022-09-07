@@ -138,12 +138,6 @@ aws dynamodb put-item \
 --item "{\"tenant_path\": {\"S\": \"app\"}, \"user_pool_type\": {\"S\": \"pooled\"}, \"user_pool_id\": {\"S\": \"$POOLED_TENANT_USERPOOL_ID\"}, \"client_id\": {\"S\": \"$POOLED_TENANT_APPCLIENT_ID\"}}" \
 --return-consumed-capacity TOTAL        
 
-# Record the EKS SaaS stack metadata in the dynamo table that was made in root-stack
-aws dynamodb put-item \
---table-name $EKSSAAS_STACKMETADATA_TABLE \
---item "{\"StackName\": {\"S\": \"eks-saas\"}, \"ELBURL\": {\"S\": \"$ELBURL\"}, \"CODEBUILD_ARN\": {\"S\": \"$CODEBUILD_ARN\"}, \"IAM_ROLE_ARN\": {\"S\": \"$IAM_ROLE_ARN\"}}" \
---return-consumed-capacity TOTAL
-
 
 #Create CodeCommit repo
 export AWS_PAGER=""
@@ -176,6 +170,12 @@ aws iam put-role-policy --role-name EksSaasCodeBuildRole --policy-name eks-saas-
 
 echo "Updating the AWS Auth config map with the CodeBuild role"
 ROLE="    - rolearn: arn:aws:iam::$ACCOUNT_ID:role/EksSaasCodeBuildRole\n      username: build\n      groups:\n        - system:masters"
-kubectl get -n kube-system configmap/aws-auth -o yaml | awk "/mapRoles: \|/{print;print \"$ROLE\";next}1" > /tmp/aws-auth-patch.yml
-kubectl patch configmap/aws-auth -n kube-system --patch "$(cat /tmp/aws-auth-patch.yml)"
+#kubectl get -n kube-system configmap/aws-auth -o yaml | awk "/mapRoles: \|/{print;print \"$ROLE\";next}1" > /tmp/aws-auth-patch.yml
+#kubectl patch configmap/aws-auth -n kube-system --patch "$(cat /tmp/aws-auth-patch.yml)"
+eksctl create iamidentitymapping --cluster eksworkshop-eksctl --arn arn:aws:iam::$ACCOUNT_ID:role/EksSaasCodeBuildRole --group system:masters --username admin
 
+# Record the EKS SaaS stack metadata in the dynamo table that was made in root-stack
+aws dynamodb put-item \
+--table-name $EKSSAAS_STACKMETADATA_TABLE \
+--item "{\"StackName\": {\"S\": \"eks-saas\"}, \"ELBURL\": {\"S\": \"$ELBURL\"}, \"CODEBUILD_ARN\": {\"S\": \"arn:aws:iam::$ACCOUNT_ID:role/EksSaasCodeBuildRole\"}, \"IAM_ROLE_ARN\": {\"S\": \"$IAM_ROLE_ARN\"}}" \
+--return-consumed-capacity TOTAL
