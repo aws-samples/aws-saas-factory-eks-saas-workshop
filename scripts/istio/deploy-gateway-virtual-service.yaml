@@ -1,0 +1,41 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: eks-saas-gateway
+spec:
+  selector:
+    istio: ingressgateway # use istio default controller
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "*"
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: application-service
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - eks-saas-gateway
+  http:
+  - match:
+    - uri:
+        prefix: /lab5
+    route:
+    - destination:
+        host: application-service
+        port:
+          number: 80
+  - match:
+    - uri:
+        prefix: /api/tenants
+    route:
+    - destination:
+        host: tenant-management-service
+        port:
+          number: 80

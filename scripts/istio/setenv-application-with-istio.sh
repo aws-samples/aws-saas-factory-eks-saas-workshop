@@ -4,5 +4,3 @@
 
 export STACKS=$(aws cloudformation describe-stacks)
 export REGION=$(echo $STACKS | jq -r '.Stacks[]?.Outputs[]? | select(.OutputKey=="AWSRegion") | .OutputValue')
-#export ELBURL=$(echo $STACKS | jq -r '.Stacks[]?.Outputs[]? | select(.OutputKey=="ELBURL") | .OutputValue')
-export ELBURL=
