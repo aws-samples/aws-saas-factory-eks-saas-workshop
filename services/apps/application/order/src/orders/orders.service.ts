@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: MIT-0
  */
 
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { v4 as uuid } from 'uuid';
 import {
@@ -26,14 +26,14 @@ export class OrdersService {
       order_id: uuid(),
       tenant_id: tenantId,
       products: JSON.stringify(createOrderDto.products),
-    };    
-    console.log('Creating order:', newOrder);    
-    const client = await this.fetchClient(tenantId);    
+    };
+    console.log('Creating order:', newOrder);
+    const client = await this.fetchClient(tenantId);
     const cmd = new PutCommand({
       Item: newOrder,
       TableName: this.tableName,
-    });    
-    await client.send(cmd);    
+    });
+    await client.send(cmd);
   }
 
   async findAll(tenantId: string) {
@@ -55,12 +55,12 @@ export class OrdersService {
         products: JSON.parse(i.products),
       };
     });
-    return JSON.stringify(orders);    
+    return JSON.stringify(orders);
   }
 
   async findOne(id: string, tenantId: string) {
-    console.log('Find order:', id, 'TenantId:', tenantId);        
-    const client = await this.fetchClient(tenantId);    
+    console.log('Find order:', id, 'TenantId:', tenantId);
+    const client = await this.fetchClient(tenantId);
     const cmd = new QueryCommand({
       TableName: this.tableName,
       KeyConditionExpression: 'tenant_id=:t_id AND order_id=:o_id',
@@ -68,15 +68,15 @@ export class OrdersService {
         ':t_id': tenantId,
         ':o_id': id,
       },
-    });    
-    const result = await client.send(cmd);    
-    const item = result.Items[0];    
+    });
+    const result = await client.send(cmd);
+    const item = result.Items[0];
     if (!item) return;
     const order = {
       ...item,
       products: JSON.parse(item.products),
-    };    
-    return order;    
+    };
+    return order;
   }
 
   async fetchClient(tenantId: string) {

@@ -5,7 +5,7 @@
 import { OrderProduct } from './orderproduct.interface';
 
 export interface Order {
-  id: string;
+  order_id: string;
   name: string;
   products: OrderProduct[];
 }
