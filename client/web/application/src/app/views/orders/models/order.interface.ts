@@ -8,4 +8,5 @@ export interface Order {
   order_id: string;
   name: string;
   products: OrderProduct[];
+  tax?: number;
 }
