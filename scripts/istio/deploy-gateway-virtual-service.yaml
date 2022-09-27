@@ -25,6 +25,30 @@ spec:
   http:
   - match:
     - uri:
+        prefix: /lab5/api/products
+    route:
+    - destination:
+        host: product-service
+        port:
+          number: 80
+  - match:
+    - uri:
+        prefix: /lab5/api/order
+    route:
+    - destination:
+        host: order-service
+        port:
+          number: 80
+        subset: v1
+      weight: 50
+    - destination:
+        host: order-service
+        port:
+          number: 80
+        subset: v2
+      weight: 50
+  - match:
+    - uri:
         prefix: /lab5
     route:
     - destination:
