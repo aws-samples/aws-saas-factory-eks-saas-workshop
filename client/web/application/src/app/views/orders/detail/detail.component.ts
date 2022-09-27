@@ -6,6 +6,8 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
+import { Product } from '../../products/models/product.interface';
+import { ProductService } from '../../products/product.service';
 import { Order } from '../models/order.interface';
 import { OrderProduct } from '../models/orderproduct.interface';
 import { OrdersService } from '../orders.service';
@@ -31,20 +33,12 @@ export class DetailComponent implements OnInit {
     return new Date();
   }
 
-  tenantName() {
-    return '';
-  }
-
   sum(op: OrderProduct) {
     return op.price * op.quantity;
   }
 
-  tax(op: OrderProduct) {
-    return this.sum(op) * this.taxRate;
-  }
-
-  total(op: OrderProduct) {
-    return this.sum(op) + this.tax(op);
+  total(op: OrderProduct, tax?: number) {
+    return this.sum(op) + (tax || 0);
   }
 
   subTotal(order: Order) {
@@ -53,11 +47,7 @@ export class DetailComponent implements OnInit {
       .reduce((acc, curr) => acc + curr);
   }
 
-  calcTax(order: Order) {
-    return this.subTotal(order) * this.taxRate;
-  }
-
   final(order: Order) {
-    return this.subTotal(order) + this.calcTax(order);
+    return this.subTotal(order) + (order.tax || 0);
   }
 }

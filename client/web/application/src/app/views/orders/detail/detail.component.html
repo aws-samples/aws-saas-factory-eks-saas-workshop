@@ -12,29 +12,23 @@
           <div class="media-left">
             <img class="media-object logo" src="assets/logo.svg" />
           </div>
-          <ul class="media-body list-unstyled">
-            <li>
-              <strong>{{ tenantName() }}</strong>
-            </li>
-          </ul>
         </div>
       </div>
     </div>
   </div>
-  <div class="invoice-body">
+  <div class="invoice-body" *ngIf="order$ | async as order">
     <div class="row">
       <div class="card">
         <div class="card-header">
           <h3>Services / Products</h3>
         </div>
-        <table class="table table-bordered table-responsive no-bottom-margin">
+        <table class="table greyGridTable">
           <thead>
             <tr>
               <th>Item / Details</th>
               <th class="text-center colfix">Unit Cost</th>
               <th class="text-center colfix">Sum Cost</th>
               <th class="text-center colfix">Discount</th>
-              <th class="text-center colfix">Tax</th>
               <th class="text-center colfix">Total</th>
             </tr>
           </thead>
@@ -59,13 +53,8 @@
                 <br />
                 <small class="text-muted">None</small>
               </td>
-              <td class="text-right nowrap">
-                <span class="mono">{{ tax(op) | currency }}</span>
-                <br />
-                <small class="text-muted">Sales Tax 8.9%</small>
-              </td>
               <td class="text-right">
-                <strong class="mono">{{ total(op) | currency }}</strong>
+                <strong class="mono">{{ sum(op) | currency }}</strong>
                 <br />
               </td>
             </tr>
@@ -73,32 +62,29 @@
         </table>
       </div>
       <div>
-        <table
-          *ngIf="order$ | async as order"
-          class="table table-bordered table-condensed"
-        >
+        <table class="table greyGridTable">
           <thead>
             <tr>
-              <td class="text-center col-xs-1">Sub Total</td>
-              <td class="text-center col-xs-1">Discount</td>
-              <td class="text-center col-xs-1">Total</td>
-              <td class="text-center col-xs-1">Tax</td>
-              <td class="text-center col-xs-1">Final</td>
+              <td>Sub Total</td>
+              <td>Discount</td>
+              <td>Total</td>
+              <td *ngIf="order?.tax" class="highlighted">Tax</td>
+              <td>Final</td>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <th class="text-center rowtotal mono">
+              <th class="rowtotal mono">
                 {{ subTotal(order) | currency }}
               </th>
-              <th class="text-center rowtotal mono">-$0.00</th>
-              <th class="text-center rowtotal mono">
+              <th class="rowtotal mono">-$0.00</th>
+              <th class="rowtotal mono">
                 {{ subTotal(order) | currency }}
               </th>
-              <th class="text-center rowtotal mono">
-                {{ calcTax(order) | currency }}
+              <th *ngIf="order?.tax" class="rowtotal mono highlighted">
+                {{ order.tax | currency }}
               </th>
-              <th class="text-center rowtotal mono">
+              <th class="rowtotal mono">
                 {{ final(order) | currency }}
               </th>
             </tr>
@@ -121,7 +107,7 @@
       </div>
     </div>
     <div class="invoice-footer">
-      Thank you for choosing the EKS Reference Architecture.
+      Thank you for choosing the EKS SaaS Workshop.
       <br />
       We hope to see you again soon
       <br />
