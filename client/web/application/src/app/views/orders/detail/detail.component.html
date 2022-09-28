@@ -33,9 +33,9 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let op of orderProducts$ | async">
+            <tr *ngFor="let op of productsWithName$ | async">
               <td class="nowrap">
-                {{ op.productId }}
+                {{ op.name }}
                 <br />
               </td>
               <td class="text-right">
