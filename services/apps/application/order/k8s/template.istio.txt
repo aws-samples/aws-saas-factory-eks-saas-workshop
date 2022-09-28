@@ -1,20 +1,55 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: order
+  name: order-v1
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: order
+      app: order-v1
   template:
     metadata:
       labels:
-        app: order
+        app: order-v1
     spec:
       containers:
         - name: order
           image: $CONTAINERIMAGE
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3010
+              name: "http"
+          env:
+            - name: AWS_REGION
+              value: "$REGION"
+            - name: IAM_ROLE_ARN
+              value: "$IAM_ROLE_ARN"
+            - name: COGNITO_USER_POOL_ID
+              value: "$COGNITO_USER_POOL_ID"
+            - name: COGNITO_CLIENT_ID
+              value: "$COGNITO_CLIENT_ID"
+            - name: COGNITO_REGION
+              value: "$REGION"
+            - name: ORDER_TABLE_NAME
+              value: "$ORDERTABLE"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: order-v2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: order-v2
+  template:
+    metadata:
+      labels:
+        app: order-v2
+    spec:
+      containers:
+        - name: order
+          image: $CONTAINERIMAGEV2
           imagePullPolicy: Always
           ports:
             - containerPort: 3010
