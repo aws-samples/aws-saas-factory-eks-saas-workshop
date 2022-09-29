@@ -6,11 +6,13 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: order-v1
+      app: order
+      version: v1
   template:
     metadata:
       labels:
-        app: order-v1
+        app: order
+        version: v1
     spec:
       containers:
         - name: order
@@ -41,11 +43,13 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: order-v2
+      app: order
+      version: v2
   template:
     metadata:
       labels:
-        app: order-v2
+        app: order
+        version: v2
     spec:
       containers:
         - name: order
