@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/bash
 
 echo "Installing Istio with Ingress Gateway (NLB)"
 export ISTIO_VERSION="1.14.1"
