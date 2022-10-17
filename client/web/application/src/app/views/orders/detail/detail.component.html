@@ -1,0 +1,117 @@
+<div class="container invoice">
+  <div class="invoice-header">
+    <div class="row">
+      <div class="col-xs-8">
+        <h1>Order Details <small>mostly made up</small></h1>
+        <h5 class="text-muted">
+          NO: {{ orderId$ | async }} | Date: {{ today() | date }}
+        </h5>
+      </div>
+      <div class="col-xs-4">
+        <div class="media">
+          <div class="media-left">
+            <img class="media-object logo" src="assets/logo.svg" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="invoice-body" *ngIf="order$ | async as order">
+    <div class="row">
+      <div class="card">
+        <div class="card-header">
+          <h3>Services / Products</h3>
+        </div>
+        <table class="table greyGridTable">
+          <thead>
+            <tr>
+              <th>Item / Details</th>
+              <th class="text-center colfix">Unit Cost</th>
+              <th class="text-center colfix">Sum Cost</th>
+              <th class="text-center colfix">Discount</th>
+              <th class="text-center colfix">Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let op of productsWithName$ | async">
+              <td class="nowrap">
+                {{ op.name }}
+                <br />
+              </td>
+              <td class="text-right">
+                <span class="mono">{{ op.price | currency }}</span>
+                <br />
+                <small class="text-muted">Before Tax</small>
+              </td>
+              <td class="text-right">
+                <span class="mono">{{ sum(op) | currency }}</span>
+                <br />
+                <small class="text-muted">{{ op.quantity }} Units</small>
+              </td>
+              <td class="text-right">
+                <span class="mono">$0.00</span>
+                <br />
+                <small class="text-muted">None</small>
+              </td>
+              <td class="text-right">
+                <strong class="mono">{{ sum(op) | currency }}</strong>
+                <br />
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <table class="table greyGridTable">
+          <thead>
+            <tr>
+              <td>Sub Total</td>
+              <td>Discount</td>
+              <td>Total</td>
+              <td *ngIf="order?.tax" class="highlighted">Tax</td>
+              <td>Final</td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th class="rowtotal mono">
+                {{ subTotal(order) | currency }}
+              </th>
+              <th class="rowtotal mono">-$0.00</th>
+              <th class="rowtotal mono">
+                {{ subTotal(order) | currency }}
+              </th>
+              <th *ngIf="order?.tax" class="rowtotal mono highlighted">
+                {{ order.tax | currency }}
+              </th>
+              <th class="rowtotal mono">
+                {{ final(order) | currency }}
+              </th>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-7">
+        <div class="card">
+          <div class="card-body">
+            <i>Comments / Notes</i>
+            <hr style="margin: 3px 0 5px" />
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Odit
+            repudiandae numquam sit facere blanditiis, quasi distinctio ipsam?
+            Libero odit ex expedita, facere sunt, possimus consectetur dolore,
+            nobis iure amet vero.
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="invoice-footer">
+      Thank you for choosing the EKS SaaS Workshop.
+      <br />
+      We hope to see you again soon
+      <br />
+      <strong>AWS</strong>
+    </div>
+  </div>
+</div>

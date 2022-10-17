@@ -1,3 +1,14 @@
+apiVersion: v1
+data:
+  config.json: |
+    {
+      "apiUrl": "//$ELBURL",
+      "stage": "develop"
+    }
+kind: ConfigMap
+metadata:
+  name: app-config
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -14,11 +25,18 @@ spec:
     spec:
       containers:
         - name: application
-          image: $APPLICATIONECR:latest
+          image: public.ecr.aws/o2b5n0j5/eks-saas-application:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 80
               name: "http"
+          volumeMounts:
+            - name: config-volume
+              mountPath: /usr/share/nginx/html/app/assets/config
+      volumes:
+        - name: config-volume
+          configMap:
+            name: app-config
 ---
 apiVersion: v1
 kind: Service

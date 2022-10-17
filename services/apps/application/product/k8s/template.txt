@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: product
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: product
+  template:
+    metadata:
+      labels:
+        app: product
+    spec:
+      containers:
+        - name: product
+          image: $CONTAINERIMAGE
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3005
+              name: "http"
+          env:
+            - name: AWS_REGION
+              value: "$REGION"
+            - name: IAM_ROLE_ARN
+              value: "$IAM_ROLE_ARN"
+            - name: COGNITO_USER_POOL_ID
+              value: "$COGNITO_USER_POOL_ID"
+            - name: COGNITO_CLIENT_ID
+              value: "$COGNITO_CLIENT_ID"
+            - name: COGNITO_REGION
+              value: "$REGION"
+            - name: PRODUCT_TABLE_NAME
+              value: "$PRODUCTTABLE"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: product-service
+spec:
+  selector:
+    app: product
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 3005
+  type: NodePort
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: product-service-ingress
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.org/mergeable-ingress-type: "minion"
+spec:
+  rules:
+    - host: $ELBURL
+      http:
+        paths:
+          - backend:
+              service:
+                name: product-service
+                port:
+                  number: 80
+            path: /$TENANTPATH/api/products
+            pathType: Prefix

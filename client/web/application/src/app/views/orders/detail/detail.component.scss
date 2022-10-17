@@ -1,0 +1,116 @@
+/*
+ * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * SPDX-License-Identifier: MIT-0
+ */
+.no-bottom-margin {
+  margin-bottom: 0;
+}
+
+.nowrap {
+  white-space: nowrap;
+}
+
+.invoice {
+  font-family: Arial, Helvetica, sans-serif;
+  width: 970px !important;
+  margin: 50px auto;
+  .invoice-header {
+    padding: 25px 25px 15px;
+    h1 {
+      margin: 0;
+    }
+    .media {
+      .media-body {
+        font-size: 0.9em;
+        margin: 0;
+      }
+    }
+  }
+  .invoice-body {
+    border-radius: 10px;
+    padding: 25px;
+    background: #fff;
+  }
+  .invoice-footer {
+    padding: 15px;
+    font-size: 0.9em;
+    text-align: center;
+    color: #999;
+  }
+}
+.logo {
+  max-height: 70px;
+  border-radius: 10px;
+}
+.dl-horizontal {
+  margin: 0;
+  dt {
+    float: left;
+    width: 80px;
+    overflow: hidden;
+    clear: left;
+    text-align: right;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  dd {
+    margin-left: 90px;
+  }
+}
+.rowamount {
+  padding-top: 15px !important;
+}
+.rowtotal {
+  font-size: 1.3em;
+}
+.colfix {
+  width: 12%;
+}
+.mono {
+  font-family: monospace;
+}
+.highlighted {
+  border: solid 2px #75a7fe !important;
+}
+
+table.greyGridTable {
+  border: 2px solid #ffffff;
+  width: 100%;
+  text-align: center;
+  border-collapse: collapse;
+}
+table.greyGridTable td,
+table.greyGridTable th {
+  border: 1px solid #ffffff;
+  padding: 3px 4px;
+}
+table.greyGridTable tbody td {
+  font-size: 13px;
+}
+table.greyGridTable td:nth-child(even) {
+  background: #ebebeb;
+}
+table.greyGridTable thead {
+  background: #ffffff;
+  border-bottom: 4px solid #333333;
+}
+table.greyGridTable thead th {
+  font-size: 15px;
+  font-weight: bold;
+  color: #333333;
+  text-align: center;
+  border-left: 2px solid #333333;
+}
+table.greyGridTable thead th:first-child {
+  border-left: none;
+}
+
+table.greyGridTable tfoot {
+  font-size: 14px;
+  font-weight: bold;
+  color: #333333;
+  border-top: 4px solid #333333;
+}
+table.greyGridTable tfoot td {
+  font-size: 14px;
+}

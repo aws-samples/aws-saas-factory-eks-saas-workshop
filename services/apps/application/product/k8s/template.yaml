@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: product
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: product
+  template:
+    metadata:
+      labels:
+        app: product
+    spec:
+      containers:
+        - name: product
+          image: public.ecr.aws/o2b5n0j5/eks-saas-product:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3005
+              name: "http"
+          env:
+            - name: AWS_REGION
+              value: "us-west-2"
+            - name: IAM_ROLE_ARN
+              value: ""
+            - name: COGNITO_USER_POOL_ID
+              value: "us-west-2_pwhlbgL09"
+            - name: COGNITO_CLIENT_ID
+              value: "t278btubmqb1hgan2afaut02g"
+            - name: COGNITO_REGION
+              value: "us-west-2"
+            - name: PRODUCT_TABLE_NAME
+              value: "Products-Pooled-20220725142746"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: product-service
+spec:
+  selector:
+    app: product
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 3005
+  type: NodePort
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: product-service-ingress
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.org/mergeable-ingress-type: "minion"
+spec:
+  rules:
+    - host: a6827acb0d6ef4172b966aa6ba3da833-2faefb68832aa130.elb.us-west-2.amazonaws.com
+      http:
+        paths:
+          - backend:
+              service:
+                name: product-service
+                port:
+                  number: 80
+            path: /app/api/products
+            pathType: Prefix

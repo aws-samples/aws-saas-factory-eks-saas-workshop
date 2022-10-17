@@ -3,7 +3,12 @@
  * SPDX-License-Identifier: MIT-0
  */
 import { Injectable } from '@angular/core';
-import { HttpRequest, HttpHandler, HttpEvent, HttpInterceptor } from '@angular/common/http';
+import {
+  HttpRequest,
+  HttpHandler,
+  HttpEvent,
+  HttpInterceptor,
+} from '@angular/common/http';
 import { from, Observable } from 'rxjs';
 import { Auth } from 'aws-amplify';
 import { filter, map, switchMap } from 'rxjs/operators';
@@ -11,10 +16,13 @@ import { filter, map, switchMap } from 'rxjs/operators';
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
   constructor() {}
-  idToken: string;
+  idToken = '';
 
-  intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    if (req.url.includes('auth-info')) {
+  intercept(
+    req: HttpRequest<any>,
+    next: HttpHandler
+  ): Observable<HttpEvent<any>> {
+    if (req.url.includes('auth-info') || req.url.includes('config.json')) {
       return next.handle(req);
     }
     const s = Auth.currentSession().catch((err) => console.log(err));

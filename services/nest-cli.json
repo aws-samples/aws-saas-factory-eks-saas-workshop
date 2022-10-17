@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json.schemastore.org/nest-cli",
+  "collection": "@nestjs/schematics",
+  "sourceRoot": "apps/shared/tenant-management/src",
+  "monorepo": true,
+  "root": "apps/shared/tenant-management",
+  "compilerOptions": {
+    "webpack": true,
+    "tsConfigPath": "apps/shared/tenant-management/tsconfig.app.json"
+  },
+  "projects": {
+    "tenant-management": {
+      "type": "application",
+      "root": "apps/shared/tenant-management",
+      "entryFile": "main",
+      "sourceRoot": "apps/shared/tenant-management/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/shared/tenant-management/tsconfig.app.json"
+      }
+    },
+    "tenant-registration": {
+      "type": "application",
+      "root": "apps/shared/tenant-registration",
+      "entryFile": "main",
+      "sourceRoot": "apps/shared/tenant-registration/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/shared/tenant-registration/tsconfig.app.json"
+      }
+    },
+    "user-management": {
+      "type": "application",
+      "root": "apps/shared/user-management",
+      "entryFile": "main",
+      "sourceRoot": "apps/shared/user-management/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/shared/user-management/tsconfig.app.json"
+      }
+    },
+    "product": {
+      "type": "application",
+      "root": "apps/application/product",
+      "entryFile": "main",
+      "sourceRoot": "apps/application/product/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/application/product/tsconfig.app.json"
+      }
+    },
+    "order": {
+      "type": "application",
+      "root": "apps/application/order",
+      "entryFile": "main",
+      "sourceRoot": "apps/application/order/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/application/order/tsconfig.app.json"
+      }
+    },
+    "user": {
+      "type": "application",
+      "root": "apps/application/user",
+      "entryFile": "main",
+      "sourceRoot": "apps/application/user/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/application/user/tsconfig.app.json"
+      }
+    },
+    "auth": {
+      "type": "library",
+      "root": "libs/auth",
+      "entryFile": "index",
+      "sourceRoot": "libs/auth/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/auth/tsconfig.lib.json"
+      }
+    },
+    "client-factory": {
+      "type": "library",
+      "root": "libs/client-factory",
+      "entryFile": "index",
+      "sourceRoot": "libs/client-factory/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/client-factory/tsconfig.lib.json"
+      }
+    }
+  }
+}

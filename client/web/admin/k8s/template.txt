@@ -1,3 +1,21 @@
+apiVersion: v1
+data:
+  config.json: |
+    {
+      "apiUrl": "//$ELBURL",
+      "stage": "develop",
+      "amplifyConfig": {
+        "aws_project_region": "$REGION",
+        "aws_cognito_region": "$REGION",
+        "aws_user_pools_id": "$USERPOOLID",
+        "aws_user_pools_web_client_id": "$APPCLIENTID"
+      }
+    }
+kind: ConfigMap
+metadata:
+  name: admin-config
+  namespace: default
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -14,11 +32,18 @@ spec:
     spec:
       containers:
         - name: admin-application
-          image: $ADMINAPPLICATIONECR:latest
+          image: public.ecr.aws/o2b5n0j5/eks-saas-admin:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 80
               name: "http"
+          volumeMounts:
+            - name: config-volume
+              mountPath: /usr/share/nginx/html/admin/assets/config
+      volumes:
+        - name: config-volume
+          configMap:
+            name: admin-config
 ---
 apiVersion: v1
 kind: Service

@@ -1,0 +1,69 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: order
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: order
+  template:
+    metadata:
+      labels:
+        app: order
+    spec:
+      containers:
+        - name: order
+          image: $CONTAINERIMAGE
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3010
+              name: "http"
+          env:
+            - name: AWS_REGION
+              value: "$REGION"
+            - name: IAM_ROLE_ARN
+              value: "$IAM_ROLE_ARN"
+            - name: COGNITO_USER_POOL_ID
+              value: "$COGNITO_USER_POOL_ID"
+            - name: COGNITO_CLIENT_ID
+              value: "$COGNITO_CLIENT_ID"
+            - name: COGNITO_REGION
+              value: "$REGION"
+            - name: ORDER_TABLE_NAME
+              value: "$ORDERTABLE"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: order-service
+spec:
+  selector:
+    app: order
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 3010
+  type: NodePort
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: order-service-ingress
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.org/mergeable-ingress-type: "minion"
+spec:
+  rules:
+    - host: $ELBURL
+      http:
+        paths:
+          - backend:
+              service:
+                name: order-service
+                port:
+                  number: 80
+            path: /$TENANTPATH/api/orders
+            pathType: Prefix

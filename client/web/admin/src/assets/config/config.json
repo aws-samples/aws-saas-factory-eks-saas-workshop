@@ -1,0 +1,10 @@
+{
+  "apiUrl": "//a25b5b5c96dd347a386cc663c23bb4ba-8fab114c7f1be266.elb.us-east-1.amazonaws.com",
+  "stage": "develop",
+  "amplifyConfig": {
+    "aws_project_region": "us-east-1",
+    "aws_cognito_region": "us-east-1",
+    "aws_user_pools_id": "us-east-1_dPKm93kvh",
+    "aws_user_pools_web_client_id": "6rcgor54bpfr813qj43m793lsh"
+  }
+}
