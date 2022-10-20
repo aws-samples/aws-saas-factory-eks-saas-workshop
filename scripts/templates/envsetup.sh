@@ -175,7 +175,7 @@ ROLE="    - rolearn: arn:aws:iam::$ACCOUNT_ID:role/EksSaasCodeBuildRole\n      u
 eksctl create iamidentitymapping --cluster eksworkshop-eksctl --arn arn:aws:iam::$ACCOUNT_ID:role/EksSaasCodeBuildRole --group system:masters --username admin
 
 #Update context to the role EksSaasCodeBuildRole, which was used to create the EKS cluster.
-aws eks update-kubeconfig --name eksworkshop-eksctl --region --role-arn arn:aws:iam::$ACCOUNT_ID:role/EksSaasCodeBuildRole
+aws eks update-kubeconfig --name eksworkshop-eksctl --role-arn arn:aws:iam::$ACCOUNT_ID:role/EksSaasCodeBuildRole
 
 # Record the EKS SaaS stack metadata in the dynamo table that was made in root-stack
 aws dynamodb put-item \
