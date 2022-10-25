@@ -4,7 +4,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-root',
-  template: ` <amplify-authenticator>
+  template: ` <amplify-authenticator [hideSignUp]="true">
     <ng-template
       amplifySlot="authenticated"
       let-user="user"
