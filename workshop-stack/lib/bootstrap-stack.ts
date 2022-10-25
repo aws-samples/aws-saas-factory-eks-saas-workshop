@@ -155,7 +155,7 @@ exports.handler = async function (event, context) {
         const arnSplit = eeTeamRoleArn.split(':');
         const accountNumber = arnSplit[4];
         const resourceName = arnSplit[5].split('/')[1];
-        const eeTeamAssumedRoleArn = \`arn:aws:sts::\${accountNumber}:assumed-role/\${resourceName}/MasterKey\`;
+        const eeTeamAssumedRoleArn = \`arn:aws:sts::\${accountNumber}:assumed-role/\${resourceName}/Participant\`;
 
         console.log('Resolved EE Team Assumed Role ARN: ' + eeTeamAssumedRoleArn);
 

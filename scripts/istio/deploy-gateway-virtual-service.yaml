@@ -34,19 +34,26 @@ spec:
   - match:
     - uri:
         prefix: /lab5/api/order
+      headers:
+        "@request.auth.claims.custom:tenant-id":
+          exact: "85c195e3-cda1-4ad3-ad1a-54746aaf0461" ## REPLACE THIS VALUE WITH YOUR TENANT1'S ID
+    route:
+    - destination:
+        host: order-service
+        port:
+          number: 80
+        subset: v2
+      weight: 100
+  - match:
+    - uri:
+        prefix: /lab5/api/order
     route:
     - destination:
         host: order-service
         port:
           number: 80
         subset: v1
-      weight: 50
-    - destination:
-        host: order-service
-        port:
-          number: 80
-        subset: v2
-      weight: 50
+      weight: 100
   - match:
     - uri:
         prefix: /lab5
