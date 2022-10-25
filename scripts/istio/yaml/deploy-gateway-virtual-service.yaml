@@ -25,7 +25,7 @@ spec:
   http:
   - match:
     - uri:
-        prefix: /lab5/api/products
+        prefix: /app/api/products
     route:
     - destination:
         host: product-service
@@ -33,7 +33,7 @@ spec:
           number: 80
   - match:
     - uri:
-        prefix: /lab5/api/order
+        prefix: /app/api/order
       headers:
         "@request.auth.claims.custom:tenant-id":
           exact: "tenantId" ## REPLACE THIS VALUE WITH YOUR TENANT1'S ID
@@ -46,7 +46,7 @@ spec:
       weight: 100
   - match:
     - uri:
-        prefix: /lab5/api/order
+        prefix: /app/api/order
     route:
     - destination:
         host: order-service
@@ -56,7 +56,7 @@ spec:
       weight: 100
   - match:
     - uri:
-        prefix: /lab5
+        prefix: /app
     route:
     - destination:
         host: application-service
