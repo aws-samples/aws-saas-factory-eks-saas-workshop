@@ -155,9 +155,9 @@ if [[ $? -ne 0 ]]; then
     git remote set-url cc $REPO_URL
 fi
 pip3 install git-remote-codecommit    
-git push --set-upstream cc feature-workshop-prep --force
+git push --set-upstream cc main --force
 git remote rm cc
-git branch -u origin/feature-workshop-prep feature-workshop-prep
+git branch -u origin/main main
 
 #Create CodeBuild role
 echo "Creating a new role which will be used by our CodeBuild project to describe our EKS Instances"
