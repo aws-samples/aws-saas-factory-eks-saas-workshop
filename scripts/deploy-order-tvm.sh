@@ -11,6 +11,6 @@ export ELBURL=$(echo $STACKS | jq -r '.Stacks[]?.Outputs[]? | select(.OutputKey=
 CWD=$(pwd)
 cd ./services
 
-TENANTPATH=app CONTAINERIMAGE=public.ecr.aws/o2b5n0j5/eks-saas-order:withtvm envsubst < ./apps/application/order/k8s/template.txt > ./apps/application/product/k8s/template.yaml
+TENANTPATH=app CONTAINERIMAGE=public.ecr.aws/o2b5n0j5/eks-saas-order:withtvm envsubst < ./apps/application/order/k8s/template.txt > ./apps/application/order/k8s/template.yaml
 kubectl apply -f ./apps/application/order/k8s/template.yaml
 
