@@ -11,8 +11,6 @@ export NVM_DIR=$HOME/.nvm;
 source $NVM_DIR/nvm.sh;
 
 echo "Installing Node and CDK"
-nvm install 16 2> 0
-nvm use 16
 npm install -g yarn
 npm install -g aws-cdk@2.22.0
 
@@ -32,8 +30,8 @@ echo "export AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}" | tee -a ~/.bash_profile
 aws configure set default.region ${AWS_REGION}
 aws configure get default.region
 
-echo Resizing Cloud9 instance EBS Volume
-sh scripts/resize-cloud9-ebs-vol.sh 40
+# echo Resizing Cloud9 instance EBS Volume
+# sh scripts/resize-cloud9-ebs-vol.sh 40
 
 echo 'yq() {
   docker run --rm -i -v "${PWD}":/workdir mikefarah/yq yq "$@"
