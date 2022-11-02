@@ -3,5 +3,5 @@
 # SPDX-License-Identifier: MIT-0
 
 source ./scripts/setenv-admin.sh
-envsubst < ./client/web/admin/k8s/template.txt > ./client/web/admin/k8s/template.yaml
-kubectl apply -f ./client/web/admin/k8s/template.yaml
+envsubst < ./client/web/admin/k8s/template.txt > ./client/web/admin/k8s/manifest.yaml
+kubectl apply -f ./client/web/admin/k8s/manifest.yaml

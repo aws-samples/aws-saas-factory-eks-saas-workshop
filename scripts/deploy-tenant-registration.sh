@@ -22,7 +22,7 @@ docker build -t tenant-registration-svc:latest -f Dockerfile.tenant-registration
 docker tag tenant-registration-svc:latest $TENANTREGISTRATIONSERVICEECR:latest
 docker push $TENANTREGISTRATIONSERVICEECR:latest
 
-CONTAINERIMAGE=$TENANTREGISTRATIONSERVICEECR:latest envsubst < ./apps/shared/tenant-registration/k8s/template.txt > ./apps/shared/tenant-registration/k8s/template.yaml
-kubectl apply -f ./apps/shared/tenant-registration/k8s/template.yaml
+CONTAINERIMAGE=$TENANTREGISTRATIONSERVICEECR:latest envsubst < ./apps/shared/tenant-registration/k8s/template.txt > ./apps/shared/tenant-registration/k8s/manifest.yaml
+kubectl apply -f ./apps/shared/tenant-registration/k8s/manifest.yaml
 
 

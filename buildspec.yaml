@@ -49,16 +49,16 @@ phases:
       - ORDERTABLE="$(echo ${CREATE_ORDER_TABLE} | jq -r '.TableDescription.TableName')"
 
       # Deploy Application Service
-      - TENANTPATH=$TENANT_PATH envsubst < ./client/web/application/k8s/template.txt > ./client/web/application/k8s/template.yaml
-      - kubectl apply -f client/web/application/k8s/template.yaml -n ${TENANT_PATH}
+      - TENANTPATH=$TENANT_PATH envsubst < ./client/web/application/k8s/template.txt > ./client/web/application/k8s/manifest.yaml
+      - kubectl apply -f client/web/application/k8s/manifest.yaml -n ${TENANT_PATH}
 
       # Deploy Order Service
-      - TENANTPATH=$TENANT_PATH CONTAINERIMAGE=public.ecr.aws/o2b5n0j5/eks-saas-order:withtvm envsubst < services/apps/application/order/k8s/template.txt > services/apps/application/order/k8s/template.yaml
-      - kubectl apply -f services/apps/application/order/k8s/template.yaml -n ${TENANT_PATH}
+      - TENANTPATH=$TENANT_PATH CONTAINERIMAGE=public.ecr.aws/o2b5n0j5/eks-saas-order:withtvm envsubst < services/apps/application/order/k8s/template.txt > services/apps/application/order/k8s/manifest.yaml
+      - kubectl apply -f services/apps/application/order/k8s/manifest.yaml -n ${TENANT_PATH}
 
       # Deploy Product Service
-      - TENANTPATH=$TENANT_PATH CONTAINERIMAGE=public.ecr.aws/o2b5n0j5/eks-saas-product:withtvm envsubst < services/apps/application/product/k8s/template.txt > services/apps/application/product/k8s/template.yaml
-      - kubectl apply -f services/apps/application/product/k8s/template.yaml -n ${TENANT_PATH}
+      - TENANTPATH=$TENANT_PATH CONTAINERIMAGE=public.ecr.aws/o2b5n0j5/eks-saas-product:withtvm envsubst < services/apps/application/product/k8s/template.txt > services/apps/application/product/k8s/manifest.yaml
+      - kubectl apply -f services/apps/application/product/k8s/manifest.yaml -n ${TENANT_PATH}
 
       # Update the Silo tenant stack provisioning status to complete
       - chmod +x update-provisioning-status.sh

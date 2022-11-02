@@ -21,6 +21,6 @@ docker build -t product-svc:latest -f Dockerfile.product .
 docker tag product-svc:latest $PRODUCTSERVICEECR:latest
 docker push $PRODUCTSERVICEECR:latest
 
-TENANTPATH=app CONTAINERIMAGE=$PRODUCTSERVICEECR:latest envsubst < ./apps/application/product/k8s/template.txt > ./apps/application/product/k8s/template.yaml
-kubectl apply -f ./apps/application/product/k8s/template.yaml
+TENANTPATH=app CONTAINERIMAGE=$PRODUCTSERVICEECR:latest envsubst < ./apps/application/product/k8s/template.txt > ./apps/application/product/k8s/manifest.yaml
+kubectl apply -f ./apps/application/product/k8s/manifest.yaml
 
