@@ -1,18 +1,19 @@
 #!/bin/bash
+# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# SPDX-License-Identifier: MIT-0
 
-# This will load the values for ELBURL, CODEBUILD_ARN and IAM_ROLE_ARN in to the Cloud9 terminal's shell
-# source ~/.bash_profile
+# Turn off output paging
+export AWS_PAGER=""
 
-# nvm use 16
+#use Node 16 LTS
+nvm use 16
 
-# if [ "X$1" = "X" ]; then
-#     echo "usage: $0 ADMIN_EMAIL_ADDR (ex. $0 admin@email.com)"
-#     exit 2
-# fi
-# ADMIN_EMAIL_ADDR=$1
+#Install modern yarn
+corepack enable
+corepack prepare yarn@3.2.4 --activate
+
 
 #Create CodeCommit repo
-export AWS_PAGER=""
 REGION=$(aws configure get region)
 aws codecommit get-repository --repository-name aws-saas-factory-eks-workshop
 if [[ $? -ne 0 ]]; then
@@ -31,25 +32,30 @@ git push --set-upstream cc main --force
 git remote rm cc
 git branch -u origin/main main
 
-#ELBURL=$(aws cloudformation describe-stacks --stack-name EksStack --query "Stacks[0].Outputs[?OutputKey=='ELBURL'].OutputValue" --output text)
-#CODEBUILD_ARN=$(aws cloudformation describe-stacks --stack-name EksStack --query "Stacks[0].Outputs[?OutputKey=='EksCodebuildArn'].OutputValue" --output text)
-
-#cd cdk/root
-#yarn && yarn run build 
-#cdk bootstrap  
-#cdk deploy \
- # --parameters eksElbUrl=$ELBURL \
- # --parameters eksCodeBuildArn=$CODEBUILD_ARN \
- # --parameters adminEmailAddr=tobuck@amazon.com
-
-#if [[ $? -ne 0 ]]; then
-#    exit 1
-#fi
 export STACKS=$(aws cloudformation describe-stacks)
-AUTH_INFO_TABLE=$(aws cloudformation describe-stacks --stack-name ClusterStack --query "Stacks[0].Outputs[?OutputKey=='AuthInfoTable'].OutputValue" --output text)
-POOLED_TENANT_USERPOOL_ID=$(aws cloudformation describe-stacks --stack-name ClusterStack --query "Stacks[0].Outputs[?OutputKey=='PooledTenantUserPoolId'].OutputValue" --output text)
-POOLED_TENANT_APPCLIENT_ID=$(aws cloudformation describe-stacks --stack-name ClusterStack --query "Stacks[0].Outputs[?OutputKey=='PooledTenantAppClientId'].OutputValue" --output text)
-EKSSAAS_STACKMETADATA_TABLE=$(aws cloudformation describe-stacks --stack-name ClusterStack --query "Stacks[0].Outputs[?OutputKey=='EksSaaSStackMetadataTable'].OutputValue" --output text)
+
+export ELBURL=$(echo $STACKS | jq -r '.Stacks[]?.Outputs[]? | select(.OutputKey=="ELBURL") | .OutputValue')
+export CODEBUILD_ARN=$(echo $STACKS | jq -r '.Stacks[]?.Outputs[]? | select(.OutputKey=="EksCodebuildArn") | .OutputValue')
+
+cd cdk/root
+yarn && yarn run build 
+cdk bootstrap  
+cdk deploy \
+ --parameters eksElbUrl=$ELBURL \
+ --parameters eksCodeBuildArn=$CODEBUILD_ARN \
+
+if [[ $? -ne 0 ]]; then
+   exit 1
+fi
+
+export ADMINUSERPOOLID=$(echo $STACKS | jq -r '.Stacks[]?.Outputs[]? | select(.OutputKey=="AdminUserPoolId") | .OutputValue')
+export AUTH_INFO_TABLE_NAME=$(echo $STACKS | jq -r '.Stacks[].Outputs[] | select(.OutputKey=="AuthInfoTable") | .OutputValue' 2> /dev/null)
+export EKSSAAS_STACKMETADATA_TABLE=$(echo $STACKS | jq -r '.Stacks[]?.Outputs[]? | select(.OutputKey=="EksSaaSStackMetadataTable") | .OutputValue')
+export IAM_ROLE_ARN=$(echo $STACKS | jq -r '.Stacks[]?.Outputs[]? | select(.OutputKey=="RoleUsedByTVM") | .OutputValue')
+export POOLED_TENANT_APPCLIENT_ID=$(echo $STACKS | jq -r '.Stacks[]?.Outputs[]? | select(.OutputKey=="PooledTenantAppClientId") | .OutputValue')
+export POOLED_TENANT_USERPOOL_ID=$(echo $STACKS | jq -r '.Stacks[]?.Outputs[]? | select(.OutputKey=="PooledTenantUserPoolId") | .OutputValue')
+
+aws cognito-idp admin-set-user-password --user-pool-id ${ADMINUSERPOOLID} --username admin@saas.com --password "Admin123*" --permanent
 
 aws dynamodb put-item \
 --table-name ${AUTH_INFO_TABLE} \
@@ -61,3 +67,4 @@ aws dynamodb put-item \
 --table-name $EKSSAAS_STACKMETADATA_TABLE \
 --item "{\"StackName\": {\"S\": \"eks-saas\"}, \"ELBURL\": {\"S\": \"$ELBURL\"}, \"CODEBUILD_ARN\": {\"S\": \"$CODEBUILD_ARN\"}, \"IAM_ROLE_ARN\": {\"S\": \"$IAM_ROLE_ARN\"}}" \
 --return-consumed-capacity TOTAL
+

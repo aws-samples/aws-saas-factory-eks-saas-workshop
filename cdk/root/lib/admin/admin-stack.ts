@@ -8,7 +8,6 @@ import { Construct } from 'constructs';
 import * as cognito from 'aws-cdk-lib/aws-cognito';
 
 export interface AdminStackProps extends NestedStackProps {
-  adminEmailAddress: string;
   elbUrl: string;
 }
 
@@ -69,10 +68,10 @@ export class AdminStack extends NestedStack {
       desiredDeliveryMediums: ['EMAIL'],
       forceAliasCreation: false,
       userAttributes: [
-        { name: 'email', value: props?.adminEmailAddress },
+        { name: 'email', value: 'admin@saas.com' },
         { name: 'email_verified', value: 'true' },
       ],
-      username: props?.adminEmailAddress,
+      username: 'admin@saas.com',
     });
     this.userPoolId = adminPool.userPoolId;
     this.appClientId = appClient.userPoolClientId;
