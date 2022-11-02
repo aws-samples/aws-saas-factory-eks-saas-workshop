@@ -2,6 +2,8 @@
 
 #Deploys an Amazon EKS cluster. 
 #Once deployment is complete, copy the output values and apply to cdk/root/lib/root-stack.ts
+CWD=$(pwd)
+
 cd cdk/eks
 yarn && yarn run build 
 cdk bootstrap  
@@ -14,3 +16,5 @@ export IAM_ROLE_ARN=$(aws cloudformation describe-stacks --stack-name EksStack -
 echo "export ELBURL=${ELBURL}" | tee -a ~/.bash_profile
 echo "export IAM_ROLE_ARN=${IAM_ROLE_ARN}" | tee -a ~/.bash_profile
 echo "export CODEBUILD_ARN=${CODEBUILD_ARN}" | tee -a ~/.bash_profile
+
+cd $CWD

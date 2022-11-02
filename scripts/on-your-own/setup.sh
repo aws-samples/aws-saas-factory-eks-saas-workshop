@@ -14,7 +14,9 @@ echo "Installing Node and CDK"
 npm install -g aws-cdk@2.22.0
 
 echo "Upgrading AWS CLI"
-sudo pip install --upgrade awscli && hash -r
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip awscliv2.zip
+sudo ./aws/install
 
 echo "Installing helper tools"
 sudo yum -y install jq gettext bash-completion moreutils
@@ -28,9 +30,6 @@ echo "export AWS_REGION=${AWS_REGION}" | tee -a ~/.bash_profile
 echo "export AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}" | tee -a ~/.bash_profile
 aws configure set default.region ${AWS_REGION}
 aws configure get default.region
-
-# echo Resizing Cloud9 instance EBS Volume
-# sh scripts/resize-cloud9-ebs-vol.sh 40
 
 echo 'yq() {
   docker run --rm -i -v "${PWD}":/workdir mikefarah/yq yq "$@"

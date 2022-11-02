@@ -3,9 +3,6 @@
 # SPDX-License-Identifier: MIT-0
 CWD=$(pwd)
 
-# Update awscli v1, just in case it's required
-pip install --user --upgrade awscli
-
 # Install awscli v2
 curl -O "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip"
 unzip -o awscli-exe-linux-x86_64.zip
@@ -19,7 +16,6 @@ sudo yum -y install jq gettext bash-completion moreutils
 echo 'yq() {
   docker run --rm -i -v "${PWD}":/workdir mikefarah/yq "$@"
 }' | tee -a ~/.bashrc && source ~/.bashrc
-
 
 
 echo "Set Environment Variables"
@@ -108,3 +104,5 @@ aws dynamodb put-item \
 --table-name $EKSSAAS_STACKMETADATA_TABLE \
 --item "{\"StackName\": {\"S\": \"eks-saas\"}, \"ELBURL\": {\"S\": \"$ELBURL\"}, \"CODEBUILD_ARN\": {\"S\": \"arn:aws:iam::$ACCOUNT_ID:role/EksSaasCodeBuildRole\"}, \"IAM_ROLE_ARN\": {\"S\": \"$IAM_ROLE_ARN\"}}" \
 --return-consumed-capacity TOTAL
+
+cd $CWD

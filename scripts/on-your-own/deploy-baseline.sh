@@ -1,6 +1,7 @@
 #!/bin/bash
 # Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 # SPDX-License-Identifier: MIT-0
+CWD=$(pwd)
 
 # Turn off output paging
 export AWS_PAGER=""
@@ -11,7 +12,6 @@ nvm use 16
 #Install modern yarn
 corepack enable
 corepack prepare yarn@3.2.4 --activate
-
 
 #Create CodeCommit repo
 REGION=$(aws configure get region)
@@ -32,7 +32,7 @@ git push --set-upstream cc main --force
 git remote rm cc
 git branch -u origin/main main
 
-export STACKS=$(aws cloudformation describe-stacks)
+STACKS=$(aws cloudformation describe-stacks)
 
 export ELBURL=$(echo $STACKS | jq -r '.Stacks[]?.Outputs[]? | select(.OutputKey=="ELBURL") | .OutputValue')
 export CODEBUILD_ARN=$(echo $STACKS | jq -r '.Stacks[]?.Outputs[]? | select(.OutputKey=="EksCodebuildArn") | .OutputValue')
@@ -48,6 +48,9 @@ if [[ $? -ne 0 ]]; then
    exit 1
 fi
 
+# Re-export it as we've deployed more artifacts
+export STACKS=$(aws cloudformation describe-stacks)
+
 export ADMINUSERPOOLID=$(echo $STACKS | jq -r '.Stacks[]?.Outputs[]? | select(.OutputKey=="AdminUserPoolId") | .OutputValue')
 export AUTH_INFO_TABLE_NAME=$(echo $STACKS | jq -r '.Stacks[].Outputs[] | select(.OutputKey=="AuthInfoTable") | .OutputValue' 2> /dev/null)
 export EKSSAAS_STACKMETADATA_TABLE=$(echo $STACKS | jq -r '.Stacks[]?.Outputs[]? | select(.OutputKey=="EksSaaSStackMetadataTable") | .OutputValue')
@@ -55,10 +58,10 @@ export IAM_ROLE_ARN=$(echo $STACKS | jq -r '.Stacks[]?.Outputs[]? | select(.Outp
 export POOLED_TENANT_APPCLIENT_ID=$(echo $STACKS | jq -r '.Stacks[]?.Outputs[]? | select(.OutputKey=="PooledTenantAppClientId") | .OutputValue')
 export POOLED_TENANT_USERPOOL_ID=$(echo $STACKS | jq -r '.Stacks[]?.Outputs[]? | select(.OutputKey=="PooledTenantUserPoolId") | .OutputValue')
 
-aws cognito-idp admin-set-user-password --user-pool-id ${ADMINUSERPOOLID} --username admin@saas.com --password "Admin123*" --permanent
+aws cognito-idp admin-set-user-password --user-pool-id $ADMINUSERPOOLID --username admin@saas.com --password "Admin123*" --permanent
 
 aws dynamodb put-item \
---table-name ${AUTH_INFO_TABLE} \
+--table-name $AUTH_INFO_TABLE_NAME \
 --item "{\"tenant_path\": {\"S\": \"app\"}, \"user_pool_type\": {\"S\": \"pooled\"}, \"user_pool_id\": {\"S\": \"$POOLED_TENANT_USERPOOL_ID\"}, \"client_id\": {\"S\": \"$POOLED_TENANT_APPCLIENT_ID\"}}" \
 --return-consumed-capacity TOTAL        
 
@@ -68,3 +71,4 @@ aws dynamodb put-item \
 --item "{\"StackName\": {\"S\": \"eks-saas\"}, \"ELBURL\": {\"S\": \"$ELBURL\"}, \"CODEBUILD_ARN\": {\"S\": \"$CODEBUILD_ARN\"}, \"IAM_ROLE_ARN\": {\"S\": \"$IAM_ROLE_ARN\"}}" \
 --return-consumed-capacity TOTAL
 
+cd $CWD
