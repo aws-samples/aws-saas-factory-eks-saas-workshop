@@ -10,6 +10,8 @@ sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 export NVM_DIR=$HOME/.nvm;
 source $NVM_DIR/nvm.sh;
 
+nvm use 16
+
 echo "Installing Node and CDK"
 npm install -g aws-cdk@2.22.0
 
@@ -30,10 +32,6 @@ echo "export AWS_REGION=${AWS_REGION}" | tee -a ~/.bash_profile
 echo "export AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}" | tee -a ~/.bash_profile
 aws configure set default.region ${AWS_REGION}
 aws configure get default.region
-
-echo 'yq() {
-  docker run --rm -i -v "${PWD}":/workdir mikefarah/yq yq "$@"
-}' | tee -a ~/.bashrc && source ~/.bashrc
 
 for command in kubectl jq envsubst aws
   do
