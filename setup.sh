@@ -11,7 +11,6 @@ export NVM_DIR=$HOME/.nvm;
 source $NVM_DIR/nvm.sh;
 
 echo "Installing Node and CDK"
-npm install -g yarn
 npm install -g aws-cdk@2.22.0
 
 echo "Upgrading AWS CLI"
