@@ -33,6 +33,7 @@ export class BaselineInfraStack extends NestedStack {
   tenantStackMappingTableName: string;
   codeBuildRole: iam.Role;
   productServiceUri: string;
+  tenantRegistrationEcrUri: string;
   dynamicAssumeRoleArn: string;
 
   constructor(scope: Construct, id: string, props?: BaselineStackProps) {
@@ -80,6 +81,16 @@ export class BaselineInfraStack extends NestedStack {
       imageScanOnPush: true,
     });
     this.productServiceUri = productServiceRepo.repositoryUri;
+
+    const tenantRegistrationServiceRepo = new ecr.Repository(
+      this,
+      'TenantRegistrationServiceRepo',
+      {
+        repositoryName: `tenant-registration-service-${timeStr}`,
+        imageScanOnPush: true,
+      }
+    );
+    this.tenantRegistrationEcrUri = tenantRegistrationServiceRepo.repositoryUri;
 
     const ecrRole = new iam.Role(this, 'EcrPublicUser', {
       roleName: `EcrPublicUser-${timeStr}`,
