@@ -33,6 +33,9 @@ echo "export AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}" | tee -a ~/.bash_profile
 aws configure set default.region ${AWS_REGION}
 aws configure get default.region
 
+echo Resizing Cloud9 instance EBS Volume
+sh scripts/resize-cloud9-ebs-vol.sh 40
+
 for command in kubectl jq envsubst aws
   do
     which $command &>/dev/null && echo "$command in path" || echo "$command NOT FOUND"
