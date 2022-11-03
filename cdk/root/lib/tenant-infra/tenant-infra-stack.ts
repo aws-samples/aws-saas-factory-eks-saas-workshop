@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: MIT-0
  */
 
-import { NestedStack, NestedStackProps } from 'aws-cdk-lib';
+import { NestedStack, NestedStackProps, RemovalPolicy } from 'aws-cdk-lib';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as cognito from 'aws-cdk-lib/aws-cognito';
@@ -32,6 +32,7 @@ export class TenantInfraStack extends NestedStack {
     super(scope, id, props);
 
     const pooledTenantPool = new cognito.UserPool(this, 'PooledTenantsPool', {
+      removalPolicy: RemovalPolicy.DESTROY,
       userInvitation: {
         emailSubject: 'Temporary password for environment EKS SaaS Application',
         emailBody: `<b>Welcome to the SaaS Application for EKS Workshop!</b> <br>
@@ -177,14 +178,14 @@ export class TenantInfraStack extends NestedStack {
         outputParams = {
             jobId: jobId,
             outputVariables: {
-                TenantName: tenantName,
-                UserPoolId: userPoolId,
-                AppClientId: appClientId,
-                ElbUrl: elbUrl,
-                CodeBuildArn: codeBuildArn,
-                IamRoleArn: iamRoleArn,
-                Region: region,
-                dateTime: Date(Date.now()).toString(),
+                TENANTNAME: tenantName,
+                USERPOOLID: userPoolId,
+                APPCLIENTID: appClientId,
+                ELBURL: elbUrl,
+                CODEBUILDARN: codeBuildArn,
+                IAMROLEARN: iamRoleArn,
+                REGION: region,
+                DATETIME: Date(Date.now()).toString(),
             }
         };
         

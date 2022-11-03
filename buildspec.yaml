@@ -18,11 +18,6 @@ phases:
 
   post_build:
     commands:
-      - REGION=$(aws cloudformation describe-stacks --stack-name ClusterStack --query "Stacks[0].Outputs[?OutputKey=='AWSRegion'].OutputValue" --output text)
-      - ORDERTABLE=$(aws cloudformation describe-stacks --stack-name ClusterStack --query "Stacks[0].Outputs[?OutputKey=='OrderTable'].OutputValue" --output text)
-      - PRODUCTTABLE=$(aws cloudformation describe-stacks --stack-name ClusterStack --query "Stacks[0].Outputs[?OutputKey=='ProductTable'].OutputValue" --output text)
-      - TENANTSTACKTABLE=$(aws cloudformation describe-stacks --stack-name ClusterStack --query "Stacks[0].Outputs[?OutputKey=='TenantStackMappingTable'].OutputValue" --output text)
-
       - CREDENTIALS=$(aws sts assume-role --role-arn $CODEBUILDARN --role-session-name codebuild-kubectl --duration-seconds 900)
       - echo "${CREDENTIALS}"
       - export AWS_ACCESS_KEY_ID="$(echo ${CREDENTIALS} | jq -r '.Credentials.AccessKeyId')"
@@ -62,4 +57,4 @@ phases:
 
       # Update the Silo tenant stack provisioning status to complete
       - chmod +x update-provisioning-status.sh
-      - ./update-provisioning-status.sh $TENANTSTACKTABLE $TENANT_PATH
+      - ./update-provisioning-status.sh EKS-SaaS-Tenant-Stack-Mapping $TENANT_PATH

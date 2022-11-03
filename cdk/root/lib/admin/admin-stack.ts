@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: MIT-0
  */
 
-import { NestedStackProps, NestedStack } from 'aws-cdk-lib';
+import { NestedStackProps, NestedStack, RemovalPolicy } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import * as cognito from 'aws-cdk-lib/aws-cognito';
 
@@ -20,6 +20,7 @@ export class AdminStack extends NestedStack {
     super(scope, id, props);
 
     const adminPool = new cognito.UserPool(this, 'AdminUserPool', {
+      removalPolicy: RemovalPolicy.DESTROY,
       userInvitation: {
         emailSubject: 'SaaS Admin temporary password for environment EKS SaaS Solution',
         emailBody: `<b>Welcome to SaaS Admin App for EKS!</b> <br>
