@@ -4,6 +4,7 @@
 # SPDX-License-Identifier: MIT-0
 
 #Shared services
+kubectl delete -f ./client/web/admin/k8s/manifest.yaml
 kubectl delete -f ./services/apps/shared/tenant-registration/k8s/manifest.yaml
 kubectl delete -f ./services/apps/shared/tenant-management/k8s/manifest.yaml
 kubectl delete -f ./services/apps/shared/user-management/k8s/manifest.yaml

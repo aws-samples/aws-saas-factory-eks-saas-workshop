@@ -77,8 +77,7 @@ export class BaselineInfraStack extends NestedStack {
     this.orderTableName = this.orderTable.tableName;
 
     const productServiceRepo = new ecr.Repository(this, 'ProductServiceRepo', {
-      repositoryName: `product-service-${timeStr}`,
-      imageScanOnPush: true,
+      imageScanOnPush: false,
     });
     this.productServiceUri = productServiceRepo.repositoryUri;
 
@@ -86,14 +85,12 @@ export class BaselineInfraStack extends NestedStack {
       this,
       'TenantRegistrationServiceRepo',
       {
-        repositoryName: `tenant-registration-service-${timeStr}`,
-        imageScanOnPush: true,
+        imageScanOnPush: false,
       }
     );
     this.tenantRegistrationEcrUri = tenantRegistrationServiceRepo.repositoryUri;
 
     const ecrRole = new iam.Role(this, 'EcrPublicUser', {
-      roleName: `EcrPublicUser-${timeStr}`,
       assumedBy: new iam.AccountRootPrincipal(),
     });
 

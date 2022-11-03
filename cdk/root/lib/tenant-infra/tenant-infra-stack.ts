@@ -182,8 +182,8 @@ export class TenantInfraStack extends NestedStack {
                 USERPOOLID: userPoolId,
                 APPCLIENTID: appClientId,
                 ELBURL: elbUrl,
-                CODEBUILD_ARN: codeBuildArn,
-                IAM_ROLE_ARN: iamRoleArn,
+                CB_ARN: codeBuildArn,
+                IAM_ARN: iamRoleArn,
                 REGION: region,
                 DATETIME: Date(Date.now()).toString(),
             }
@@ -265,8 +265,8 @@ export class TenantInfraStack extends NestedStack {
         USERPOOLID: { value: lambdaInvokeAction.variable('USERPOOLID') },
         APPCLIENTID: { value: lambdaInvokeAction.variable('APPCLIENTID') },
         ELBURL: { value: lambdaInvokeAction.variable('ELBURL') },
-        CODEBUILD_ARN: { value: lambdaInvokeAction.variable('CODEBUILD_ARN') },
-        IAM_ROLE_ARN: { value: lambdaInvokeAction.variable('IAM_ROLE_ARN') },
+        CB_ARN: { value: lambdaInvokeAction.variable('CB_ARN') },
+        IAM_ARN: { value: lambdaInvokeAction.variable('IAM_ARN') },
       },
     });
 
