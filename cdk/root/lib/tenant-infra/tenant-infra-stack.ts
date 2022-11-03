@@ -148,7 +148,7 @@ export class TenantInfraStack extends NestedStack {
 
         // Retrieve the tenant data from Tenant-Stack-Mapping table
         const result = await getTenantStackData();
-        console.log("result====>", result);
+        console.log("result:", result);
 
           result.Items.forEach(function (element, index, array) {
             tenantName = element.TenantName.S;
@@ -156,34 +156,34 @@ export class TenantInfraStack extends NestedStack {
             userPoolId = element.UserPoolId.S;
           });
   
-          console.log("TenantName====>", tenantName);
-          console.log("appClientId====>", appClientId);
-          console.log("userPoolId====>", userPoolId);
-          console.log("region====>", region);
+          console.log("TenantName:", tenantName);
+          console.log("appClientId:", appClientId);
+          console.log("userPoolId:", userPoolId);
+          console.log("region:", region);
         
         // Retrieve the stack data from the EKS-SaaS-Stack-Metadata table
         const stackMetadata = await getStackMetadata();
-        console.log("stackMetadata====>", stackMetadata);
+        console.log("stackMetadata:", stackMetadata);
           stackMetadata.Items.forEach(function (element, index, array) {
             elbUrl = element.ELBURL.S;
             codeBuildArn = element.CODEBUILD_ARN.S;
             iamRoleArn = element.IAM_ROLE_ARN.S;
           });
           
-          console.log("ELBURL====>", elbUrl);
-          console.log("CODEBUILD_ARN====>", codeBuildArn);
-          console.log("IAM_ROLE_ARN====>", iamRoleArn);
+          console.log("ELBURL:", elbUrl);
+          console.log("CODEBUILD_ARN:", codeBuildArn);
+          console.log("IAM_ROLE_ARN:", iamRoleArn);
   
 
         outputParams = {
             jobId: jobId,
             outputVariables: {
-                TENANTNAME: tenantName,
+                TENANT_PATH: tenantName,
                 USERPOOLID: userPoolId,
                 APPCLIENTID: appClientId,
                 ELBURL: elbUrl,
-                CODEBUILDARN: codeBuildArn,
-                IAMROLEARN: iamRoleArn,
+                CODEBUILD_ARN: codeBuildArn,
+                IAM_ROLE_ARN: iamRoleArn,
                 REGION: region,
                 DATETIME: Date(Date.now()).toString(),
             }
@@ -261,12 +261,12 @@ export class TenantInfraStack extends NestedStack {
       input: sourceOutput,
       outputs: [buildOutput],
       environmentVariables: {
-        TenantName: { value: lambdaInvokeAction.variable('TenantName') },
-        UserPoolId: { value: lambdaInvokeAction.variable('UserPoolId') },
-        AppClientId: { value: lambdaInvokeAction.variable('AppClientId') },
-        ElbUrl: { value: lambdaInvokeAction.variable('ElbUrl') },
-        CodeBuildArn: { value: lambdaInvokeAction.variable('CodeBuildArn') },
-        IamRoleArn: { value: lambdaInvokeAction.variable('IamRoleArn') },
+        TENANT_PATH: { value: lambdaInvokeAction.variable('TENANT_PATH') },
+        USERPOOLID: { value: lambdaInvokeAction.variable('USERPOOLID') },
+        APPCLIENTID: { value: lambdaInvokeAction.variable('APPCLIENTID') },
+        ELBURL: { value: lambdaInvokeAction.variable('ELBURL') },
+        CODEBUILD_ARN: { value: lambdaInvokeAction.variable('CODEBUILD_ARN') },
+        IAM_ROLE_ARN: { value: lambdaInvokeAction.variable('IAM_ROLE_ARN') },
       },
     });
 
