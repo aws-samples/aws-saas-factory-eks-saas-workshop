@@ -34,7 +34,7 @@ aws configure set default.region ${AWS_REGION}
 aws configure get default.region
 
 echo Resizing Cloud9 instance EBS Volume
-sh scripts/resize-cloud9-ebs-vol.sh 40
+sh scripts/resize-cloud9-ebs-volume.sh 40
 
 for command in kubectl jq envsubst aws
   do
