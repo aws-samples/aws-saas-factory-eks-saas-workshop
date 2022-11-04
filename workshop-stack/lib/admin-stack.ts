@@ -2,7 +2,7 @@
  * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
  * SPDX-License-Identifier: MIT-0
  */
-import { NestedStack, NestedStackProps} from 'aws-cdk-lib';
+import { NestedStack, NestedStackProps } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import * as cognito from 'aws-cdk-lib/aws-cognito';
 
@@ -66,18 +66,11 @@ export class AdminStack extends NestedStack {
       userPoolId: adminPool.userPoolId,
       desiredDeliveryMediums: ['EMAIL'],
       forceAliasCreation: false,
-     /* userAttributes: [
-        { name: 'email', value: "admin@eks-saas.com" },
-        { name: 'email_verified', value: 'true' },
-      ],
-      username: "admin@eks-saas.com",
-      */
       userAttributes: [
-        { name: 'email', value: "admin@saas.com" },
+        { name: 'email', value: 'admin@saas.com' },
         { name: 'email_verified', value: 'true' },
       ],
-      username: "admin@saas.com",
-
+      username: 'admin@saas.com',
     });
     this.userPoolId = adminPool.userPoolId;
     this.appClientId = appClient.userPoolClientId;

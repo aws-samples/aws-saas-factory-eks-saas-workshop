@@ -8,7 +8,7 @@ export APPCLIENTID=$(echo $STACKS | jq -r '.Stacks[].Outputs[] | select(.OutputK
 export TENANT_TABLE_NAME=$(echo $STACKS | jq -r '.Stacks[].Outputs[] | select(.OutputKey=="TenantTable") | .OutputValue' 2> /dev/null)
 export AUTH_INFO_TABLE_NAME=$(echo $STACKS | jq -r '.Stacks[].Outputs[] | select(.OutputKey=="AuthInfoTable") | .OutputValue' 2> /dev/null)
 export TENANT_STACK_MAPPING_TABLE_NAME=$(echo $STACKS | jq -r '.Stacks[].Outputs[] | select(.OutputKey=="TenantStackMappingTable") | .OutputValue' 2> /dev/null)
-export TENANTREGISTRATIONSERVICEECR=$(echo $STACKS | jq -r '.Stacks[]?.Outputs[]? | select(.OutputKey=="TenantRegistrationServiceECR") | .OutputValue')
+export TENANTREGISTRATIONSERVICEECR=$(echo $STACKS | jq -r '.Stacks[]?.Outputs[]? | select(.OutputKey=="TenantRegistrationECR") | .OutputValue')
 
 CWD=$(pwd)
 cd ./services
@@ -22,7 +22,7 @@ docker build -t tenant-registration-svc:latest -f Dockerfile.tenant-registration
 docker tag tenant-registration-svc:latest $TENANTREGISTRATIONSERVICEECR:latest
 docker push $TENANTREGISTRATIONSERVICEECR:latest
 
-CONTAINERIMAGE=$TENANTREGISTRATIONSERVICEECR:latest envsubst < ./apps/shared/tenant-registration/k8s/template.txt > ./apps/shared/tenant-registration/k8s/template.yaml
-kubectl apply -f ./apps/shared/tenant-registration/k8s/template.yaml
+CONTAINERIMAGE=$TENANTREGISTRATIONSERVICEECR:latest envsubst < ./apps/shared/tenant-registration/k8s/template.txt > ./apps/shared/tenant-registration/k8s/manifest.yaml
+kubectl apply -f ./apps/shared/tenant-registration/k8s/manifest.yaml
 
 

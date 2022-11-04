@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: MIT-0
  */
 
-import { NestedStack, NestedStackProps } from 'aws-cdk-lib';
+import { NestedStack, NestedStackProps, RemovalPolicy } from 'aws-cdk-lib';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as cognito from 'aws-cdk-lib/aws-cognito';
@@ -32,6 +32,7 @@ export class TenantInfraStack extends NestedStack {
     super(scope, id, props);
 
     const pooledTenantPool = new cognito.UserPool(this, 'PooledTenantsPool', {
+      removalPolicy: RemovalPolicy.DESTROY,
       userInvitation: {
         emailSubject: 'Temporary password for environment EKS SaaS Application',
         emailBody: `<b>Welcome to the SaaS Application for EKS Workshop!</b> <br>
@@ -147,7 +148,7 @@ export class TenantInfraStack extends NestedStack {
 
         // Retrieve the tenant data from Tenant-Stack-Mapping table
         const result = await getTenantStackData();
-        console.log("result====>", result);
+        console.log("result:", result);
 
           result.Items.forEach(function (element, index, array) {
             tenantName = element.TenantName.S;
@@ -155,36 +156,36 @@ export class TenantInfraStack extends NestedStack {
             userPoolId = element.UserPoolId.S;
           });
   
-          console.log("TenantName====>", tenantName);
-          console.log("appClientId====>", appClientId);
-          console.log("userPoolId====>", userPoolId);
-          console.log("region====>", region);
+          console.log("TenantName:", tenantName);
+          console.log("appClientId:", appClientId);
+          console.log("userPoolId:", userPoolId);
+          console.log("region:", region);
         
         // Retrieve the stack data from the EKS-SaaS-Stack-Metadata table
         const stackMetadata = await getStackMetadata();
-        console.log("stackMetadata====>", stackMetadata);
+        console.log("stackMetadata:", stackMetadata);
           stackMetadata.Items.forEach(function (element, index, array) {
             elbUrl = element.ELBURL.S;
             codeBuildArn = element.CODEBUILD_ARN.S;
             iamRoleArn = element.IAM_ROLE_ARN.S;
           });
           
-          console.log("ELBURL====>", elbUrl);
-          console.log("CODEBUILD_ARN====>", codeBuildArn);
-          console.log("IAM_ROLE_ARN====>", iamRoleArn);
+          console.log("ELBURL:", elbUrl);
+          console.log("CODEBUILD_ARN:", codeBuildArn);
+          console.log("IAM_ROLE_ARN:", iamRoleArn);
   
 
         outputParams = {
             jobId: jobId,
             outputVariables: {
-                TenantName: tenantName,
-                UserPoolId: userPoolId,
-                AppClientId: appClientId,
-                ElbUrl: elbUrl,
-                CodeBuildArn: codeBuildArn,
-                IamRoleArn: iamRoleArn,
-                Region: region,
-                dateTime: Date(Date.now()).toString(),
+                TENANT_PATH: tenantName,
+                USERPOOLID: userPoolId,
+                APPCLIENTID: appClientId,
+                ELBURL: elbUrl,
+                CB_ARN: codeBuildArn,
+                IAM_ARN: iamRoleArn,
+                REGION: region,
+                DATETIME: Date(Date.now()).toString(),
             }
         };
         
@@ -260,12 +261,12 @@ export class TenantInfraStack extends NestedStack {
       input: sourceOutput,
       outputs: [buildOutput],
       environmentVariables: {
-        TenantName: { value: lambdaInvokeAction.variable('TenantName') },
-        UserPoolId: { value: lambdaInvokeAction.variable('UserPoolId') },
-        AppClientId: { value: lambdaInvokeAction.variable('AppClientId') },
-        ElbUrl: { value: lambdaInvokeAction.variable('ElbUrl') },
-        CodeBuildArn: { value: lambdaInvokeAction.variable('CodeBuildArn') },
-        IamRoleArn: { value: lambdaInvokeAction.variable('IamRoleArn') },
+        TENANT_PATH: { value: lambdaInvokeAction.variable('TENANT_PATH') },
+        USERPOOLID: { value: lambdaInvokeAction.variable('USERPOOLID') },
+        APPCLIENTID: { value: lambdaInvokeAction.variable('APPCLIENTID') },
+        ELBURL: { value: lambdaInvokeAction.variable('ELBURL') },
+        CB_ARN: { value: lambdaInvokeAction.variable('CB_ARN') },
+        IAM_ARN: { value: lambdaInvokeAction.variable('IAM_ARN') },
       },
     });
 

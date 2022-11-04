@@ -18,12 +18,7 @@ phases:
 
   post_build:
     commands:
-      - REGION=$(aws cloudformation describe-stacks --stack-name ClusterStack --query "Stacks[0].Outputs[?OutputKey=='AWSRegion'].OutputValue" --output text)
-      - ORDERTABLE=$(aws cloudformation describe-stacks --stack-name ClusterStack --query "Stacks[0].Outputs[?OutputKey=='OrderTable'].OutputValue" --output text)
-      - PRODUCTTABLE=$(aws cloudformation describe-stacks --stack-name ClusterStack --query "Stacks[0].Outputs[?OutputKey=='ProductTable'].OutputValue" --output text)
-      - TENANTSTACKTABLE=$(aws cloudformation describe-stacks --stack-name ClusterStack --query "Stacks[0].Outputs[?OutputKey=='TenantStackMappingTable'].OutputValue" --output text)
-
-      - CREDENTIALS=$(aws sts assume-role --role-arn $CODEBUILDARN --role-session-name codebuild-kubectl --duration-seconds 900)
+      - CREDENTIALS=$(aws sts assume-role --role-arn $CB_ARN --role-session-name codebuild-kubectl --duration-seconds 900)
       - echo "${CREDENTIALS}"
       - export AWS_ACCESS_KEY_ID="$(echo ${CREDENTIALS} | jq -r '.Credentials.AccessKeyId')"
       - export AWS_SECRET_ACCESS_KEY="$(echo ${CREDENTIALS} | jq -r '.Credentials.SecretAccessKey')"
@@ -49,17 +44,17 @@ phases:
       - ORDERTABLE="$(echo ${CREATE_ORDER_TABLE} | jq -r '.TableDescription.TableName')"
 
       # Deploy Application Service
-      - TENANTPATH=$TENANT_PATH envsubst < ./client/web/application/k8s/template.txt > ./client/web/application/k8s/template.yaml
-      - kubectl apply -f client/web/application/k8s/template.yaml -n ${TENANT_PATH}
+      - TENANTPATH=$TENANT_PATH envsubst < ./client/web/application/k8s/template.txt > ./client/web/application/k8s/manifest.yaml
+      - kubectl apply -f client/web/application/k8s/manifest.yaml -n ${TENANT_PATH}
 
       # Deploy Order Service
-      - TENANTPATH=$TENANT_PATH CONTAINERIMAGE=public.ecr.aws/o2b5n0j5/eks-saas-order:withtvm envsubst < services/apps/application/order/k8s/template.txt > services/apps/application/order/k8s/template.yaml
-      - kubectl apply -f services/apps/application/order/k8s/template.yaml -n ${TENANT_PATH}
+      - TENANTPATH=$TENANT_PATH CONTAINERIMAGE=public.ecr.aws/o2b5n0j5/eks-saas-order:withtvm envsubst < services/apps/application/order/k8s/template.txt > services/apps/application/order/k8s/manifest.yaml
+      - kubectl apply -f services/apps/application/order/k8s/manifest.yaml -n ${TENANT_PATH}
 
       # Deploy Product Service
-      - TENANTPATH=$TENANT_PATH CONTAINERIMAGE=public.ecr.aws/o2b5n0j5/eks-saas-product:withtvm envsubst < services/apps/application/product/k8s/template.txt > services/apps/application/product/k8s/template.yaml
-      - kubectl apply -f services/apps/application/product/k8s/template.yaml -n ${TENANT_PATH}
+      - TENANTPATH=$TENANT_PATH CONTAINERIMAGE=public.ecr.aws/o2b5n0j5/eks-saas-product:withtvm envsubst < services/apps/application/product/k8s/template.txt > services/apps/application/product/k8s/manifest.yaml
+      - kubectl apply -f services/apps/application/product/k8s/manifest.yaml -n ${TENANT_PATH}
 
       # Update the Silo tenant stack provisioning status to complete
       - chmod +x update-provisioning-status.sh
-      - ./update-provisioning-status.sh $TENANTSTACKTABLE $TENANT_PATH
+      - ./update-provisioning-status.sh EKS-SaaS-Tenant-Stack-Mapping $TENANT_PATH
