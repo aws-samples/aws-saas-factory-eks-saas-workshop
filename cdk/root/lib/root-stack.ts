@@ -49,7 +49,9 @@ export class RootStack extends Stack {
     new CfnOutput(this, 'AdminAppClientId', { value: appClientId });
     new CfnOutput(this, 'IssuerURL', { value: issuer });
     new CfnOutput(this, 'AWSRegion', { value: this.region });
-    new CfnOutput(this, 'TenantRegistrationECR', { value: baseline.tenantRegistrationEcrUri });
+    new CfnOutput(this, 'TenantRegistrationServiceECR', {
+      value: baseline.tenantRegistrationEcrUri,
+    });
     new CfnOutput(this, 'ProductServiceECR', { value: baseline.productServiceUri });
     new CfnOutput(this, 'ProductTable', { value: baseline.productTableName });
     new CfnOutput(this, 'OrderTable', { value: baseline.orderTableName });

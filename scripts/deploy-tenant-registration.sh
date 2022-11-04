@@ -8,7 +8,7 @@ export APPCLIENTID=$(echo $STACKS | jq -r '.Stacks[].Outputs[] | select(.OutputK
 export TENANT_TABLE_NAME=$(echo $STACKS | jq -r '.Stacks[].Outputs[] | select(.OutputKey=="TenantTable") | .OutputValue' 2> /dev/null)
 export AUTH_INFO_TABLE_NAME=$(echo $STACKS | jq -r '.Stacks[].Outputs[] | select(.OutputKey=="AuthInfoTable") | .OutputValue' 2> /dev/null)
 export TENANT_STACK_MAPPING_TABLE_NAME=$(echo $STACKS | jq -r '.Stacks[].Outputs[] | select(.OutputKey=="TenantStackMappingTable") | .OutputValue' 2> /dev/null)
-export TENANTREGISTRATIONSERVICEECR=$(echo $STACKS | jq -r '.Stacks[]?.Outputs[]? | select(.OutputKey=="TenantRegistrationECR") | .OutputValue')
+export TENANTREGISTRATIONSERVICEECR=$(echo $STACKS | jq -r '.Stacks[]?.Outputs[]? | select(.OutputKey=="TenantRegistrationServiceECR") | .OutputValue')
 
 CWD=$(pwd)
 cd ./services
