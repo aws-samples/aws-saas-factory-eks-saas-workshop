@@ -4,6 +4,9 @@
   "bin": {
     "cluster": "bin/cluster.js"
   },
+  "engines": {
+    "node": ">=16.0.0 <17.0.0"
+  },
   "scripts": {
     "build": "tsc",
     "watch": "tsc -w",
