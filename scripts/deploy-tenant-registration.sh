@@ -2,6 +2,7 @@
 # Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 # SPDX-License-Identifier: MIT-0
 if [ -z "$STACKS" ]; then export STACKS=$(aws cloudformation describe-stacks);fi
+export ELBURL=$(echo $STACKS | jq -r '.Stacks[]?.Outputs[]? | select(.OutputKey=="ELBURL") | .OutputValue')
 export REGION=$(echo $STACKS | jq -r '.Stacks[].Outputs[] | select(.OutputKey=="AWSRegion") | .OutputValue' 2> /dev/null)
 export USERPOOLID=$(echo $STACKS | jq -r '.Stacks[].Outputs[] | select(.OutputKey=="AdminUserPoolId") | .OutputValue' 2> /dev/null)
 export APPCLIENTID=$(echo $STACKS | jq -r '.Stacks[].Outputs[] | select(.OutputKey=="AdminAppClientId") | .OutputValue' 2> /dev/null)
