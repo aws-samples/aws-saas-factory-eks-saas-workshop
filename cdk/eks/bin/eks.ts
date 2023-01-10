@@ -4,7 +4,7 @@ import { App } from 'aws-cdk-lib';
 import { EksStack } from '../lib/eks-stack';
 
 const app = new App();
-new EksStack(app, 'EksStack', {
+new EksStack(app, 'ClusterStack', {
   /* If you don't specify 'env', this stack will be environment-agnostic.
    * Account/Region-dependent features and context lookups will not work,
    * but a single synthesized template can be deployed anywhere. */
