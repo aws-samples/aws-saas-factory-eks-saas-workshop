@@ -13,12 +13,16 @@ source $NVM_DIR/nvm.sh;
 nvm use 16
 
 echo "Installing Node and CDK"
-npm install -g aws-cdk@2.22.0
+npm install -g aws-cdk@2.64.0 --force
+
+echo "Installing yarn"
+corepack enable
+corepack prepare yarn@3.2.4 --activate
 
 echo "Upgrading AWS CLI"
 curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
 unzip awscliv2.zip
-sudo ./aws/install
+sudo ./aws/install --update
 
 echo "Installing helper tools"
 sudo yum -y install jq gettext bash-completion moreutils
@@ -47,5 +51,5 @@ kubectl completion bash >>  ~/.bash_completion
 
 cd $CWD
 
-aws sts get-caller-identity --query Arn | grep saas-factory-eks-workshop-admin -q && echo "IAM role valid. You can continue setting up the EKS Cluster." || echo "IAM role NOT valid. Do not proceed with creating the EKS Cluster or you won't be able to authenticate. Ensure you assigned the role to your EC2 instance as detailed in the README.md of the eks-saas repo"
-
+aws sts get-caller-identity --query Arn | grep aws-saas-factory-eks-saas-workshop-admin -q && echo "IAM role valid. You can continue setting up the EKS Cluster." || echo "IAM role NOT valid. Do not proceed with creating the EKS Cluster or you won't be able to authenticate. Ensure you assigned the role to your EC2 instance as detailed in the README.md of the eks-saas repo"
+ 
