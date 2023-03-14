@@ -25,7 +25,7 @@ export class EksStack extends Stack {
     const cluster = new eks.Cluster(this, 'eksworkshop-eksctl', {
       clusterName: `eksworkshop-eksctl`,
       mastersRole: clusterAdmin,
-      version: eks.KubernetesVersion.V1_21,
+      version: eks.KubernetesVersion.V1_25,
       defaultCapacity: 2,
     });
 
