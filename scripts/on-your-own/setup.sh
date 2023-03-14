@@ -4,7 +4,7 @@
 CWD=$(pwd)
 
 echo "Installing kubectl"
-curl -LO https://dl.k8s.io/release/v1.23.6/bin/linux/amd64/kubectl
+curl -LO https://dl.k8s.io/release/v1.25.0/bin/linux/amd64/kubectl
 sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 
 export NVM_DIR=$HOME/.nvm;
@@ -13,7 +13,7 @@ source $NVM_DIR/nvm.sh;
 nvm use 16
 
 echo "Installing Node and CDK"
-npm install -g aws-cdk@2.64.0 --force
+npm install -g aws-cdk@2.69.0 --force
 
 echo "Installing yarn"
 corepack enable
