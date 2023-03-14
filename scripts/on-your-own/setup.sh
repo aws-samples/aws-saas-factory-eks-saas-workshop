@@ -13,7 +13,7 @@ source $NVM_DIR/nvm.sh;
 nvm use 16
 
 echo "Installing Node and CDK"
-npm install -g aws-cdk@2.64.0 --force
+npm install -g aws-cdk@2.69.0 --force
 
 echo "Installing yarn"
 corepack enable
