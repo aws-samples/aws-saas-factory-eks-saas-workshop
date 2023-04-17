@@ -1,9 +1,7 @@
 {
   "name": "cluster",
   "version": "0.1.0",
-  "bin": {
-    "cluster": "bin/cluster.js"
-  },
+  "bin": "bin/cluster.js",
   "engines": {
     "node": ">=16.0.0 <17.0.0"
   },
@@ -26,8 +24,8 @@
     "@types/aws-lambda": "^8.10.84",
     "@types/js-yaml": "^4.0.4",
     "aws-cdk-lib": "^2.69.0",
-    "constructs": "^10.1.18",
     "aws-sdk": "^2.1010.0",
+    "constructs": "^10.1.18",
     "js-yaml": "^4.1.0",
     "source-map-support": "^0.5.21"
   }
