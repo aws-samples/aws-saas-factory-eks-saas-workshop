@@ -65,7 +65,7 @@ export class EksStack extends Stack {
     const albAddress = new eks.KubernetesObjectValue(this, 'elbAddress', {
       cluster,
       objectType: 'Service',
-      objectName: `${ingressControllerReleaseName}-nginx-ingress`,
+      objectName: `${ingressControllerReleaseName}-nginx-ingress-controller`,
       jsonPath: '.status.loadBalancer.ingress[0].hostname',
     });
 
