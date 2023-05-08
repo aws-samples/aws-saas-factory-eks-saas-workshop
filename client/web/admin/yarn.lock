@@ -295,6 +295,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@angular/flex-layout@npm:^14.0.0-beta.41":
+  version: 14.0.0-beta.41
+  resolution: "@angular/flex-layout@npm:14.0.0-beta.41"
+  dependencies:
+    tslib: ^2.3.0
+  peerDependencies:
+    "@angular/cdk": ^14.0.0
+    "@angular/common": ^14.0.0
+    "@angular/core": ^14.0.0
+    "@angular/platform-browser": ^14.0.0
+    rxjs: ^6.5.3 || ^7.4.0
+  checksum: 6fc9715eec897fa5e2a21fb36ace4c0a6c2159499dd4f2bd03c0d17c2010c4ef604b84eb2842c77106ae727316e193f25112959b8cf6271650e3c1e8610c094f
+  languageName: node
+  linkType: hard
+
 "@angular/forms@npm:^15.2.9":
   version: 15.2.9
   resolution: "@angular/forms@npm:15.2.9"
@@ -2487,11 +2502,11 @@ __metadata:
   linkType: hard
 
 "@aws-sdk/types@npm:^3.1.0, @aws-sdk/types@npm:^3.110.0":
-  version: 3.329.0
-  resolution: "@aws-sdk/types@npm:3.329.0"
+  version: 3.310.0
+  resolution: "@aws-sdk/types@npm:3.310.0"
   dependencies:
     tslib: ^2.5.0
-  checksum: 2bbcd8e6ba2f813dc220c60e7ac0fa0d0990d49f88030fd8235479586716016c8f9d7aeaf1f4c1a64694275f33690bd1dd4ed46e127983201061e063da73f426
+  checksum: b11a91899614e14d40081ceab39cd3702254a5658c7b5e8862ef0d66dbffaa41c9a0f0d31e415d22f31c791b507699ba3a5fc7d87a540273386eb779be3807e4
   languageName: node
   linkType: hard
 
@@ -4810,10 +4825,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jasmine@npm:~4.0.3":
-  version: 4.0.3
-  resolution: "@types/jasmine@npm:4.0.3"
-  checksum: 9d2af9ddb5750667bc9a3b439542fc9457c6eac2ab2c74801f598b03b9bc5cee1338fa8e75e6804dff1856e64539e8b0e3962ed8664a702f362d3db62eb9cd3a
+"@types/jasmine@npm:~4.3.1":
+  version: 4.3.1
+  resolution: "@types/jasmine@npm:4.3.1"
+  checksum: d31fc78f7e70ed4aed20fa59400be3de9f204c473a7755aba29df90eb7d9d19d4b04b821a07e30732e67ef6021c8191eb259211264e287c053832c1940ae6e71
   languageName: node
   linkType: hard
 
@@ -6362,13 +6377,14 @@ __metadata:
     "@angular/compiler": ^15.2.9
     "@angular/compiler-cli": ^15.2.9
     "@angular/core": ^15.2.9
+    "@angular/flex-layout": ^14.0.0-beta.41
     "@angular/forms": ^15.2.9
     "@angular/material": 14.2.7
     "@angular/platform-browser": ^15.2.9
     "@angular/platform-browser-dynamic": ^15.2.9
     "@angular/router": ^15.2.9
     "@aws-amplify/ui-angular": ^3.2.15
-    "@types/jasmine": ~4.0.3
+    "@types/jasmine": ~4.3.1
     aws-amplify: ^4.3.46
     bootstrap: 5.2.3
     chart.js: ^3.9.1
@@ -7871,7 +7887,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"is-core-module@npm:^2.12.0, is-core-module@npm:^2.8.1, is-core-module@npm:^2.9.0":
+"is-core-module@npm:^2.11.0, is-core-module@npm:^2.8.1, is-core-module@npm:^2.9.0":
   version: 2.12.0
   resolution: "is-core-module@npm:2.12.0"
   dependencies:
@@ -10102,15 +10118,15 @@ __metadata:
   linkType: hard
 
 "resolve@npm:^1.14.2":
-  version: 1.22.3
-  resolution: "resolve@npm:1.22.3"
+  version: 1.22.2
+  resolution: "resolve@npm:1.22.2"
   dependencies:
-    is-core-module: ^2.12.0
+    is-core-module: ^2.11.0
     path-parse: ^1.0.7
     supports-preserve-symlinks-flag: ^1.0.0
   bin:
     resolve: bin/resolve
-  checksum: fb834b81348428cb545ff1b828a72ea28feb5a97c026a1cf40aa1008352c72811ff4d4e71f2035273dc536dcfcae20c13604ba6283c612d70fa0b6e44519c374
+  checksum: 7e5df75796ebd429445d102d5824482ee7e567f0070b2b45897b29bb4f613dcbc262e0257b8aeedb3089330ccaea0d6a0464df1a77b2992cf331dcda0f4cb549
   languageName: node
   linkType: hard
 
@@ -10128,15 +10144,15 @@ __metadata:
   linkType: hard
 
 "resolve@patch:resolve@^1.14.2#~builtin<compat/resolve>":
-  version: 1.22.3
-  resolution: "resolve@patch:resolve@npm%3A1.22.3#~builtin<compat/resolve>::version=1.22.3&hash=07638b"
+  version: 1.22.2
+  resolution: "resolve@patch:resolve@npm%3A1.22.2#~builtin<compat/resolve>::version=1.22.2&hash=07638b"
   dependencies:
-    is-core-module: ^2.12.0
+    is-core-module: ^2.11.0
     path-parse: ^1.0.7
     supports-preserve-symlinks-flag: ^1.0.0
   bin:
     resolve: bin/resolve
-  checksum: ad59734723b596d0891321c951592ed9015a77ce84907f89c9d9307dd0c06e11a67906a3e628c4cae143d3e44898603478af0ddeb2bba3f229a9373efe342665
+  checksum: 66cc788f13b8398de18eb4abb3aed90435c84bb8935953feafcf7231ba4cd191b2c10b4a87b1e9681afc34fb138c705f91f7330ff90bfa36f457e5584076a2b8
   languageName: node
   linkType: hard
 
