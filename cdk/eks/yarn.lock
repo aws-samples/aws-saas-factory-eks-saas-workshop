@@ -15,10 +15,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@aws-cdk/asset-awscli-v1@npm:^2.2.97":
-  version: 2.2.137
-  resolution: "@aws-cdk/asset-awscli-v1@npm:2.2.137"
-  checksum: 5545dd79dc04189ae328655fee666916e97149876b0535c075c0e7e5525a37d9737cc1158e0863286b7ab0a04f9930fffc22b40955524d723a96e66b8243cbc0
+"@aws-cdk/asset-awscli-v1@npm:^2.2.177":
+  version: 2.2.185
+  resolution: "@aws-cdk/asset-awscli-v1@npm:2.2.185"
+  checksum: 62b57e6504f5dc477f21bd1189407571190f96489dcfd80bcd15c0305544021f144889122b43d64a90fed7aa466c853188824ca701eef92f06bcb8eef7990ec3
   languageName: node
   linkType: hard
 
@@ -29,10 +29,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@aws-cdk/asset-node-proxy-agent-v5@npm:^2.0.77":
-  version: 2.0.113
-  resolution: "@aws-cdk/asset-node-proxy-agent-v5@npm:2.0.113"
-  checksum: 1baacacd220c86f621e271503065fb77a15b63198361c49d54e0cb5e027d146b85bfdb0179da34359edca7bf208f3b415e8826768c5155d5f9f623cce924ee4c
+"@aws-cdk/asset-node-proxy-agent-v5@npm:^2.0.148":
+  version: 2.0.155
+  resolution: "@aws-cdk/asset-node-proxy-agent-v5@npm:2.0.155"
+  checksum: 1a5abb1c60d9a1908757cee0a690772ce24a50944bec1248c32bcfc352a6769eacfe101ad2828e07c809a03ac6598e892856bc0b5eca6ac12482b0f365ed7fc3
   languageName: node
   linkType: hard
 
@@ -915,7 +915,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jest@npm:^27.5.1":
+"@types/jest@npm:^27.5.2":
   version: 27.5.2
   resolution: "@types/jest@npm:27.5.2"
   dependencies:
@@ -925,10 +925,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*, @types/node@npm:^18.15.3":
+"@types/node@npm:*":
   version: 18.15.11
   resolution: "@types/node@npm:18.15.11"
   checksum: 977b4ad04708897ff0eb049ecf82246d210939c82461922d20f7d2dcfd81bbc661582ba3af28869210f7e8b1934529dcd46bff7d448551400f9d48b9d3bddec3
+  languageName: node
+  linkType: hard
+
+"@types/node@npm:^18.16.16":
+  version: 18.16.16
+  resolution: "@types/node@npm:18.16.16"
+  checksum: 0efad726dd1e0bef71c392c708fc5d78c5b39c46b0ac5186fee74de4ccb1b2e847b3fa468da67d62812f56569da721b15bf31bdc795e6c69b56c73a45079ed2d
   languageName: node
   linkType: hard
 
@@ -1118,39 +1125,32 @@ __metadata:
   languageName: node
   linkType: hard
 
-"at-least-node@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "at-least-node@npm:1.0.0"
-  checksum: 463e2f8e43384f1afb54bc68485c436d7622acec08b6fad269b421cb1d29cebb5af751426793d0961ed243146fe4dc983402f6d5a51b720b277818dbf6f2e49e
-  languageName: node
-  linkType: hard
-
-"aws-cdk-lib@npm:^2.69.0":
-  version: 2.73.0
-  resolution: "aws-cdk-lib@npm:2.73.0"
+"aws-cdk-lib@npm:^2.81.0":
+  version: 2.81.0
+  resolution: "aws-cdk-lib@npm:2.81.0"
   dependencies:
-    "@aws-cdk/asset-awscli-v1": ^2.2.97
+    "@aws-cdk/asset-awscli-v1": ^2.2.177
     "@aws-cdk/asset-kubectl-v20": ^2.1.1
-    "@aws-cdk/asset-node-proxy-agent-v5": ^2.0.77
+    "@aws-cdk/asset-node-proxy-agent-v5": ^2.0.148
     "@balena/dockerignore": ^1.0.2
     case: 1.6.3
-    fs-extra: ^9.1.0
+    fs-extra: ^11.1.1
     ignore: ^5.2.4
     jsonschema: ^1.4.1
     minimatch: ^3.1.2
     punycode: ^2.3.0
-    semver: ^7.3.8
+    semver: ^7.5.1
     table: ^6.8.1
     yaml: 1.10.2
   peerDependencies:
     constructs: ^10.0.0
-  checksum: eb157b6722b200424657a9bdcbaea4a8f5630893dc67ff1f90a94c82ee269cebc10d763ca10cf280bdc06500aa852b131078b778d587114d7d7b7fa1e6111e77
+  checksum: 5b7d99608a975a2351d297fe15420d5ecc296ceb81196fbfa874dc893b8811c4ef9998a32e67fe8893f74bb456c82f0c43b46faf1edf043ba64832460329f2b7
   languageName: node
   linkType: hard
 
-"aws-cdk@npm:^2.69.0":
-  version: 2.73.0
-  resolution: "aws-cdk@npm:2.73.0"
+"aws-cdk@npm:^2.81.0":
+  version: 2.81.0
+  resolution: "aws-cdk@npm:2.81.0"
   dependencies:
     fsevents: 2.3.2
   dependenciesMeta:
@@ -1158,7 +1158,7 @@ __metadata:
       optional: true
   bin:
     cdk: bin/cdk
-  checksum: 8228ba9c87ad443a00dd595c18b9b5dfd83a12cc6cc6d15f61a94490c8245aac1d555b56b5a9c7ef5c52c16190fe66f8023232e4003e76e3191a0f48c0a952ff
+  checksum: 79c4d14423f515c312b33d535ff458439d24b2205ab7bc3db07de1e45d8242791c8e004077037daa2cae9659e871b7ef7b43897d79b1959732fd0aeb3f733b18
   languageName: node
   linkType: hard
 
@@ -1509,10 +1509,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"constructs@npm:^10.1.18":
-  version: 10.1.308
-  resolution: "constructs@npm:10.1.308"
-  checksum: 75908f77b612f819bedbaa2fc011890da28778fbfe916e6b256c831646e7fde44a2438810f69010885cf65a4284fd33755347b037bcfa355ead4cf5177025de2
+"constructs@npm:^10.2.39":
+  version: 10.2.39
+  resolution: "constructs@npm:10.2.39"
+  checksum: d4be035c73d773425d48cb39a010ace38e3d0a0551dc1bc555244688aba8b18090a4e8306ca62721dada40c365dce3e462f30ea3a7dd1a86496a451d091f8cbb
   languageName: node
   linkType: hard
 
@@ -1613,16 +1613,16 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "eks@workspace:."
   dependencies:
-    "@types/jest": ^27.5.1
-    "@types/node": ^18.15.3
-    aws-cdk: ^2.69.0
-    aws-cdk-lib: ^2.69.0
-    constructs: ^10.1.18
-    jest: ^28.1.0
+    "@types/jest": ^27.5.2
+    "@types/node": ^18.16.16
+    aws-cdk: ^2.81.0
+    aws-cdk-lib: ^2.81.0
+    constructs: ^10.2.39
+    jest: ^28.1.3
     source-map-support: ^0.5.21
-    ts-jest: ^28.0.3
-    ts-node: ^10.8.0
-    typescript: ~4.7.2
+    ts-jest: ^28.0.8
+    ts-node: ^10.9.1
+    typescript: ~4.7.4
   bin:
     eks: bin/eks.js
   languageName: unknown
@@ -1791,15 +1791,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fs-extra@npm:^9.1.0":
-  version: 9.1.0
-  resolution: "fs-extra@npm:9.1.0"
+"fs-extra@npm:^11.1.1":
+  version: 11.1.1
+  resolution: "fs-extra@npm:11.1.1"
   dependencies:
-    at-least-node: ^1.0.0
     graceful-fs: ^4.2.0
     jsonfile: ^6.0.1
     universalify: ^2.0.0
-  checksum: ba71ba32e0faa74ab931b7a0031d1523c66a73e225de7426e275e238e312d07313d2da2d33e34a52aa406c8763ade5712eb3ec9ba4d9edce652bcacdc29e6b20
+  checksum: fb883c68245b2d777fbc1f2082c9efb084eaa2bbf9fddaa366130d196c03608eebef7fb490541276429ee1ca99f317e2d73e96f5ca0999eefedf5a624ae1edfd
   languageName: node
   linkType: hard
 
@@ -2645,7 +2644,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest@npm:^28.1.0":
+"jest@npm:^28.1.3":
   version: 28.1.3
   resolution: "jest@npm:28.1.3"
   dependencies:
@@ -3390,7 +3389,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"semver@npm:7.x, semver@npm:^7.3.5, semver@npm:^7.3.8":
+"semver@npm:7.x, semver@npm:^7.3.5":
   version: 7.4.0
   resolution: "semver@npm:7.4.0"
   dependencies:
@@ -3407,6 +3406,17 @@ __metadata:
   bin:
     semver: ./bin/semver.js
   checksum: 1b26ecf6db9e8292dd90df4e781d91875c0dcc1b1909e70f5d12959a23c7eebb8f01ea581c00783bbee72ceeaad9505797c381756326073850dc36ed284b21b9
+  languageName: node
+  linkType: hard
+
+"semver@npm:^7.5.1":
+  version: 7.5.1
+  resolution: "semver@npm:7.5.1"
+  dependencies:
+    lru-cache: ^6.0.0
+  bin:
+    semver: bin/semver.js
+  checksum: d16dbedad53c65b086f79524b9ef766bf38670b2395bdad5c957f824dcc566b624988013564f4812bcace3f9d405355c3635e2007396a39d1bffc71cfec4a2fc
   languageName: node
   linkType: hard
 
@@ -3720,7 +3730,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ts-jest@npm:^28.0.3":
+"ts-jest@npm:^28.0.8":
   version: 28.0.8
   resolution: "ts-jest@npm:28.0.8"
   dependencies:
@@ -3753,7 +3763,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ts-node@npm:^10.8.0":
+"ts-node@npm:^10.9.1":
   version: 10.9.1
   resolution: "ts-node@npm:10.9.1"
   dependencies:
@@ -3805,7 +3815,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:~4.7.2":
+"typescript@npm:~4.7.4":
   version: 4.7.4
   resolution: "typescript@npm:4.7.4"
   bin:
@@ -3815,7 +3825,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@~4.7.2#~builtin<compat/typescript>":
+"typescript@patch:typescript@~4.7.4#~builtin<compat/typescript>":
   version: 4.7.4
   resolution: "typescript@patch:typescript@npm%3A4.7.4#~builtin<compat/typescript>::version=4.7.4&hash=701156"
   bin:
