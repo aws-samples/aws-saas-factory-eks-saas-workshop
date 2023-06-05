@@ -128,7 +128,7 @@ export class TenantInfraStack extends NestedStack {
     });
 
     this.pipelineFunction = new lambda.Function(this, 'Func', {
-      runtime: lambda.Runtime.NODEJS_12_X,
+      runtime: lambda.Runtime.NODEJS_18_X,
       handler: 'index.handler',
       code: lambda.Code.fromInline(`
       var assert = require('assert');
