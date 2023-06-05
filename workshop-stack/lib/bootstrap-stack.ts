@@ -59,8 +59,8 @@ const respond = async function(event, context, responseStatus, responseData, phy
 };
 `;
 export interface BootstrapStackProps extends cdk.StackProps {
-  sourceZipFile: string
-  sourceZipFileChecksum: string
+  sourceZipFile: string;
+  sourceZipFileChecksum: string;
 }
 
 export class BootstrapStack extends cdk.Stack {
@@ -72,17 +72,17 @@ export class BootstrapStack extends cdk.Stack {
     // source code.
     const assetBucketName = new cdk.CfnParameter(this, 'EEAssetsBucket', {
       default: 'BucketNameNotSet',
-      type: 'String'
+      type: 'String',
     });
 
     const assetPrefix = new cdk.CfnParameter(this, 'EEAssetsKeyPrefix', {
       default: 'KeyPrefixNotSet',
-      type: 'String'
+      type: 'String',
     });
 
     const teamRoleArn = new cdk.CfnParameter(this, 'EETeamRoleArn', {
       default: 'RoleArnNotSet',
-      type: 'String'
+      type: 'String',
     });
 
     // We supply the value of this parameter ourselves via the ZIPFILE
@@ -90,15 +90,19 @@ export class BootstrapStack extends cdk.Stack {
     // generated YAML template.
     const sourceZipFile = new cdk.CfnParameter(this, 'SourceZipFile', {
       default: props.sourceZipFile,
-      type: 'String'
+      type: 'String',
     });
 
     const sourceZipFileChecksum = new cdk.CfnParameter(this, 'SourceZipFileChecksum', {
       default: props.sourceZipFileChecksum,
-      type: 'String'
+      type: 'String',
     });
 
-    const assetBucket = s3.Bucket.fromBucketName(this, 'SourceBucket', assetBucketName.valueAsString);
+    const assetBucket = s3.Bucket.fromBucketName(
+      this,
+      'SourceBucket',
+      assetBucketName.valueAsString
+    );
 
     // We need to create the Cloud9 environment here, instead of in the cluster stack
     // created in CodeBuild, so that the stack creator can access the environment.
@@ -120,13 +124,15 @@ export class BootstrapStack extends cdk.Stack {
           subnetType: ec2.SubnetType.PRIVATE_WITH_NAT,
           name: 'Private',
           cidrMask: 18,
-        }
-      ]
+        },
+      ],
     });
 
     // See https://docs.aws.amazon.com/eks/latest/userguide/network-load-balancing.html
-    vpc.privateSubnets.forEach(subnet => cdk.Tags.of(subnet).add('kubernetes.io/role/internal-elb', '1'));
-    vpc.publicSubnets.forEach(subnet => cdk.Tags.of(subnet).add('kubernetes.io/role/elb', '1'));
+    vpc.privateSubnets.forEach((subnet) =>
+      cdk.Tags.of(subnet).add('kubernetes.io/role/internal-elb', '1')
+    );
+    vpc.publicSubnets.forEach((subnet) => cdk.Tags.of(subnet).add('kubernetes.io/role/elb', '1'));
 
     // Create the Cloud9 Environment.
     const workspace = new cloud9.CfnEnvironmentEC2(this, 'Workspace', {
@@ -135,8 +141,13 @@ export class BootstrapStack extends cdk.Stack {
       instanceType: 'm5.large',
     });
 
-    const updateWorkspaceMembershipFunction = new lambda.Function(this, 'UpdateWorkspaceMembershipFunction', {
-      code: lambda.Code.fromInline(respondFunction + `
+    const updateWorkspaceMembershipFunction = new lambda.Function(
+      this,
+      'UpdateWorkspaceMembershipFunction',
+      {
+        code: lambda.Code.fromInline(
+          respondFunction +
+            `
 exports.handler = async function (event, context) {
   console.log(JSON.stringify(event, null, 4));
   const AWS = require('aws-sdk');
@@ -176,15 +187,19 @@ exports.handler = async function (event, context) {
       await respond(event, context, 'FAILED', { Error: error });
   }
 };
-          `),
-      handler: 'index.handler',
-      runtime: lambda.Runtime.NODEJS_14_X,
-      timeout: cdk.Duration.minutes(1),
-    });
-    updateWorkspaceMembershipFunction.addToRolePolicy(new iam.PolicyStatement({
-      actions: ['cloud9:createEnvironmentMembership'],
-      resources: ['*']
-    }));
+          `
+        ),
+        handler: 'index.handler',
+        runtime: lambda.Runtime.NODEJS_18_X,
+        timeout: cdk.Duration.minutes(1),
+      }
+    );
+    updateWorkspaceMembershipFunction.addToRolePolicy(
+      new iam.PolicyStatement({
+        actions: ['cloud9:createEnvironmentMembership'],
+        resources: ['*'],
+      })
+    );
 
     //const length = workspace.attrName.length;
     //const envId = workspace.attrName.substring(length - 32);
@@ -193,22 +208,22 @@ exports.handler = async function (event, context) {
       serviceToken: updateWorkspaceMembershipFunction.functionArn,
       properties: {
         EnvironmentId: workspace.attrArn,
-        EETeamRoleArn: teamRoleArn.valueAsString
-      }
+        EETeamRoleArn: teamRoleArn.valueAsString,
+      },
     });
 
     // Most of the resources will be provisioned via CDK. To accomplish this,
     // we will leverage CodeBuild as the execution engine for a Custom Resource.
     const buildProjectRole = new iam.Role(this, 'BuildProjectRole', {
-      assumedBy: new iam.ServicePrincipal('codebuild.amazonaws.com')
+      assumedBy: new iam.ServicePrincipal('codebuild.amazonaws.com'),
     });
     const buildProjectPolicy = new iam.Policy(this, 'BuildProjectPolicy', {
       statements: [
         new iam.PolicyStatement({
           actions: ['*'],
-          resources: ['*']
-        })
-      ]
+          resources: ['*'],
+        }),
+      ],
     });
     buildProjectRole.attachInlinePolicy(buildProjectPolicy);
 
@@ -220,16 +235,17 @@ exports.handler = async function (event, context) {
       },
       source: codebuild.Source.s3({
         bucket: assetBucket,
-        path: `${assetPrefix.valueAsString}${sourceZipFile.valueAsString}`
+        path: `${assetPrefix.valueAsString}${sourceZipFile.valueAsString}`,
       }),
       timeout: cdk.Duration.minutes(90),
     });
 
-
     // Custom resource function to start a build. The "application" being built
     // deploys our CDK app, specifically the EKS ClusterStack.
     const startBuildFunction = new lambda.Function(this, 'StartBuildFunction', {
-      code: lambda.Code.fromInline(respondFunction + `
+      code: lambda.Code.fromInline(
+        respondFunction +
+          `
 const AWS = require('aws-sdk');
 
 exports.handler = async function (event, context) {
@@ -282,21 +298,26 @@ exports.handler = async function (event, context) {
     await respond(event, context, 'FAILED', { Error: error });
   }
 };
-      `),
+      `
+      ),
       handler: 'index.handler',
-      runtime: lambda.Runtime.NODEJS_14_X,
-      timeout: cdk.Duration.minutes(1)
+      runtime: lambda.Runtime.NODEJS_18_X,
+      timeout: cdk.Duration.minutes(1),
     });
-    startBuildFunction.addToRolePolicy(new iam.PolicyStatement({
-      actions: ['codebuild:StartBuild'],
-      resources: [buildProject.projectArn]
-    }));
+    startBuildFunction.addToRolePolicy(
+      new iam.PolicyStatement({
+        actions: ['codebuild:StartBuild'],
+        resources: [buildProject.projectArn],
+      })
+    );
 
     // Lambda function to execute once CodeBuild has finished producing a build.
     // This will signal CloudFormation that the build (i.e., deploying the actual
     // EKS stack) has completed.
     const reportBuildFunction = new lambda.Function(this, 'ReportBuildFunction', {
-      code: lambda.Code.fromInline(respondFunction + `
+      code: lambda.Code.fromInline(
+        respondFunction +
+          `
 const AWS = require('aws-sdk');
 
 exports.handler = async function (event, context) {
@@ -331,18 +352,18 @@ exports.handler = async function (event, context) {
     await respond(response, context, 'FAILED', { Error: 'Build failed' });
   }
 };
-      `),
+      `
+      ),
       handler: 'index.handler',
-      runtime: lambda.Runtime.NODEJS_14_X,
-      timeout: cdk.Duration.minutes(1)
+      runtime: lambda.Runtime.NODEJS_18_X,
+      timeout: cdk.Duration.minutes(1),
     });
-    reportBuildFunction.addToRolePolicy(new iam.PolicyStatement({
-      actions: [
-        'codebuild:BatchGetBuilds',
-        'codebuild:ListBuildsForProject'
-      ],
-      resources: [buildProject.projectArn]
-    }));
+    reportBuildFunction.addToRolePolicy(
+      new iam.PolicyStatement({
+        actions: ['codebuild:BatchGetBuilds', 'codebuild:ListBuildsForProject'],
+        resources: [buildProject.projectArn],
+      })
+    );
 
     // Trigger the CloudFormation notification function upon build completion.
     const buildCompleteRule = new events.Rule(this, 'BuildCompleteRule', {
@@ -352,16 +373,14 @@ exports.handler = async function (event, context) {
         detailType: ['CodeBuild Build State Change'],
         detail: {
           'build-status': ['SUCCEEDED', 'FAILED', 'STOPPED'],
-          'project-name': [buildProject.projectName]
-        }
+          'project-name': [buildProject.projectName],
+        },
       },
-      targets: [
-        new LambdaTarget(reportBuildFunction)
-      ]
+      targets: [new LambdaTarget(reportBuildFunction)],
     });
 
     const cloud9EnvironmentArn = workspace.attrArn;
-    const components = cdk.Arn.split(cloud9EnvironmentArn,cdk.ArnFormat.COLON_RESOURCE_NAME);
+    const components = cdk.Arn.split(cloud9EnvironmentArn, cdk.ArnFormat.COLON_RESOURCE_NAME);
 
     // Kick off the build (CDK deployment).
     const clusterStack = new cdk.CustomResource(this, 'ClusterStack', {
@@ -372,7 +391,7 @@ exports.handler = async function (event, context) {
         Cloud9EnvironmentId: components.resourceName,
         BuildRoleArn: buildProjectRole.roleArn,
         ZipFileChecksum: sourceZipFileChecksum.valueAsString,
-      }
+      },
     });
     clusterStack.node.addDependency(buildCompleteRule, buildProjectPolicy, vpc);
   }
