@@ -1,7 +1,7 @@
 #!/bin/bash
 
 echo "Installing Istio with Ingress Gateway (NLB)"
-export ISTIO_VERSION="1.14.1"
+export ISTIO_VERSION="1.15.7"
 
 curl -L https://istio.io/downloadIstio | sh -
 cd istio-${ISTIO_VERSION}

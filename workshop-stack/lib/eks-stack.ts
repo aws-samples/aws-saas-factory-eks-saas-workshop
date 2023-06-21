@@ -86,7 +86,7 @@ export class EksStack extends NestedStack {
       {
         code: lambda.Code.fromAsset(path.join(__dirname, 'update-instance-profile')),
         handler: 'index.onEventHandler',
-        runtime: lambda.Runtime.NODEJS_14_X,
+        runtime: lambda.Runtime.NODEJS_16_X,
       }
     );
     updateInstanceProfileFunction.addToRolePolicy(

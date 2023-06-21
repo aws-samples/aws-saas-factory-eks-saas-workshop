@@ -1,4 +1,4 @@
-import { NestedStack, NestedStackProps, CfnOutput} from 'aws-cdk-lib';
+import { NestedStack, NestedStackProps, CfnOutput } from 'aws-cdk-lib';
 import * as cdk from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 
@@ -14,9 +14,9 @@ import * as path from 'path';
 const KeyName = 'workshop';
 
 export interface EksStackProps extends NestedStackProps {
-  vpcId: string
-  cloud9EnvironmentId: string
-  codeBuildRoleArn: string
+  vpcId: string;
+  cloud9EnvironmentId: string;
+  codeBuildRoleArn: string;
 }
 export class EksStack extends NestedStack {
   elbUrl: string;
@@ -31,11 +31,11 @@ export class EksStack extends NestedStack {
 
     // The VPC ID is supplied by the caller from the VPC_ID environment variable.
     const vpc = ec2.Vpc.fromLookup(this, 'VPC', {
-      vpcId: props.vpcId
+      vpcId: props.vpcId,
     });
 
     // CodeBuild role is supplied by the caller from the BUILD_ROLE_ARN environment variable.
-     this.codeBuildRole = iam.Role.fromRoleArn(this, 'CodeBuildRole', props.codeBuildRoleArn);
+    this.codeBuildRole = iam.Role.fromRoleArn(this, 'CodeBuildRole', props.codeBuildRoleArn);
 
     // Create an EC2 instance role for the Cloud9 environment. This instance
     // role is powerful, allowing the participant to have unfettered access to
@@ -43,12 +43,12 @@ export class EksStack extends NestedStack {
     // tighten this down, but there may be unintended consequences.
     const instanceRole = new iam.Role(this, 'WorkspaceInstanceRole', {
       assumedBy: new iam.ServicePrincipal('ec2.amazonaws.com'),
-      managedPolicies: [
-        iam.ManagedPolicy.fromAwsManagedPolicyName('AdministratorAccess')
-      ],
-      description: 'Workspace EC2 instance role'
+      managedPolicies: [iam.ManagedPolicy.fromAwsManagedPolicyName('AdministratorAccess')],
+      description: 'Workspace EC2 instance role',
     });
-    instanceRole.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonSSMManagedInstanceCore'));
+    instanceRole.addManagedPolicy(
+      iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonSSMManagedInstanceCore')
+    );
 
     // During internal testing we found that Isengard account baselining
     // was attaching IAM roles to instances in the background. This prevents
@@ -56,11 +56,11 @@ export class EksStack extends NestedStack {
     // role name and use it later to delete any attached policies before
     // cleanup.
     new CfnOutput(this, 'WorkspaceInstanceRoleName', {
-      value: instanceRole.roleName
+      value: instanceRole.roleName,
     });
 
     const instanceProfile = new iam.CfnInstanceProfile(this, 'WorkspaceInstanceProfile', {
-      roles: [instanceRole.roleName]
+      roles: [instanceRole.roleName],
     });
 
     // Obtain Cloud9 workspace instance ID and security group.
@@ -76,40 +76,49 @@ export class EksStack extends NestedStack {
           Filters: [
             {
               Name: 'tag:aws:cloud9:environment',
-              Values: [props.cloud9EnvironmentId]
-            }
-          ]
+              Values: [props.cloud9EnvironmentId],
+            },
+          ],
         },
         outputPaths: [
           'Reservations.0.Instances.0.InstanceId',
-          'Reservations.0.Instances.0.NetworkInterfaces.0.Groups.0.GroupId'
-        ]
-      }
+          'Reservations.0.Instances.0.NetworkInterfaces.0.Groups.0.GroupId',
+        ],
+      },
     });
     const instanceId = workspaceInstance.getResponseField('Reservations.0.Instances.0.InstanceId');
 
     const workspaceSecurityGroup = ec2.SecurityGroup.fromSecurityGroupId(
-      this, 'WorkspaceSecurityGroup',
-      workspaceInstance.getResponseField('Reservations.0.Instances.0.NetworkInterfaces.0.Groups.0.GroupId'));
-
+      this,
+      'WorkspaceSecurityGroup',
+      workspaceInstance.getResponseField(
+        'Reservations.0.Instances.0.NetworkInterfaces.0.Groups.0.GroupId'
+      )
+    );
 
     // This function provides a Custom Resource that detaches any existing IAM
     // instance profile that might be attached to the Cloud9 Environment, and
     // replaces it with the profile+role we created ourselves.
-    const updateInstanceProfileFunction = new lambda.Function(this, 'UpdateInstanceProfileFunction', {
-      code: lambda.Code.fromAsset(path.join(__dirname, 'update-instance-profile')),
-      handler: 'index.onEventHandler',
-      runtime: lambda.Runtime.NODEJS_14_X
-    });
-    updateInstanceProfileFunction.addToRolePolicy(new iam.PolicyStatement({
-      actions: [
-        'ec2:DescribeIamInstanceProfileAssociations',
-        'ec2:ReplaceIamInstanceProfileAssociation',
-        'ec2:AssociateIamInstanceProfile',
-        'iam:PassRole'
-      ],
-      resources: ['*'] // TODO: use specific instance ARN
-    }));
+    const updateInstanceProfileFunction = new lambda.Function(
+      this,
+      'UpdateInstanceProfileFunction',
+      {
+        code: lambda.Code.fromAsset(path.join(__dirname, 'update-instance-profile')),
+        handler: 'index.onEventHandler',
+        runtime: lambda.Runtime.NODEJS_16_X,
+      }
+    );
+    updateInstanceProfileFunction.addToRolePolicy(
+      new iam.PolicyStatement({
+        actions: [
+          'ec2:DescribeIamInstanceProfileAssociations',
+          'ec2:ReplaceIamInstanceProfileAssociation',
+          'ec2:AssociateIamInstanceProfile',
+          'iam:PassRole',
+        ],
+        resources: ['*'], // TODO: use specific instance ARN
+      })
+    );
 
     const updateInstanceProfile = new cr.Provider(this, 'UpdateInstanceProfileProvider', {
       onEventHandler: updateInstanceProfileFunction,
@@ -119,8 +128,8 @@ export class EksStack extends NestedStack {
       serviceToken: updateInstanceProfile.serviceToken,
       properties: {
         InstanceId: instanceId,
-        InstanceProfileArn: instanceProfile.attrArn
-      }
+        InstanceProfileArn: instanceProfile.attrArn,
+      },
     });
 
     // Create an SSH key pair for logging into the K8S nodes.
@@ -134,25 +143,21 @@ export class EksStack extends NestedStack {
         physicalResourceId: cr.PhysicalResourceId.of(KeyName),
         parameters: {
           KeyName,
-          KeyType: 'rsa'
+          KeyType: 'rsa',
         },
-        outputPaths: [
-          'KeyName',
-          'KeyMaterial'
-        ]
+        outputPaths: ['KeyName', 'KeyMaterial'],
       },
       onDelete: {
         service: 'EC2',
         action: 'deleteKeyPair',
         parameters: {
           KeyName,
-        }
+        },
       },
     });
 
     const keyMaterial = sshKeyPair.getResponseField('KeyMaterial');
     const keyName = sshKeyPair.getResponseField('KeyName');
-
 
     // Create our EKS cluster.
     const cluster = new eks.Cluster(this, 'Cluster', {
@@ -198,11 +203,11 @@ export class EksStack extends NestedStack {
             ebsDevice: {
               volumeType: ec2.EbsDeviceVolumeType.GP3,
               // ensure adequate room for forensics dumps
-              volumeSize: 100
-            }
-          }
-        }
-      ]
+              volumeSize: 100,
+            },
+          },
+        },
+      ],
     });
 
     // Create Managed Nodegroup.
@@ -215,10 +220,12 @@ export class EksStack extends NestedStack {
         // See https://github.com/aws/aws-cdk/issues/6734
         id: (launchTemplate.node.defaultChild as ec2.CfnLaunchTemplate).ref,
         version: launchTemplate.latestVersionNumber,
-      }
+      },
     });
-    nodegroup.role.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonSSMManagedInstanceCore'));
-    
+    nodegroup.role.addManagedPolicy(
+      iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonSSMManagedInstanceCore')
+    );
+
     const role = nodegroup.role;
 
     /* Need to figure this out - TBD - RANJITH!!!!!!
@@ -233,7 +240,7 @@ export class EksStack extends NestedStack {
     this.nodeGroupRole = role;
 
     new CfnOutput(this, 'NodegroupRoleName', {
-      value: nodegroup.role.roleName
+      value: nodegroup.role.roleName,
     });
 
     //Create Ingress
@@ -292,7 +299,6 @@ export class EksStack extends NestedStack {
 
     this.elbUrl = albAddress.value;
 
-
     // Since Cloud9 has the SSM agent on it, we'll take advantage of its
     // presence to prepare the instance. This includes installing kubectl,
     // setting up the kubeconfig file, and installing the SSH private key
@@ -313,14 +319,12 @@ export class EksStack extends NestedStack {
       policy: cr.AwsCustomResourcePolicy.fromStatements([
         new iam.PolicyStatement({
           actions: ['iam:PassRole'],
-          resources: [runCommandRole.roleArn]
+          resources: [runCommandRole.roleArn],
         }),
         new iam.PolicyStatement({
-          actions: [
-            'ssm:SendCommand'
-          ],
-          resources: ['*']
-        })
+          actions: ['ssm:SendCommand'],
+          resources: ['*'],
+        }),
       ]),
       onUpdate: {
         service: 'SSM',
@@ -334,7 +338,7 @@ export class EksStack extends NestedStack {
           ServiceRoleArn: runCommandRole.roleArn,
           CloudWatchOutputConfig: {
             CloudWatchLogGroupName: runCommandLogGroup.logGroupName,
-            CloudWatchOutputEnabled: true
+            CloudWatchOutputEnabled: true,
           },
           Parameters: {
             commands: [
@@ -347,7 +351,9 @@ export class EksStack extends NestedStack {
               `su -l -c 'echo "export AWS_REGION=${this.region}" >> ~/.bash_profile' ec2-user`,
               `su -l -c 'mkdir -p ~/.ssh && chmod 700 ~/.ssh' ec2-user`,
               // The key material isn't properly escaped, so we'll just base64-encode it first
-              `su -l -c 'echo "${cdk.Fn.base64(keyMaterial)}" | base64 -d > ~/.ssh/id_rsa' ec2-user`,
+              `su -l -c 'echo "${cdk.Fn.base64(
+                keyMaterial
+              )}" | base64 -d > ~/.ssh/id_rsa' ec2-user`,
               `su -l -c 'chmod 600 ~/.ssh/id_rsa' ec2-user`,
               'curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp',
               'chmod +x /tmp/eksctl',
@@ -366,13 +372,13 @@ export class EksStack extends NestedStack {
               `volume_id=$(aws --region ${this.region} ec2 describe-volumes --filters Name=attachment.instance-id,Values=${instanceId} --query 'Volumes[0].VolumeId' --output text)`,
               `aws --region ${this.region} ec2 modify-volume --volume-id $volume_id --size 30`,
               // This must be the last line - do not add any lines after this!
-              `reboot`
+              `reboot`,
               // Do not add any lines after this!
-            ]
+            ],
           },
         },
-        outputPaths: ['CommandId']
-      }
+        outputPaths: ['CommandId'],
+      },
     });
 
     const dynamoDbDoc = new iam.PolicyDocument({
@@ -403,6 +409,5 @@ export class EksStack extends NestedStack {
     new CfnOutput(this, 'ELBURL', { value: this.elbUrl });
     new CfnOutput(this, 'EksCodebuildArn', { value: this.codeBuildRole.roleArn });
     new CfnOutput(this, 'RoleUsedByTVM', { value: roleUsedByTokenVendingMachine.roleArn });
-
   }
 }

@@ -190,7 +190,7 @@ exports.handler = async function (event, context) {
           `
         ),
         handler: 'index.handler',
-        runtime: lambda.Runtime.NODEJS_18_X,
+        runtime: lambda.Runtime.NODEJS_16_X,
         timeout: cdk.Duration.minutes(1),
       }
     );
@@ -301,7 +301,7 @@ exports.handler = async function (event, context) {
       `
       ),
       handler: 'index.handler',
-      runtime: lambda.Runtime.NODEJS_18_X,
+      runtime: lambda.Runtime.NODEJS_16_X,
       timeout: cdk.Duration.minutes(1),
     });
     startBuildFunction.addToRolePolicy(
@@ -355,7 +355,7 @@ exports.handler = async function (event, context) {
       `
       ),
       handler: 'index.handler',
-      runtime: lambda.Runtime.NODEJS_18_X,
+      runtime: lambda.Runtime.NODEJS_16_X,
       timeout: cdk.Duration.minutes(1),
     });
     reportBuildFunction.addToRolePolicy(
