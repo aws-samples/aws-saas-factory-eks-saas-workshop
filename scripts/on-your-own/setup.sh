@@ -50,7 +50,8 @@ kubectl completion bash >>  ~/.bash_completion
 . ~/.bash_completion
 
 cd $CWD
-
+# resource our bash config to ensure we're binding to the right version of the AWS CLI (v2, vs. v1)
+. ~/.bashrc
 aws sts get-caller-identity --query Arn | grep saas-factory-eks-workshop-admin -q && echo "IAM role valid. You can continue setting up the EKS Cluster." || echo "IAM role NOT valid. Do not proceed with creating the EKS Cluster or you won't be able to authenticate. Ensure you assigned the role to your EC2 instance as detailed in the README.md of the eks-saas repo"
  
  
