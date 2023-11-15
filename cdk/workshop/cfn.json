@@ -484,6 +484,7 @@
     "Type": "AWS::Cloud9::EnvironmentEC2",
     "Properties": {
      "Description": "EKS SaaS Workshop",
+     "ImageId": "amazonlinux-2-x86_64",
      "InstanceType": "m5.large",
      "Name": "eks-saas-workshop"
     },
@@ -1164,7 +1165,7 @@
    "CDKMetadata": {
     "Type": "AWS::CDK::Metadata",
     "Properties": {
-     "Analytics": "v2:deflate64:H4sIAAAAAAAA/21Ry07DMBD8lt5d0wY4cGyjgnpBVop6RY69lE1jG/mRCkX5d9ZJSzhw2tnZ0eysXfD16oGvFvISlkqfly3WvD9Eqc6s/LBCemkggmc0f+/DPd8mdYa4lQEYqIL3xy+VhUdRMpHqFtUh1RZi5mZUuRThTdYtzPzMbUJwCmVEZ3/FGez2IpdXGV9khIv8ZsJjR3A23lvKRvgmmJJcu02kMz4N2Dgw1bqkn3h2tR16ZzO9KwvWSlNryfvnZNUtwV8swBsMgbqBoTS8r9x0xViFo4vHtROiRU5DnbDVvBfeNaDGnFc4MOhobyCXdHWhOgysguCSV0SlEJ2ZW1L8PyLHDjV9DL0eRPqwE9pT1pfOaoxjXktZeBPuumLFH/l60QTEpU82ogFeTfUHzO6kqwACAAA="
+     "Analytics": "v2:deflate64:H4sIAAAAAAAA/21RwU7DMAz9Fu5Z2Dpx4LhVgHZBUYd2RWlqhrcmQYnTCVX9d5x2oxw4+fnl6fk5LuRquZarO32JC9OcFy3Wst+TNmdRfjilg7ZAEAS/v/dxLbfJnIG2OoIAU8j+8GWy8KBKoVLdotmn2gFlbkaVTwRvum5h5mduE6M3qAm9+xVn8LRTubxqetEEF/0tVMCO4Wy8c5yN8U0wJbl2G+I1Pi04GoRpfWoeZXZ1HQbvMv1UFqLVtm607J+TM7cEf7GCYDFG7gaB2sq+8tMWY1WeNx7HTogH+QbqhG0jexX8CcyY8woHAR3PjeySri5ch0FUEH0KhqkUydu5ZcX/T+zYYcOH4d8D4oMd0R2zvvSuQRrzOs4iT/G+K5bygW98ioiLkByhBVlN9QfXXSmiAAIAAA=="
     },
     "Metadata": {
      "aws:cdk:path": "BootstrapStack/CDKMetadata/Default"
