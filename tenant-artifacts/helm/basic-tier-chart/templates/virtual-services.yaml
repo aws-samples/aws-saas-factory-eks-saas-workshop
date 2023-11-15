@@ -1,0 +1,66 @@
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: app-routes
+spec:
+  hosts:
+    - "{{ .Values.loadBalancerAddress }}"
+  gateways:
+    - default/eks-saas-workshop-gateway
+  http:
+    - match:
+        - uri:
+            prefix: /{{.Values.app.tenantPath}}/products/metrics
+      route:
+        - destination:
+            port:
+              number: 80
+            host: product-service
+    - match:
+        - uri:
+            prefix: /{{.Values.app.tenantPath}}/api/products
+      route:
+        - destination:
+            port:
+              number: 80
+            host: product-service
+    - match:
+        - uri:
+            prefix: /{{.Values.app.tenantPath}}/orders/metrics
+      route:
+        - destination:
+            port:
+              number: 80
+            host: order-service
+    - match:
+        - uri:
+            prefix: /{{.Values.app.tenantPath}}/api/orders
+          headers:
+            "@request.auth.claims.custom:tenant-id":
+              exact: "tenantId" ## REPLACE THIS VALUE WITH YOUR TENANT1'S ID
+      route:
+        - destination:
+            port:
+              number: 80
+            host: order-service
+            subset: v2
+          weight: 100
+    - match:
+        - uri:
+            prefix: /{{.Values.app.tenantPath}}/api/orders
+      route:
+        - destination:
+            host: order-service
+            port:
+              number: 80
+            subset: v1
+          weight: 100
+    - match:
+        - uri:
+            prefix: /{{.Values.app.tenantPath}}
+      route:
+        - destination:
+            port:
+              number: 80
+            host: application-service

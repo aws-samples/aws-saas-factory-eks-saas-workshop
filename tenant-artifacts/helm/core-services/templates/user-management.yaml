@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-management
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: user-management
+  template:
+    metadata:
+      labels:
+        app: user-management
+    spec:
+      containers:
+        - name: user-management
+          image: {{.Values.core.userManagement.image}}
+          imagePullPolicy: Always
+          ports:
+            - containerPort: {{.Values.core.userManagement.targetPort}}
+          env:
+            - name: AWS_REGION
+              value: "{{ .Values.region }}"
+            - name: COGNITO_USER_POOL_ID
+              value: "{{ .Values.cognito.userPoolId }}"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-management
+spec:
+  selector:
+    app: user-management
+  ports:
+    - name: http
+      protocol: TCP
+      port: {{.Values.core.userManagement.targetPort}}
+      targetPort: {{.Values.core.userManagement.targetPort}}

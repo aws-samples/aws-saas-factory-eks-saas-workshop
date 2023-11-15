@@ -1,0 +1,60 @@
+apiVersion: v1
+data:
+  config.json: |
+    {
+      "apiUrl": "//{{ .Values.loadBalancerAddress}}",
+      "stage": "develop",
+      "amplifyConfig": {
+        "aws_project_region": "{{.Values.region}}",
+        "aws_cognito_region": "{{.Values.region}}",
+        "aws_user_pools_id": "{{.Values.cognito.userPoolId}}",
+        "aws_user_pools_web_client_id": "{{.Values.cognito.clientId}}"
+      }
+    }
+kind: ConfigMap
+metadata:
+  name: admin-config
+  namespace: default
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: admin-application
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: admin-application
+  template:
+    metadata:
+      labels:
+        app: admin-application
+    spec:
+      containers:
+        - name: admin-application
+          image: {{ .Values.admin.image }}
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+              name: "http"
+          volumeMounts:
+            - name: config-volume
+              mountPath: /usr/share/nginx/html/admin/assets/config
+      volumes:
+        - name: config-volume
+          configMap:
+            name: admin-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: admin-application-service
+spec:
+  selector:
+    app: admin-application
+  ports:
+    - name: http
+      protocol: TCP
+      port: {{ .Values.admin.port }}
+      targetPort: {{ .Values.admin.targetPort }}
+  type: NodePort

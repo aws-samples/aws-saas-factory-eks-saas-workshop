@@ -15,6 +15,9 @@ spec:
       containers:
         - name: product
           image: $CONTAINERIMAGE
+          resources:
+            requests:
+              cpu: 1
           imagePullPolicy: Always
           ports:
             - containerPort: 3005
@@ -32,6 +35,12 @@ spec:
               value: "$REGION"
             - name: PRODUCT_TABLE_NAME
               value: "$PRODUCTTABLE"
+      tolerations:
+      - key: "premiumnodes"
+        operator: "Exists"
+        effect: "NoSchedule"
+      nodeSelector:
+        tenant-tier: premium
 ---
 apiVersion: v1
 kind: Service

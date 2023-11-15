@@ -1,4 +1,4 @@
 {
-  "apiUrl": "http://localhost:3001",
+  "apiUrl": "//a5bab3202dabd4bfcb14389eb4efa146-c31c0ebb28634857.elb.us-west-2.amazonaws.com",
   "stage": "develop"
 }

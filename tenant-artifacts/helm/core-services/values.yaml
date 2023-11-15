@@ -1,0 +1,53 @@
+region: us-west-2
+cognito:
+  userPoolId: us-west-2_HcYvTut6D
+  clientId: 24ibamo1oupv0csoo9p4qjdd5r
+loadBalancerAddress: af3bbbaa776ee474298937b49c6b3bb6-02a0f405e5885970.elb.us-west-2.amazonaws.com
+
+admin:
+  image: public.ecr.aws/o2b5n0j5/eks-saas-admin:latest
+  port: 80
+  targetPort: 80
+  
+core:
+  tenantTableName: Tenants
+  authInfoTableName: AuthInfo
+  tenantStackMappingTable: EKS-SaaS-Tenant-Stack-Mapping
+
+  tenantManagement:
+    image: public.ecr.aws/o2b5n0j5/eks-saas-tenant-management:v1.1
+    port: 80
+    targetPort: 3001
+    
+  tenantRegistration:
+    image: public.ecr.aws/o2b5n0j5/eks-saas-tenant-registration:v1.1
+    name: tenant-registration
+    port: 80
+    targetPort: 3000
+    
+  userManagement:
+    image: public.ecr.aws/o2b5n0j5/eks-saas-user:v1.1
+    name: user-management
+    port: 80
+    targetPort: 3015
+    
+app:
+  tenantPath: app
+  iamRoleArn: arn:aws:iam::995597444569:role/root-stack-eksstackNested-DynamicAssumeRole644B86FF-avCE006bAUGL
+  
+  product:
+    image: public.ecr.aws/o2b5n0j5/eks-saas-product:v1.1
+    productTable: Products-Pooled
+    port: 80
+    targetPort: 3005
+    
+  order:
+    image: public.ecr.aws/o2b5n0j5/eks-saas-order:v1.1
+    orderTable: Orders-Pooled
+    port: 80
+    targetPort: 3010
+  
+  application:
+    image: public.ecr.aws/o2b5n0j5/eks-saas-application:latest
+    port: 80
+    targetPort: 80

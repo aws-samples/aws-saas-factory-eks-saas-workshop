@@ -1,0 +1,12 @@
+apiVersion: security.istio.io/v1beta1
+kind: RequestAuthentication
+metadata:
+  name: ingress-jwt
+  namespace: istio-system
+spec:
+  selector:
+    matchLabels:
+      istio: ingress
+  jwtRules:
+  - issuer: "https://cognito-idp.us-west-2.amazonaws.com/REPLACE-WITH-YOUR-POOLED-USER-POOL-ID"  ## THIS IS THE FINAL FORMAT https://cognito-idp.us-west-2.amazonaws.com/us-west-2_AbCDEFGHI
+    forwardOriginalToken: true

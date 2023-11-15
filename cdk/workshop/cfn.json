@@ -1,0 +1,1369 @@
+{
+  "Parameters": {
+   "EEAssetsBucket": {
+    "Type": "String",
+    "Default": "BucketNameNotSet"
+   },
+   "EEAssetsKeyPrefix": {
+    "Type": "String",
+    "Default": "KeyPrefixNotSet"
+   },
+   "EETeamRoleArn": {
+    "Type": "String",
+    "Default": "RoleArnNotSet"
+   },
+   "SourceZipFile": {
+    "Type": "String",
+    "Default": "eks-workshop-stack-app.zip"
+   },
+   "SourceZipFileChecksum": {
+    "Type": "String",
+    "Default": ""
+   }
+  },
+  "Resources": {
+   "VPCB9E5F0B4": {
+    "Type": "AWS::EC2::VPC",
+    "Properties": {
+     "CidrBlock": "10.0.0.0/16",
+     "EnableDnsHostnames": true,
+     "EnableDnsSupport": true,
+     "InstanceTenancy": "default",
+     "Tags": [
+      {
+       "Key": "Name",
+       "Value": "BootstrapStack/VPC"
+      }
+     ]
+    },
+    "Metadata": {
+     "aws:cdk:path": "BootstrapStack/VPC/Resource"
+    }
+   },
+   "VPCPublicSubnet1SubnetB4246D30": {
+    "Type": "AWS::EC2::Subnet",
+    "Properties": {
+     "AvailabilityZone": {
+      "Fn::Select": [
+       0,
+       {
+        "Fn::GetAZs": ""
+       }
+      ]
+     },
+     "CidrBlock": "10.0.0.0/18",
+     "MapPublicIpOnLaunch": true,
+     "Tags": [
+      {
+       "Key": "aws-cdk:subnet-name",
+       "Value": "Public"
+      },
+      {
+       "Key": "aws-cdk:subnet-type",
+       "Value": "Public"
+      },
+      {
+       "Key": "kubernetes.io/role/elb",
+       "Value": "1"
+      },
+      {
+       "Key": "Name",
+       "Value": "BootstrapStack/VPC/PublicSubnet1"
+      }
+     ],
+     "VpcId": {
+      "Ref": "VPCB9E5F0B4"
+     }
+    },
+    "Metadata": {
+     "aws:cdk:path": "BootstrapStack/VPC/PublicSubnet1/Subnet"
+    }
+   },
+   "VPCPublicSubnet1RouteTableFEE4B781": {
+    "Type": "AWS::EC2::RouteTable",
+    "Properties": {
+     "Tags": [
+      {
+       "Key": "kubernetes.io/role/elb",
+       "Value": "1"
+      },
+      {
+       "Key": "Name",
+       "Value": "BootstrapStack/VPC/PublicSubnet1"
+      }
+     ],
+     "VpcId": {
+      "Ref": "VPCB9E5F0B4"
+     }
+    },
+    "Metadata": {
+     "aws:cdk:path": "BootstrapStack/VPC/PublicSubnet1/RouteTable"
+    }
+   },
+   "VPCPublicSubnet1RouteTableAssociation0B0896DC": {
+    "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    "Properties": {
+     "RouteTableId": {
+      "Ref": "VPCPublicSubnet1RouteTableFEE4B781"
+     },
+     "SubnetId": {
+      "Ref": "VPCPublicSubnet1SubnetB4246D30"
+     }
+    },
+    "Metadata": {
+     "aws:cdk:path": "BootstrapStack/VPC/PublicSubnet1/RouteTableAssociation"
+    }
+   },
+   "VPCPublicSubnet1DefaultRoute91CEF279": {
+    "Type": "AWS::EC2::Route",
+    "Properties": {
+     "DestinationCidrBlock": "0.0.0.0/0",
+     "GatewayId": {
+      "Ref": "VPCIGWB7E252D3"
+     },
+     "RouteTableId": {
+      "Ref": "VPCPublicSubnet1RouteTableFEE4B781"
+     }
+    },
+    "DependsOn": [
+     "VPCVPCGW99B986DC"
+    ],
+    "Metadata": {
+     "aws:cdk:path": "BootstrapStack/VPC/PublicSubnet1/DefaultRoute"
+    }
+   },
+   "VPCPublicSubnet1EIP6AD938E8": {
+    "Type": "AWS::EC2::EIP",
+    "Properties": {
+     "Domain": "vpc",
+     "Tags": [
+      {
+       "Key": "kubernetes.io/role/elb",
+       "Value": "1"
+      },
+      {
+       "Key": "Name",
+       "Value": "BootstrapStack/VPC/PublicSubnet1"
+      }
+     ]
+    },
+    "Metadata": {
+     "aws:cdk:path": "BootstrapStack/VPC/PublicSubnet1/EIP"
+    }
+   },
+   "VPCPublicSubnet1NATGatewayE0556630": {
+    "Type": "AWS::EC2::NatGateway",
+    "Properties": {
+     "AllocationId": {
+      "Fn::GetAtt": [
+       "VPCPublicSubnet1EIP6AD938E8",
+       "AllocationId"
+      ]
+     },
+     "SubnetId": {
+      "Ref": "VPCPublicSubnet1SubnetB4246D30"
+     },
+     "Tags": [
+      {
+       "Key": "kubernetes.io/role/elb",
+       "Value": "1"
+      },
+      {
+       "Key": "Name",
+       "Value": "BootstrapStack/VPC/PublicSubnet1"
+      }
+     ]
+    },
+    "DependsOn": [
+     "VPCPublicSubnet1DefaultRoute91CEF279",
+     "VPCPublicSubnet1RouteTableAssociation0B0896DC"
+    ],
+    "Metadata": {
+     "aws:cdk:path": "BootstrapStack/VPC/PublicSubnet1/NATGateway"
+    }
+   },
+   "VPCPublicSubnet2Subnet74179F39": {
+    "Type": "AWS::EC2::Subnet",
+    "Properties": {
+     "AvailabilityZone": {
+      "Fn::Select": [
+       1,
+       {
+        "Fn::GetAZs": ""
+       }
+      ]
+     },
+     "CidrBlock": "10.0.64.0/18",
+     "MapPublicIpOnLaunch": true,
+     "Tags": [
+      {
+       "Key": "aws-cdk:subnet-name",
+       "Value": "Public"
+      },
+      {
+       "Key": "aws-cdk:subnet-type",
+       "Value": "Public"
+      },
+      {
+       "Key": "kubernetes.io/role/elb",
+       "Value": "1"
+      },
+      {
+       "Key": "Name",
+       "Value": "BootstrapStack/VPC/PublicSubnet2"
+      }
+     ],
+     "VpcId": {
+      "Ref": "VPCB9E5F0B4"
+     }
+    },
+    "Metadata": {
+     "aws:cdk:path": "BootstrapStack/VPC/PublicSubnet2/Subnet"
+    }
+   },
+   "VPCPublicSubnet2RouteTable6F1A15F1": {
+    "Type": "AWS::EC2::RouteTable",
+    "Properties": {
+     "Tags": [
+      {
+       "Key": "kubernetes.io/role/elb",
+       "Value": "1"
+      },
+      {
+       "Key": "Name",
+       "Value": "BootstrapStack/VPC/PublicSubnet2"
+      }
+     ],
+     "VpcId": {
+      "Ref": "VPCB9E5F0B4"
+     }
+    },
+    "Metadata": {
+     "aws:cdk:path": "BootstrapStack/VPC/PublicSubnet2/RouteTable"
+    }
+   },
+   "VPCPublicSubnet2RouteTableAssociation5A808732": {
+    "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    "Properties": {
+     "RouteTableId": {
+      "Ref": "VPCPublicSubnet2RouteTable6F1A15F1"
+     },
+     "SubnetId": {
+      "Ref": "VPCPublicSubnet2Subnet74179F39"
+     }
+    },
+    "Metadata": {
+     "aws:cdk:path": "BootstrapStack/VPC/PublicSubnet2/RouteTableAssociation"
+    }
+   },
+   "VPCPublicSubnet2DefaultRouteB7481BBA": {
+    "Type": "AWS::EC2::Route",
+    "Properties": {
+     "DestinationCidrBlock": "0.0.0.0/0",
+     "GatewayId": {
+      "Ref": "VPCIGWB7E252D3"
+     },
+     "RouteTableId": {
+      "Ref": "VPCPublicSubnet2RouteTable6F1A15F1"
+     }
+    },
+    "DependsOn": [
+     "VPCVPCGW99B986DC"
+    ],
+    "Metadata": {
+     "aws:cdk:path": "BootstrapStack/VPC/PublicSubnet2/DefaultRoute"
+    }
+   },
+   "VPCPrivateSubnet1Subnet8BCA10E0": {
+    "Type": "AWS::EC2::Subnet",
+    "Properties": {
+     "AvailabilityZone": {
+      "Fn::Select": [
+       0,
+       {
+        "Fn::GetAZs": ""
+       }
+      ]
+     },
+     "CidrBlock": "10.0.128.0/18",
+     "MapPublicIpOnLaunch": false,
+     "Tags": [
+      {
+       "Key": "aws-cdk:subnet-name",
+       "Value": "Private"
+      },
+      {
+       "Key": "aws-cdk:subnet-type",
+       "Value": "Private"
+      },
+      {
+       "Key": "kubernetes.io/role/internal-elb",
+       "Value": "1"
+      },
+      {
+       "Key": "Name",
+       "Value": "BootstrapStack/VPC/PrivateSubnet1"
+      }
+     ],
+     "VpcId": {
+      "Ref": "VPCB9E5F0B4"
+     }
+    },
+    "Metadata": {
+     "aws:cdk:path": "BootstrapStack/VPC/PrivateSubnet1/Subnet"
+    }
+   },
+   "VPCPrivateSubnet1RouteTableBE8A6027": {
+    "Type": "AWS::EC2::RouteTable",
+    "Properties": {
+     "Tags": [
+      {
+       "Key": "kubernetes.io/role/internal-elb",
+       "Value": "1"
+      },
+      {
+       "Key": "Name",
+       "Value": "BootstrapStack/VPC/PrivateSubnet1"
+      }
+     ],
+     "VpcId": {
+      "Ref": "VPCB9E5F0B4"
+     }
+    },
+    "Metadata": {
+     "aws:cdk:path": "BootstrapStack/VPC/PrivateSubnet1/RouteTable"
+    }
+   },
+   "VPCPrivateSubnet1RouteTableAssociation347902D1": {
+    "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    "Properties": {
+     "RouteTableId": {
+      "Ref": "VPCPrivateSubnet1RouteTableBE8A6027"
+     },
+     "SubnetId": {
+      "Ref": "VPCPrivateSubnet1Subnet8BCA10E0"
+     }
+    },
+    "Metadata": {
+     "aws:cdk:path": "BootstrapStack/VPC/PrivateSubnet1/RouteTableAssociation"
+    }
+   },
+   "VPCPrivateSubnet1DefaultRouteAE1D6490": {
+    "Type": "AWS::EC2::Route",
+    "Properties": {
+     "DestinationCidrBlock": "0.0.0.0/0",
+     "NatGatewayId": {
+      "Ref": "VPCPublicSubnet1NATGatewayE0556630"
+     },
+     "RouteTableId": {
+      "Ref": "VPCPrivateSubnet1RouteTableBE8A6027"
+     }
+    },
+    "Metadata": {
+     "aws:cdk:path": "BootstrapStack/VPC/PrivateSubnet1/DefaultRoute"
+    }
+   },
+   "VPCPrivateSubnet2SubnetCFCDAA7A": {
+    "Type": "AWS::EC2::Subnet",
+    "Properties": {
+     "AvailabilityZone": {
+      "Fn::Select": [
+       1,
+       {
+        "Fn::GetAZs": ""
+       }
+      ]
+     },
+     "CidrBlock": "10.0.192.0/18",
+     "MapPublicIpOnLaunch": false,
+     "Tags": [
+      {
+       "Key": "aws-cdk:subnet-name",
+       "Value": "Private"
+      },
+      {
+       "Key": "aws-cdk:subnet-type",
+       "Value": "Private"
+      },
+      {
+       "Key": "kubernetes.io/role/internal-elb",
+       "Value": "1"
+      },
+      {
+       "Key": "Name",
+       "Value": "BootstrapStack/VPC/PrivateSubnet2"
+      }
+     ],
+     "VpcId": {
+      "Ref": "VPCB9E5F0B4"
+     }
+    },
+    "Metadata": {
+     "aws:cdk:path": "BootstrapStack/VPC/PrivateSubnet2/Subnet"
+    }
+   },
+   "VPCPrivateSubnet2RouteTable0A19E10E": {
+    "Type": "AWS::EC2::RouteTable",
+    "Properties": {
+     "Tags": [
+      {
+       "Key": "kubernetes.io/role/internal-elb",
+       "Value": "1"
+      },
+      {
+       "Key": "Name",
+       "Value": "BootstrapStack/VPC/PrivateSubnet2"
+      }
+     ],
+     "VpcId": {
+      "Ref": "VPCB9E5F0B4"
+     }
+    },
+    "Metadata": {
+     "aws:cdk:path": "BootstrapStack/VPC/PrivateSubnet2/RouteTable"
+    }
+   },
+   "VPCPrivateSubnet2RouteTableAssociation0C73D413": {
+    "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    "Properties": {
+     "RouteTableId": {
+      "Ref": "VPCPrivateSubnet2RouteTable0A19E10E"
+     },
+     "SubnetId": {
+      "Ref": "VPCPrivateSubnet2SubnetCFCDAA7A"
+     }
+    },
+    "Metadata": {
+     "aws:cdk:path": "BootstrapStack/VPC/PrivateSubnet2/RouteTableAssociation"
+    }
+   },
+   "VPCPrivateSubnet2DefaultRouteF4F5CFD2": {
+    "Type": "AWS::EC2::Route",
+    "Properties": {
+     "DestinationCidrBlock": "0.0.0.0/0",
+     "NatGatewayId": {
+      "Ref": "VPCPublicSubnet1NATGatewayE0556630"
+     },
+     "RouteTableId": {
+      "Ref": "VPCPrivateSubnet2RouteTable0A19E10E"
+     }
+    },
+    "Metadata": {
+     "aws:cdk:path": "BootstrapStack/VPC/PrivateSubnet2/DefaultRoute"
+    }
+   },
+   "VPCIGWB7E252D3": {
+    "Type": "AWS::EC2::InternetGateway",
+    "Properties": {
+     "Tags": [
+      {
+       "Key": "Name",
+       "Value": "BootstrapStack/VPC"
+      }
+     ]
+    },
+    "Metadata": {
+     "aws:cdk:path": "BootstrapStack/VPC/IGW"
+    }
+   },
+   "VPCVPCGW99B986DC": {
+    "Type": "AWS::EC2::VPCGatewayAttachment",
+    "Properties": {
+     "InternetGatewayId": {
+      "Ref": "VPCIGWB7E252D3"
+     },
+     "VpcId": {
+      "Ref": "VPCB9E5F0B4"
+     }
+    },
+    "Metadata": {
+     "aws:cdk:path": "BootstrapStack/VPC/VPCGW"
+    }
+   },
+   "Workspace": {
+    "Type": "AWS::Cloud9::EnvironmentEC2",
+    "Properties": {
+     "Description": "EKS SaaS Workshop",
+     "InstanceType": "m5.large",
+     "Name": "eks-saas-workshop"
+    },
+    "Metadata": {
+     "aws:cdk:path": "BootstrapStack/Workspace"
+    }
+   },
+   "UpdateWorkspaceMembershipFunctionServiceRole9784B9F9": {
+    "Type": "AWS::IAM::Role",
+    "Properties": {
+     "AssumeRolePolicyDocument": {
+      "Statement": [
+       {
+        "Action": "sts:AssumeRole",
+        "Effect": "Allow",
+        "Principal": {
+         "Service": "lambda.amazonaws.com"
+        }
+       }
+      ],
+      "Version": "2012-10-17"
+     },
+     "ManagedPolicyArns": [
+      {
+       "Fn::Join": [
+        "",
+        [
+         "arn:",
+         {
+          "Ref": "AWS::Partition"
+         },
+         ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+        ]
+       ]
+      }
+     ]
+    },
+    "Metadata": {
+     "aws:cdk:path": "BootstrapStack/UpdateWorkspaceMembershipFunction/ServiceRole/Resource"
+    }
+   },
+   "UpdateWorkspaceMembershipFunctionServiceRoleDefaultPolicy3615A70C": {
+    "Type": "AWS::IAM::Policy",
+    "Properties": {
+     "PolicyDocument": {
+      "Statement": [
+       {
+        "Action": "cloud9:createEnvironmentMembership",
+        "Effect": "Allow",
+        "Resource": "*"
+       }
+      ],
+      "Version": "2012-10-17"
+     },
+     "PolicyName": "UpdateWorkspaceMembershipFunctionServiceRoleDefaultPolicy3615A70C",
+     "Roles": [
+      {
+       "Ref": "UpdateWorkspaceMembershipFunctionServiceRole9784B9F9"
+      }
+     ]
+    },
+    "Metadata": {
+     "aws:cdk:path": "BootstrapStack/UpdateWorkspaceMembershipFunction/ServiceRole/DefaultPolicy/Resource"
+    }
+   },
+   "UpdateWorkspaceMembershipFunctionFAB27C9D": {
+    "Type": "AWS::Lambda::Function",
+    "Properties": {
+     "Code": {
+      "ZipFile": "\nconst respond = async function(event, context, responseStatus, responseData, physicalResourceId, noEcho) {\n  return new Promise((resolve, reject) => {\n    var responseBody = JSON.stringify({\n        Status: responseStatus,\n        Reason: \"See the details in CloudWatch Log Stream: \" + context.logGroupName + \" \" + context.logStreamName,\n        PhysicalResourceId: physicalResourceId || context.logStreamName,\n        StackId: event.StackId,\n        RequestId: event.RequestId,\n        LogicalResourceId: event.LogicalResourceId,\n        NoEcho: noEcho || false,\n        Data: responseData\n    });\n\n    console.log(\"Response body:\\n\", responseBody);\n\n    var https = require(\"https\");\n    var url = require(\"url\");\n\n    var parsedUrl = url.parse(event.ResponseURL);\n    var options = {\n        hostname: parsedUrl.hostname,\n        port: 443,\n        path: parsedUrl.path,\n        method: \"PUT\",\n        headers: {\n            \"content-type\": \"\",\n            \"content-length\": responseBody.length\n        }\n    };\n\n    var request = https.request(options, function(response) {\n        console.log(\"Status code: \" + response.statusCode);\n        console.log(\"Status message: \" + response.statusMessage);\n        resolve();\n    });\n\n    request.on(\"error\", function(error) {\n        console.log(\"respond(..) failed executing https.request(..): \" + error);\n        resolve();\n    });\n\n    request.write(responseBody);\n    request.end();\n  });\n};\n\nexports.handler = async function (event, context) {\n  console.log(JSON.stringify(event, null, 4));\n  const AWS = require('aws-sdk');\n\n  try {\n\n    const environmentArn = event.ResourceProperties.EnvironmentId;\n    const arnSplit = environmentArn.split(':');\n    const environmentId = arnSplit[6];\n    console.log(\"EnvironmentId =====>\" + environmentId);\n\n    if (event.RequestType === \"Create\" || event.RequestType === \"Update\") {\n      const eeTeamRoleArn = event.ResourceProperties.EETeamRoleArn;\n\n      if (!!eeTeamRoleArn && eeTeamRoleArn !== 'RoleArnNotSet') {\n        const arnSplit = eeTeamRoleArn.split(':');\n        const accountNumber = arnSplit[4];\n        const resourceName = arnSplit[5].split('/')[1];\n        const eeTeamAssumedRoleArn = `arn:aws:sts::${accountNumber}:assumed-role/${resourceName}/Participant`;\n\n        console.log('Resolved EE Team Assumed Role ARN: ' + eeTeamAssumedRoleArn);\n\n        const cloud9 = new AWS.Cloud9();\n\n        const { membership } = await cloud9.createEnvironmentMembership({\n            environmentId,\n            permissions: 'read-write',\n            userArn: eeTeamAssumedRoleArn,\n        }).promise();\n        console.log(JSON.stringify(membership, null, 4));\n      }\n    }\n    console.log('Sending SUCCESS response');\n    await respond(event, context, 'SUCCESS', {}, environmentId);\n  } catch (error) {\n      console.error(error);\n      await respond(event, context, 'FAILED', { Error: error });\n  }\n};\n          "
+     },
+     "Handler": "index.handler",
+     "Role": {
+      "Fn::GetAtt": [
+       "UpdateWorkspaceMembershipFunctionServiceRole9784B9F9",
+       "Arn"
+      ]
+     },
+     "Runtime": "nodejs16.x",
+     "Timeout": 60
+    },
+    "DependsOn": [
+     "UpdateWorkspaceMembershipFunctionServiceRoleDefaultPolicy3615A70C",
+     "UpdateWorkspaceMembershipFunctionServiceRole9784B9F9"
+    ],
+    "Metadata": {
+     "aws:cdk:path": "BootstrapStack/UpdateWorkspaceMembershipFunction/Resource"
+    }
+   },
+   "UpdateWorkspaceMembership": {
+    "Type": "AWS::CloudFormation::CustomResource",
+    "Properties": {
+     "ServiceToken": {
+      "Fn::GetAtt": [
+       "UpdateWorkspaceMembershipFunctionFAB27C9D",
+       "Arn"
+      ]
+     },
+     "EnvironmentId": {
+      "Fn::GetAtt": [
+       "Workspace",
+       "Arn"
+      ]
+     },
+     "EETeamRoleArn": {
+      "Ref": "EETeamRoleArn"
+     }
+    },
+    "UpdateReplacePolicy": "Delete",
+    "DeletionPolicy": "Delete",
+    "Metadata": {
+     "aws:cdk:path": "BootstrapStack/UpdateWorkspaceMembership/Default"
+    }
+   },
+   "BuildProjectRole0E170066": {
+    "Type": "AWS::IAM::Role",
+    "Properties": {
+     "AssumeRolePolicyDocument": {
+      "Statement": [
+       {
+        "Action": "sts:AssumeRole",
+        "Effect": "Allow",
+        "Principal": {
+         "Service": "codebuild.amazonaws.com"
+        }
+       }
+      ],
+      "Version": "2012-10-17"
+     }
+    },
+    "Metadata": {
+     "aws:cdk:path": "BootstrapStack/BuildProjectRole/Resource"
+    }
+   },
+   "BuildProjectRoleDefaultPolicyE4352B8B": {
+    "Type": "AWS::IAM::Policy",
+    "Properties": {
+     "PolicyDocument": {
+      "Statement": [
+       {
+        "Action": [
+         "s3:GetBucket*",
+         "s3:GetObject*",
+         "s3:List*"
+        ],
+        "Effect": "Allow",
+        "Resource": [
+         {
+          "Fn::Join": [
+           "",
+           [
+            "arn:",
+            {
+             "Ref": "AWS::Partition"
+            },
+            ":s3:::",
+            {
+             "Ref": "EEAssetsBucket"
+            },
+            "/",
+            {
+             "Ref": "EEAssetsKeyPrefix"
+            },
+            {
+             "Ref": "SourceZipFile"
+            }
+           ]
+          ]
+         },
+         {
+          "Fn::Join": [
+           "",
+           [
+            "arn:",
+            {
+             "Ref": "AWS::Partition"
+            },
+            ":s3:::",
+            {
+             "Ref": "EEAssetsBucket"
+            }
+           ]
+          ]
+         }
+        ]
+       },
+       {
+        "Action": [
+         "logs:CreateLogGroup",
+         "logs:CreateLogStream",
+         "logs:PutLogEvents"
+        ],
+        "Effect": "Allow",
+        "Resource": [
+         {
+          "Fn::Join": [
+           "",
+           [
+            "arn:",
+            {
+             "Ref": "AWS::Partition"
+            },
+            ":logs:",
+            {
+             "Ref": "AWS::Region"
+            },
+            ":",
+            {
+             "Ref": "AWS::AccountId"
+            },
+            ":log-group:/aws/codebuild/",
+            {
+             "Ref": "BuildProject097C5DB7"
+            },
+            ":*"
+           ]
+          ]
+         },
+         {
+          "Fn::Join": [
+           "",
+           [
+            "arn:",
+            {
+             "Ref": "AWS::Partition"
+            },
+            ":logs:",
+            {
+             "Ref": "AWS::Region"
+            },
+            ":",
+            {
+             "Ref": "AWS::AccountId"
+            },
+            ":log-group:/aws/codebuild/",
+            {
+             "Ref": "BuildProject097C5DB7"
+            }
+           ]
+          ]
+         }
+        ]
+       },
+       {
+        "Action": [
+         "codebuild:BatchPutCodeCoverages",
+         "codebuild:BatchPutTestCases",
+         "codebuild:CreateReport",
+         "codebuild:CreateReportGroup",
+         "codebuild:UpdateReport"
+        ],
+        "Effect": "Allow",
+        "Resource": {
+         "Fn::Join": [
+          "",
+          [
+           "arn:",
+           {
+            "Ref": "AWS::Partition"
+           },
+           ":codebuild:",
+           {
+            "Ref": "AWS::Region"
+           },
+           ":",
+           {
+            "Ref": "AWS::AccountId"
+           },
+           ":report-group/",
+           {
+            "Ref": "BuildProject097C5DB7"
+           },
+           "-*"
+          ]
+         ]
+        }
+       }
+      ],
+      "Version": "2012-10-17"
+     },
+     "PolicyName": "BuildProjectRoleDefaultPolicyE4352B8B",
+     "Roles": [
+      {
+       "Ref": "BuildProjectRole0E170066"
+      }
+     ]
+    },
+    "Metadata": {
+     "aws:cdk:path": "BootstrapStack/BuildProjectRole/DefaultPolicy/Resource"
+    }
+   },
+   "BuildProjectPolicyF8FA4BD5": {
+    "Type": "AWS::IAM::Policy",
+    "Properties": {
+     "PolicyDocument": {
+      "Statement": [
+       {
+        "Action": "*",
+        "Effect": "Allow",
+        "Resource": "*"
+       }
+      ],
+      "Version": "2012-10-17"
+     },
+     "PolicyName": "BuildProjectPolicyF8FA4BD5",
+     "Roles": [
+      {
+       "Ref": "BuildProjectRole0E170066"
+      }
+     ]
+    },
+    "Metadata": {
+     "aws:cdk:path": "BootstrapStack/BuildProjectPolicy/Resource"
+    }
+   },
+   "BuildProject097C5DB7": {
+    "Type": "AWS::CodeBuild::Project",
+    "Properties": {
+     "Artifacts": {
+      "Type": "NO_ARTIFACTS"
+     },
+     "Cache": {
+      "Type": "NO_CACHE"
+     },
+     "EncryptionKey": "alias/aws/s3",
+     "Environment": {
+      "ComputeType": "BUILD_GENERAL1_SMALL",
+      "Image": "aws/codebuild/amazonlinux2-x86_64-standard:5.0",
+      "ImagePullCredentialsType": "CODEBUILD",
+      "PrivilegedMode": false,
+      "Type": "LINUX_CONTAINER"
+     },
+     "ServiceRole": {
+      "Fn::GetAtt": [
+       "BuildProjectRole0E170066",
+       "Arn"
+      ]
+     },
+     "Source": {
+      "Location": {
+       "Fn::Join": [
+        "",
+        [
+         {
+          "Ref": "EEAssetsBucket"
+         },
+         "/",
+         {
+          "Ref": "EEAssetsKeyPrefix"
+         },
+         {
+          "Ref": "SourceZipFile"
+         }
+        ]
+       ]
+      },
+      "Type": "S3"
+     },
+     "TimeoutInMinutes": 90
+    },
+    "Metadata": {
+     "aws:cdk:path": "BootstrapStack/BuildProject/Resource"
+    }
+   },
+   "StartBuildFunctionServiceRole25C56391": {
+    "Type": "AWS::IAM::Role",
+    "Properties": {
+     "AssumeRolePolicyDocument": {
+      "Statement": [
+       {
+        "Action": "sts:AssumeRole",
+        "Effect": "Allow",
+        "Principal": {
+         "Service": "lambda.amazonaws.com"
+        }
+       }
+      ],
+      "Version": "2012-10-17"
+     },
+     "ManagedPolicyArns": [
+      {
+       "Fn::Join": [
+        "",
+        [
+         "arn:",
+         {
+          "Ref": "AWS::Partition"
+         },
+         ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+        ]
+       ]
+      }
+     ]
+    },
+    "Metadata": {
+     "aws:cdk:path": "BootstrapStack/StartBuildFunction/ServiceRole/Resource"
+    }
+   },
+   "StartBuildFunctionServiceRoleDefaultPolicy53DA047E": {
+    "Type": "AWS::IAM::Policy",
+    "Properties": {
+     "PolicyDocument": {
+      "Statement": [
+       {
+        "Action": "codebuild:StartBuild",
+        "Effect": "Allow",
+        "Resource": {
+         "Fn::GetAtt": [
+          "BuildProject097C5DB7",
+          "Arn"
+         ]
+        }
+       }
+      ],
+      "Version": "2012-10-17"
+     },
+     "PolicyName": "StartBuildFunctionServiceRoleDefaultPolicy53DA047E",
+     "Roles": [
+      {
+       "Ref": "StartBuildFunctionServiceRole25C56391"
+      }
+     ]
+    },
+    "Metadata": {
+     "aws:cdk:path": "BootstrapStack/StartBuildFunction/ServiceRole/DefaultPolicy/Resource"
+    }
+   },
+   "StartBuildFunction21B23CDA": {
+    "Type": "AWS::Lambda::Function",
+    "Properties": {
+     "Code": {
+      "ZipFile": "\nconst respond = async function(event, context, responseStatus, responseData, physicalResourceId, noEcho) {\n  return new Promise((resolve, reject) => {\n    var responseBody = JSON.stringify({\n        Status: responseStatus,\n        Reason: \"See the details in CloudWatch Log Stream: \" + context.logGroupName + \" \" + context.logStreamName,\n        PhysicalResourceId: physicalResourceId || context.logStreamName,\n        StackId: event.StackId,\n        RequestId: event.RequestId,\n        LogicalResourceId: event.LogicalResourceId,\n        NoEcho: noEcho || false,\n        Data: responseData\n    });\n\n    console.log(\"Response body:\\n\", responseBody);\n\n    var https = require(\"https\");\n    var url = require(\"url\");\n\n    var parsedUrl = url.parse(event.ResponseURL);\n    var options = {\n        hostname: parsedUrl.hostname,\n        port: 443,\n        path: parsedUrl.path,\n        method: \"PUT\",\n        headers: {\n            \"content-type\": \"\",\n            \"content-length\": responseBody.length\n        }\n    };\n\n    var request = https.request(options, function(response) {\n        console.log(\"Status code: \" + response.statusCode);\n        console.log(\"Status message: \" + response.statusMessage);\n        resolve();\n    });\n\n    request.on(\"error\", function(error) {\n        console.log(\"respond(..) failed executing https.request(..): \" + error);\n        resolve();\n    });\n\n    request.write(responseBody);\n    request.end();\n  });\n};\n\nconst AWS = require('aws-sdk');\n\nexports.handler = async function (event, context) {\n  console.log(JSON.stringify(event, null, 4));\n  try {\n    const projectName = event.ResourceProperties.ProjectName;\n    const codebuild = new AWS.CodeBuild();\n\n    console.log(`Starting new build of project ${projectName}`);\n\n    const { build } = await codebuild.startBuild({\n      projectName,\n      // Pass CFN related parameters through the build for extraction by the\n      // completion handler.\n      buildspecOverride: event.RequestType === 'Delete' ? 'cdk/workshop/buildspec-destroy.yml' : 'cdk/workshop/buildspec.yml',\n      environmentVariablesOverride: [\n        {\n          name: 'CFN_RESPONSE_URL',\n          value: event.ResponseURL\n        },\n        {\n          name: 'CFN_STACK_ID',\n          value: event.StackId\n        },\n        {\n          name: 'CFN_REQUEST_ID',\n          value: event.RequestId\n        },\n        {\n          name: 'CFN_LOGICAL_RESOURCE_ID',\n          value: event.LogicalResourceId\n        },\n        {\n          name: 'CLOUD9_ENVIRONMENT_ID',\n          value: event.ResourceProperties.Cloud9EnvironmentId\n        },\n        {\n          name: 'BUILD_ROLE_ARN',\n          value: event.ResourceProperties.BuildRoleArn\n        },\n        {\n          name: 'WS_PARTICIPANT_ROLE_ARN',\n          value: event.ResourceProperties.WSParticipantRoleArn\n        }\n      ]\n    }).promise();\n    console.log(`Build id ${build.id} started - resource completion handled by EventBridge`);\n  } catch(error) {\n    console.error(error);\n    await respond(event, context, 'FAILED', { Error: error });\n  }\n};\n      "
+     },
+     "Handler": "index.handler",
+     "Role": {
+      "Fn::GetAtt": [
+       "StartBuildFunctionServiceRole25C56391",
+       "Arn"
+      ]
+     },
+     "Runtime": "nodejs16.x",
+     "Timeout": 60
+    },
+    "DependsOn": [
+     "StartBuildFunctionServiceRoleDefaultPolicy53DA047E",
+     "StartBuildFunctionServiceRole25C56391"
+    ],
+    "Metadata": {
+     "aws:cdk:path": "BootstrapStack/StartBuildFunction/Resource"
+    }
+   },
+   "ReportBuildFunctionServiceRole3573BFF1": {
+    "Type": "AWS::IAM::Role",
+    "Properties": {
+     "AssumeRolePolicyDocument": {
+      "Statement": [
+       {
+        "Action": "sts:AssumeRole",
+        "Effect": "Allow",
+        "Principal": {
+         "Service": "lambda.amazonaws.com"
+        }
+       }
+      ],
+      "Version": "2012-10-17"
+     },
+     "ManagedPolicyArns": [
+      {
+       "Fn::Join": [
+        "",
+        [
+         "arn:",
+         {
+          "Ref": "AWS::Partition"
+         },
+         ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+        ]
+       ]
+      }
+     ]
+    },
+    "Metadata": {
+     "aws:cdk:path": "BootstrapStack/ReportBuildFunction/ServiceRole/Resource"
+    }
+   },
+   "ReportBuildFunctionServiceRoleDefaultPolicy4D7DF48B": {
+    "Type": "AWS::IAM::Policy",
+    "Properties": {
+     "PolicyDocument": {
+      "Statement": [
+       {
+        "Action": [
+         "codebuild:BatchGetBuilds",
+         "codebuild:ListBuildsForProject"
+        ],
+        "Effect": "Allow",
+        "Resource": {
+         "Fn::GetAtt": [
+          "BuildProject097C5DB7",
+          "Arn"
+         ]
+        }
+       }
+      ],
+      "Version": "2012-10-17"
+     },
+     "PolicyName": "ReportBuildFunctionServiceRoleDefaultPolicy4D7DF48B",
+     "Roles": [
+      {
+       "Ref": "ReportBuildFunctionServiceRole3573BFF1"
+      }
+     ]
+    },
+    "Metadata": {
+     "aws:cdk:path": "BootstrapStack/ReportBuildFunction/ServiceRole/DefaultPolicy/Resource"
+    }
+   },
+   "ReportBuildFunction724A99F2": {
+    "Type": "AWS::Lambda::Function",
+    "Properties": {
+     "Code": {
+      "ZipFile": "\nconst respond = async function(event, context, responseStatus, responseData, physicalResourceId, noEcho) {\n  return new Promise((resolve, reject) => {\n    var responseBody = JSON.stringify({\n        Status: responseStatus,\n        Reason: \"See the details in CloudWatch Log Stream: \" + context.logGroupName + \" \" + context.logStreamName,\n        PhysicalResourceId: physicalResourceId || context.logStreamName,\n        StackId: event.StackId,\n        RequestId: event.RequestId,\n        LogicalResourceId: event.LogicalResourceId,\n        NoEcho: noEcho || false,\n        Data: responseData\n    });\n\n    console.log(\"Response body:\\n\", responseBody);\n\n    var https = require(\"https\");\n    var url = require(\"url\");\n\n    var parsedUrl = url.parse(event.ResponseURL);\n    var options = {\n        hostname: parsedUrl.hostname,\n        port: 443,\n        path: parsedUrl.path,\n        method: \"PUT\",\n        headers: {\n            \"content-type\": \"\",\n            \"content-length\": responseBody.length\n        }\n    };\n\n    var request = https.request(options, function(response) {\n        console.log(\"Status code: \" + response.statusCode);\n        console.log(\"Status message: \" + response.statusMessage);\n        resolve();\n    });\n\n    request.on(\"error\", function(error) {\n        console.log(\"respond(..) failed executing https.request(..): \" + error);\n        resolve();\n    });\n\n    request.write(responseBody);\n    request.end();\n  });\n};\n\nconst AWS = require('aws-sdk');\n\nexports.handler = async function (event, context) {\n  console.log(JSON.stringify(event, null, 4));\n\n  const projectName = event['detail']['project-name'];\n\n  const codebuild = new AWS.CodeBuild();\n\n  const buildId = event['detail']['build-id'];\n  const { builds } = await codebuild.batchGetBuilds({\n    ids: [ buildId ]\n  }).promise();\n\n  console.log(JSON.stringify(builds, null, 4));\n\n  const build = builds[0];\n  // Fetch the CFN resource and response parameters from the build environment.\n  const environment = {};\n  build.environment.environmentVariables.forEach(e => environment[e.name] = e.value);\n\n  const response = {\n    ResponseURL: environment.CFN_RESPONSE_URL,\n    StackId: environment.CFN_STACK_ID,\n    LogicalResourceId: environment.CFN_LOGICAL_RESOURCE_ID,\n    RequestId: environment.CFN_REQUEST_ID\n  };\n\n  if (event['detail']['build-status'] === 'SUCCEEDED') {\n    await respond(response, context, 'SUCCESS', {}, 'build');\n  } else {\n    await respond(response, context, 'FAILED', { Error: 'Build failed' });\n  }\n};\n      "
+     },
+     "Handler": "index.handler",
+     "Role": {
+      "Fn::GetAtt": [
+       "ReportBuildFunctionServiceRole3573BFF1",
+       "Arn"
+      ]
+     },
+     "Runtime": "nodejs16.x",
+     "Timeout": 60
+    },
+    "DependsOn": [
+     "ReportBuildFunctionServiceRoleDefaultPolicy4D7DF48B",
+     "ReportBuildFunctionServiceRole3573BFF1"
+    ],
+    "Metadata": {
+     "aws:cdk:path": "BootstrapStack/ReportBuildFunction/Resource"
+    }
+   },
+   "BuildCompleteRule660B1845": {
+    "Type": "AWS::Events::Rule",
+    "Properties": {
+     "Description": "Build complete",
+     "EventPattern": {
+      "source": [
+       "aws.codebuild"
+      ],
+      "detail-type": [
+       "CodeBuild Build State Change"
+      ],
+      "detail": {
+       "build-status": [
+        "SUCCEEDED",
+        "FAILED",
+        "STOPPED"
+       ],
+       "project-name": [
+        {
+         "Ref": "BuildProject097C5DB7"
+        }
+       ]
+      }
+     },
+     "State": "ENABLED",
+     "Targets": [
+      {
+       "Arn": {
+        "Fn::GetAtt": [
+         "ReportBuildFunction724A99F2",
+         "Arn"
+        ]
+       },
+       "Id": "Target0"
+      }
+     ]
+    },
+    "Metadata": {
+     "aws:cdk:path": "BootstrapStack/BuildCompleteRule/Resource"
+    }
+   },
+   "BuildCompleteRuleAllowEventRuleBootstrapStackReportBuildFunction4380BC23426BB25D": {
+    "Type": "AWS::Lambda::Permission",
+    "Properties": {
+     "Action": "lambda:InvokeFunction",
+     "FunctionName": {
+      "Fn::GetAtt": [
+       "ReportBuildFunction724A99F2",
+       "Arn"
+      ]
+     },
+     "Principal": "events.amazonaws.com",
+     "SourceArn": {
+      "Fn::GetAtt": [
+       "BuildCompleteRule660B1845",
+       "Arn"
+      ]
+     }
+    },
+    "Metadata": {
+     "aws:cdk:path": "BootstrapStack/BuildCompleteRule/AllowEventRuleBootstrapStackReportBuildFunction4380BC23"
+    }
+   },
+   "RootStack": {
+    "Type": "AWS::CloudFormation::CustomResource",
+    "Properties": {
+     "ServiceToken": {
+      "Fn::GetAtt": [
+       "StartBuildFunction21B23CDA",
+       "Arn"
+      ]
+     },
+     "ProjectName": {
+      "Ref": "BuildProject097C5DB7"
+     },
+     "WSParticipantRoleArn": {
+      "Ref": "EETeamRoleArn"
+     },
+     "Cloud9EnvironmentId": {
+      "Fn::Select": [
+       6,
+       {
+        "Fn::Split": [
+         ":",
+         {
+          "Fn::GetAtt": [
+           "Workspace",
+           "Arn"
+          ]
+         }
+        ]
+       }
+      ]
+     },
+     "BuildRoleArn": {
+      "Fn::GetAtt": [
+       "BuildProjectRole0E170066",
+       "Arn"
+      ]
+     },
+     "ZipFileChecksum": {
+      "Ref": "SourceZipFileChecksum"
+     }
+    },
+    "DependsOn": [
+     "BuildCompleteRuleAllowEventRuleBootstrapStackReportBuildFunction4380BC23426BB25D",
+     "BuildCompleteRule660B1845",
+     "BuildProjectPolicyF8FA4BD5",
+     "VPCIGWB7E252D3",
+     "VPCPrivateSubnet1DefaultRouteAE1D6490",
+     "VPCPrivateSubnet1RouteTableBE8A6027",
+     "VPCPrivateSubnet1RouteTableAssociation347902D1",
+     "VPCPrivateSubnet1Subnet8BCA10E0",
+     "VPCPrivateSubnet2DefaultRouteF4F5CFD2",
+     "VPCPrivateSubnet2RouteTable0A19E10E",
+     "VPCPrivateSubnet2RouteTableAssociation0C73D413",
+     "VPCPrivateSubnet2SubnetCFCDAA7A",
+     "VPCPublicSubnet1DefaultRoute91CEF279",
+     "VPCPublicSubnet1EIP6AD938E8",
+     "VPCPublicSubnet1NATGatewayE0556630",
+     "VPCPublicSubnet1RouteTableFEE4B781",
+     "VPCPublicSubnet1RouteTableAssociation0B0896DC",
+     "VPCPublicSubnet1SubnetB4246D30",
+     "VPCPublicSubnet2DefaultRouteB7481BBA",
+     "VPCPublicSubnet2RouteTable6F1A15F1",
+     "VPCPublicSubnet2RouteTableAssociation5A808732",
+     "VPCPublicSubnet2Subnet74179F39",
+     "VPCB9E5F0B4",
+     "VPCVPCGW99B986DC"
+    ],
+    "UpdateReplacePolicy": "Delete",
+    "DeletionPolicy": "Delete",
+    "Metadata": {
+     "aws:cdk:path": "BootstrapStack/RootStack/Default"
+    }
+   },
+   "CDKMetadata": {
+    "Type": "AWS::CDK::Metadata",
+    "Properties": {
+     "Analytics": "v2:deflate64:H4sIAAAAAAAA/21Ry07DMBD8lt5d0wY4cGyjgnpBVop6RY69lE1jG/mRCkX5d9ZJSzhw2tnZ0eysXfD16oGvFvISlkqfly3WvD9Eqc6s/LBCemkggmc0f+/DPd8mdYa4lQEYqIL3xy+VhUdRMpHqFtUh1RZi5mZUuRThTdYtzPzMbUJwCmVEZ3/FGez2IpdXGV9khIv8ZsJjR3A23lvKRvgmmJJcu02kMz4N2Dgw1bqkn3h2tR16ZzO9KwvWSlNryfvnZNUtwV8swBsMgbqBoTS8r9x0xViFo4vHtROiRU5DnbDVvBfeNaDGnFc4MOhobyCXdHWhOgysguCSV0SlEJ2ZW1L8PyLHDjV9DL0eRPqwE9pT1pfOaoxjXktZeBPuumLFH/l60QTEpU82ogFeTfUHzO6kqwACAAA="
+    },
+    "Metadata": {
+     "aws:cdk:path": "BootstrapStack/CDKMetadata/Default"
+    },
+    "Condition": "CDKMetadataAvailable"
+   }
+  },
+  "Conditions": {
+   "CDKMetadataAvailable": {
+    "Fn::Or": [
+     {
+      "Fn::Or": [
+       {
+        "Fn::Equals": [
+         {
+          "Ref": "AWS::Region"
+         },
+         "af-south-1"
+        ]
+       },
+       {
+        "Fn::Equals": [
+         {
+          "Ref": "AWS::Region"
+         },
+         "ap-east-1"
+        ]
+       },
+       {
+        "Fn::Equals": [
+         {
+          "Ref": "AWS::Region"
+         },
+         "ap-northeast-1"
+        ]
+       },
+       {
+        "Fn::Equals": [
+         {
+          "Ref": "AWS::Region"
+         },
+         "ap-northeast-2"
+        ]
+       },
+       {
+        "Fn::Equals": [
+         {
+          "Ref": "AWS::Region"
+         },
+         "ap-south-1"
+        ]
+       },
+       {
+        "Fn::Equals": [
+         {
+          "Ref": "AWS::Region"
+         },
+         "ap-southeast-1"
+        ]
+       },
+       {
+        "Fn::Equals": [
+         {
+          "Ref": "AWS::Region"
+         },
+         "ap-southeast-2"
+        ]
+       },
+       {
+        "Fn::Equals": [
+         {
+          "Ref": "AWS::Region"
+         },
+         "ca-central-1"
+        ]
+       },
+       {
+        "Fn::Equals": [
+         {
+          "Ref": "AWS::Region"
+         },
+         "cn-north-1"
+        ]
+       },
+       {
+        "Fn::Equals": [
+         {
+          "Ref": "AWS::Region"
+         },
+         "cn-northwest-1"
+        ]
+       }
+      ]
+     },
+     {
+      "Fn::Or": [
+       {
+        "Fn::Equals": [
+         {
+          "Ref": "AWS::Region"
+         },
+         "eu-central-1"
+        ]
+       },
+       {
+        "Fn::Equals": [
+         {
+          "Ref": "AWS::Region"
+         },
+         "eu-north-1"
+        ]
+       },
+       {
+        "Fn::Equals": [
+         {
+          "Ref": "AWS::Region"
+         },
+         "eu-south-1"
+        ]
+       },
+       {
+        "Fn::Equals": [
+         {
+          "Ref": "AWS::Region"
+         },
+         "eu-west-1"
+        ]
+       },
+       {
+        "Fn::Equals": [
+         {
+          "Ref": "AWS::Region"
+         },
+         "eu-west-2"
+        ]
+       },
+       {
+        "Fn::Equals": [
+         {
+          "Ref": "AWS::Region"
+         },
+         "eu-west-3"
+        ]
+       },
+       {
+        "Fn::Equals": [
+         {
+          "Ref": "AWS::Region"
+         },
+         "me-south-1"
+        ]
+       },
+       {
+        "Fn::Equals": [
+         {
+          "Ref": "AWS::Region"
+         },
+         "sa-east-1"
+        ]
+       },
+       {
+        "Fn::Equals": [
+         {
+          "Ref": "AWS::Region"
+         },
+         "us-east-1"
+        ]
+       },
+       {
+        "Fn::Equals": [
+         {
+          "Ref": "AWS::Region"
+         },
+         "us-east-2"
+        ]
+       }
+      ]
+     },
+     {
+      "Fn::Or": [
+       {
+        "Fn::Equals": [
+         {
+          "Ref": "AWS::Region"
+         },
+         "us-west-1"
+        ]
+       },
+       {
+        "Fn::Equals": [
+         {
+          "Ref": "AWS::Region"
+         },
+         "us-west-2"
+        ]
+       }
+      ]
+     }
+    ]
+   }
+  }
+ }

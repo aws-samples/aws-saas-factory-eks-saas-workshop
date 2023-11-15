@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tenant-registration
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tenant-registration
+  template:
+    metadata:
+      labels:
+        app: tenant-registration
+    spec:
+      containers:
+        - name: tenant-registration
+          image: {{.Values.core.tenantRegistration.image}}
+          imagePullPolicy: Always
+          ports:
+            - containerPort:
+                {{.Values.core.tenantRegistration.targetPort}}
+              name: "http"
+          env:
+            - name: SERVICE_ADDRESS
+              value: {{.Values.loadBalancerAddress}}
+            - name: AWS_REGION
+              value: {{.Values.region}}
+            - name: COGNITO_USER_POOL_ID
+              value: {{.Values.cognito.userPoolId}}
+            - name: COGNITO_CLIENT_ID
+              value: {{.Values.cognito.clientId}}
+            - name: COGNITO_REGION
+              value: {{.Values.region}}
+            - name: TENANT_TABLE_NAME
+              value: {{.Values.core.tenantTableName}}
+            - name: AUTH_TENANT_TABLE_NAME
+              value: {{.Values.core.authInfoTableName}}
+            - name: TENANT_STACK_MAPPING_TABLE_NAME
+              value: {{.Values.core.tenantStackMappingTable}}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tenant-registration-service
+spec:
+  selector:
+    app: tenant-registration
+  ports:
+    - name: http
+      protocol: TCP
+      port: {{.Values.core.tenantRegistration.port}}
+      targetPort: {{.Values.core.tenantRegistration.targetPort}}
+  type: NodePort

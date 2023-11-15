@@ -1,0 +1,54 @@
+region: $REGION
+eksStackName: $EKSSTACKNAME
+cognito:
+  userPoolId: $USERPOOLID
+  clientId: $APPCLIENTID
+loadBalancerAddress: $ELBURL
+
+admin:
+  image: public.ecr.aws/o2b5n0j5/eks-saas-admin:latest
+  port: 80
+  targetPort: 80
+  
+core:
+  tenantTableName: $TENANT_TABLE_NAME
+  authInfoTableName: $AUTH_INFO_TABLE_NAME
+  tenantStackMappingTable: $TENANT_STACK_MAPPING_TABLE_NAME
+
+  tenantManagement:
+    image: public.ecr.aws/o2b5n0j5/eks-saas-tenant-management:v1.1
+    port: 80
+    targetPort: 3001
+    
+  tenantRegistration:
+    image: public.ecr.aws/o2b5n0j5/eks-saas-tenant-registration:v1.1
+    name: tenant-registration
+    port: 80
+    targetPort: 3000
+    
+  userManagement:
+    image: public.ecr.aws/o2b5n0j5/eks-saas-user:v1.1
+    name: user-management
+    port: 80
+    targetPort: 3015
+    
+app:
+  tenantPath: app
+  iamRoleArn: $IAM_ROLE_ARN
+  
+  product:
+    image: public.ecr.aws/o2b5n0j5/eks-saas-product:v1.1
+    productTable: $PRODUCTTABLE
+    port: 80
+    targetPort: 3005
+    
+  order:
+    image: public.ecr.aws/o2b5n0j5/eks-saas-order:v1.1
+    orderTable: $ORDERTABLE
+    port: 80
+    targetPort: 3010
+  
+  application:
+    image: public.ecr.aws/o2b5n0j5/eks-saas-application:latest
+    port: 80
+    targetPort: 80

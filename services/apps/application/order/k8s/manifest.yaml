@@ -15,6 +15,9 @@ spec:
       containers:
         - name: order
           image: public.ecr.aws/o2b5n0j5/eks-saas-order:latest
+          resources:
+            requests:
+              cpu: 1
           imagePullPolicy: Always
           ports:
             - containerPort: 3010
@@ -32,6 +35,12 @@ spec:
               value: "us-west-2"
             - name: ORDER_TABLE_NAME
               value: "Orders-Pooled-20220725142746"
+      tolerations:
+      - key: "premiumnodes"
+        operator: "Exists"
+        effect: "NoSchedule"
+      nodeSelector:
+        tenant-tier: premium
 ---
 apiVersion: v1
 kind: Service

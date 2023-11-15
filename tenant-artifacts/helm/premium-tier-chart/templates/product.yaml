@@ -1,0 +1,82 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: product
+  labels:
+    tenant: {{.Values.app.tenantPath}}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: product
+  template:
+    metadata:
+      labels:
+        app: product
+        context: tenant-artifacts
+        tier: premium
+        tenant: {{.Values.app.tenantPath}}
+      annotations:
+        sidecar.istio.io/inject: "true"
+        prometheus.io/scrape: "true"
+        prometheus.io/path: /{{.Values.app.tenantPath}}/products/metrics
+        prometheus.io/port: "3005"
+    spec:
+      containers:
+        - name: product
+          image: {{ .Values.app.product.image }}
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3005
+              name: "http"
+          startupProbe:
+            httpGet:
+              path: /{{.Values.app.tenantPath}}/api/products/health
+              port: 3005
+            failureThreshold: 30
+            periodSeconds: 10
+          env:
+            - name: AWS_REGION
+              value: "{{ .Values.region}}"
+            - name: IAM_ROLE_ARN
+              value: "{{ .Values.app.iamRoleArn }}"
+            - name: COGNITO_USER_POOL_ID
+              value: "{{ .Values.cognito.userPoolId }}"
+            - name: COGNITO_CLIENT_ID
+              value: "{{ .Values.cognito.clientId }}"
+            - name: COGNITO_REGION
+              value: "{{ .Values.region }}"
+            - name: PRODUCT_TABLE_NAME
+              value: "{{ .Values.app.product.productTable }}"
+            - name: KUBERNETES_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: KUBERNETES_POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: KUBERNETES_NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+      tolerations:
+      - key: node-pool
+        value: "{{ .Values.app.tenantPath }}"
+        effect: "NoSchedule"
+      nodeSelector:
+        node-pool: {{ .Values.app.tenantPath }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: product-service
+spec:
+  selector:
+    app: product
+  ports:
+    - name: http
+      protocol: TCP
+      port: {{ .Values.app.product.port }}
+      targetPort: {{ .Values.app.product.targetPort }}
+  type: NodePort

@@ -1,12 +1,14 @@
-FROM public.ecr.aws/bitnami/node:16.16.0 AS build
+FROM public.ecr.aws/bitnami/node:18.18.0 AS build
 WORKDIR /app
 COPY package.json ./
 COPY yarn.lock ./
-RUN yarn
+RUN corepack enable
+RUN yarn set version stable
+RUN yarn install
 COPY . .
 RUN yarn build tenant-registration
 
-FROM public.ecr.aws/bitnami/node:16.16.0
+FROM public.ecr.aws/bitnami/node:18.18.0
 WORKDIR /app
 COPY --from=build /app ./
 EXPOSE 3000

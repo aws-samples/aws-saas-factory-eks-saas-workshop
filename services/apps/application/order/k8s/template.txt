@@ -7,14 +7,19 @@ spec:
   selector:
     matchLabels:
       app: order
+      version: v1
   template:
     metadata:
       labels:
         app: order
+        version: v1
     spec:
       containers:
         - name: order
           image: $CONTAINERIMAGE
+          resources:
+            requests:
+              cpu: 1
           imagePullPolicy: Always
           ports:
             - containerPort: 3010
@@ -32,6 +37,12 @@ spec:
               value: "$REGION"
             - name: ORDER_TABLE_NAME
               value: "$ORDERTABLE"
+      tolerations:
+      - key: "premiumnodes"
+        operator: "Exists"
+        effect: "NoSchedule"
+      nodeSelector:
+        tenant-tier: premium
 ---
 apiVersion: v1
 kind: Service

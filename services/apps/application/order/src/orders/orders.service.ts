@@ -3,26 +3,31 @@
  * SPDX-License-Identifier: MIT-0
  */
 
-import { Injectable } from '@nestjs/common';
-import { CreateOrderDto } from './dto/create-order.dto';
-import { v4 as uuid } from 'uuid';
+import { ClientFactoryService } from '@app/client-factory';
+import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import {
   DynamoDBDocumentClient,
   PutCommand,
   QueryCommand,
 } from '@aws-sdk/lib-dynamodb';
-import { ClientFactoryService } from '@app/client-factory';
-import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
-import { PolicyType } from '@app/auth/credential-vendor';
+import { Injectable } from '@nestjs/common';
+import { InjectMetric } from '@willsoto/nestjs-prometheus';
+import { Counter } from 'prom-client';
+import { v4 as uuid } from 'uuid';
+import { CreateOrderDto } from './dto/create-order.dto';
 import { Product } from './entities/product.entity';
 
 @Injectable()
 export class OrdersService {
-  constructor(private clientFac: ClientFactoryService) {}
+  constructor(
+    private clientFac: ClientFactoryService,
+    @InjectMetric('api_order_requests_total') public counter: Counter<string>,
+  ) {}
   tableName: string = process.env.ORDER_TABLE_NAME;
   TAX_RATE = 0.089;
 
   async create(createOrderDto: CreateOrderDto, tenantId: string) {
+    this.counter.labels({ tenantId: tenantId, method: 'create' }).inc();
     const newOrder = {
       name: createOrderDto.name,
       order_id: uuid(),
@@ -39,6 +44,7 @@ export class OrdersService {
   }
 
   async findAll(tenantId: string) {
+    this.counter.labels({ tenantId: tenantId, method: 'findAll' }).inc();
     console.log('Get all orders:', tenantId, 'Table Name:', this.tableName);
     const client = await this.fetchClient(tenantId);
     const cmd = new QueryCommand({
@@ -68,6 +74,7 @@ export class OrdersService {
   };
 
   async findOne(id: string, tenantId: string) {
+    this.counter.labels({ tenantId: tenantId, method: 'findOne' }).inc();
     console.log('Find order:', id, 'TenantId:', tenantId);
     const client = await this.fetchClient(tenantId);
     const cmd = new QueryCommand({
@@ -93,5 +100,19 @@ export class OrdersService {
 
   async fetchClient(tenantId: string) {
     return DynamoDBDocumentClient.from(new DynamoDBClient({}));
+  }
+
+  perf(tenantId: string, baseNumber: number = 8): number {
+    this.counter.labels({ tenantId: tenantId, method: 'perf' }).inc();
+    const start = performance.now();
+    const num = Math.min(Math.abs(baseNumber), 12);
+    let result = 0;
+    for (let i = Math.pow(num, 7); i >= 0; i--) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      result += Math.atan(i) * Math.tan(i);
+    }
+    const end = performance.now();
+    console.log('Perf result:', end - start);
+    return end - start;
   }
 }

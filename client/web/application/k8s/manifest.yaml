@@ -26,6 +26,9 @@ spec:
       containers:
         - name: application
           image: public.ecr.aws/o2b5n0j5/eks-saas-application:latest
+          resources:
+            requests:
+              cpu: 1
           imagePullPolicy: Always
           ports:
             - containerPort: 80

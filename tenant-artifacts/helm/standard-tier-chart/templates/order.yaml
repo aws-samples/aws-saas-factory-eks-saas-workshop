@@ -1,0 +1,95 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: order
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: order
+  template:
+    metadata:
+      labels:
+        app: order
+        context: tenant-artifacts
+        tier: standard
+        tenant: {{.Values.app.tenantPath}}
+      annotations:
+        sidecar.istio.io/inject: "true"
+        prometheus.io/scrape: "true"
+        prometheus.io/path: /{{.Values.app.tenantPath}}/orders/metrics
+        prometheus.io/port: "3010"
+    spec:
+      containers:
+        - name: order
+          image: {{.Values.app.order.image}}
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3010
+              name: "http"
+          startupProbe:
+            httpGet:
+              path: /{{.Values.app.tenantPath}}/api/orders/health
+              port: 3010
+            failureThreshold: 30
+            periodSeconds: 10
+          env:
+            - name: AWS_REGION
+              value: "{{.Values.region}}"
+            - name: IAM_ROLE_ARN
+              value: "{{.Values.app.iamRoleArn}}"
+            - name: COGNITO_USER_POOL_ID
+              value: "{{.Values.cognito.userPoolId}}"
+            - name: COGNITO_CLIENT_ID
+              value: "{{.Values.cognito.clientId}}"
+            - name: COGNITO_REGION
+              value: "{{.Values.region}}"
+            - name: ORDER_TABLE_NAME
+              value: "{{.Values.app.order.orderTable}}"
+            - name: KUBERNETES_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: KUBERNETES_POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: KUBERNETES_NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: order-service
+spec:
+  selector:
+    app: order
+  ports:
+    - name: http
+      protocol: TCP
+      port: {{.Values.app.order.port}}
+      targetPort: {{.Values.app.order.targetPort}}
+  type: NodePort
+
+# ---
+# apiVersion: networking.istio.io/v1alpha3
+# kind: VirtualService
+# metadata:
+#   name: order-service-route
+# spec:
+#   hosts:
+#     - "{{.Values.loadBalancerAddress}}"
+#   gateways:
+#     - default/eks-saas-workshop-gateway
+#   http:
+#     - match:
+#         - uri:
+#             prefix: /{{.Values.app.tenantPath}}/api/orders
+#       route:
+#         - destination:
+#             port:
+#               number: 80
+#             host: order-service.{{.Values.app.tenantPath}}.svc.cluster.local 
+

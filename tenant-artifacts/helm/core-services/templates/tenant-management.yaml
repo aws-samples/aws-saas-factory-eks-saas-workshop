@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tenant-management
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tenant-management
+  template:
+    metadata:
+      labels:
+        app: tenant-management
+    spec:
+      containers:
+        - name: tenant-management
+          image: {{.Values.core.tenantManagement.image}}
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3001
+              name: "http"
+          env:
+            - name: AWS_REGION
+              value: {{.Values.region}}
+            - name: COGNITO_USER_POOL_ID
+              value: {{.Values.cognito.userPoolId}}
+            - name: COGNITO_CLIENT_ID
+              value: {{.Values.cognito.clientId}}
+            - name: COGNITO_REGION
+              value: {{.Values.region}}
+            - name: TENANT_TABLE_NAME
+              value: {{.Values.core.tenantTableName}}
+            - name: AUTH_TENANT_TABLE_NAME
+              value: {{.Values.core.authInfoTableName}}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tenant-management-service
+spec:
+  selector:
+    app: tenant-management
+  ports:
+    - name: http
+      protocol: TCP
+      port: {{.Values.core.tenantManagement.port}}
+      targetPort: {{.Values.core.tenantManagement.targetPort}}
+  type: NodePort

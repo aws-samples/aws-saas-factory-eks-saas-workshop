@@ -29,11 +29,11 @@ export class RegistrationService {
     @Inject(USER_SERVICE) private userSvc: ClientProxy,
   ) {}
 
-  async create(dto: CreateRegistrationDto) {    
+  async create(dto: CreateRegistrationDto) {
     console.log('Creating tenant:', dto);
     const tenant = await this.store(dto);
-    this.register(tenant);
-    this.provision(dto.plan);  
+    this.register(tenant, dto.plan);
+    this.provision(dto.plan);
   }
 
   private async store(dto: CreateRegistrationDto) {
@@ -60,17 +60,26 @@ export class RegistrationService {
     return newTenant;
   }
 
-  private async register(registration: Registration) {
+  private async register(registration: Registration, plan: PLAN_TYPE) {
     console.log('Registering tenant:', registration);
-    /* Comment the following line out to introduce siloed isolation */
-    const userPoolId = await this.idpSvc.getPooledUserPool();
 
-    /* Uncomment the following 5 lines to introduce siloed isolation */
-    // const userPoolId = await this.idpSvc.getPlanBasedUserPool(
-    //   registration.tenantId,
-    //   registration.Path,
-    //   registration.plan,
-    // );
+    console.log('plan:', plan);
+    const planToUse = plan === PLAN_TYPE.Basic ? 'basic' : 'other';
+    console.log('planToUse:', planToUse);
+
+    let userPoolId = null;
+
+    if (planToUse == 'basic') {
+      console.log('Inside basic:');
+      userPoolId = await this.idpSvc.getPooledUserPool();
+    } else {
+      console.log('Inside other plans:');
+      userPoolId = await this.idpSvc.getPlanBasedUserPool(
+        registration.tenantId,
+        registration.Path,
+        registration.plan,
+      );
+    }
 
     const user = {
       userPoolId: userPoolId.toString(),
@@ -86,19 +95,46 @@ export class RegistrationService {
   }
 
   private async provision(plan: PLAN_TYPE) {
-    if (plan !== PLAN_TYPE.Premium) return;
-    
-    console.log('Provisioning tenant:');
-    // TODO - Add this to the ClientFactory
-    const client = new CodePipelineClient({ region: process.env.AWS_REGION });
+    //testing - move to switch case
+    if (plan == PLAN_TYPE.Basic) return;
 
-    const params = {
-      name: 'eks-saas-tenant-onboarding-pipeline',
-      clientRequestToken: 'requestToken-' + getTimeString(),
-    };
+    if (plan == PLAN_TYPE.Standard) {
+      console.log('Provisioning Standard tenant:');
+      // TODO - Add this to the ClientFactory
+      const client = new CodePipelineClient({ region: process.env.AWS_REGION });
 
-    const command = new StartPipelineExecutionCommand(params);
-    const response = await client.send(command);
-    console.log('Successfully started pipeline. Response:', response);
+      const params = {
+        //name: 'standard-tenant-onboarding-pipeline',
+        name: 'eks-saas-tenant-onboarding-pipeline',
+        clientRequestToken: 'requestToken-' + getTimeString(),
+      };
+
+      const command = new StartPipelineExecutionCommand(params);
+      const response = await client.send(command);
+      console.log(
+        'Successfully started standard tenant onboarding pipeline. Response:',
+        response,
+      );
+    }
+
+    if (plan == PLAN_TYPE.Premium) {
+      //TRIGGER Karpenter provisioning process
+
+      console.log('Provisioning Premium tenant:');
+      // TODO - Add this to the ClientFactory
+      const client = new CodePipelineClient({ region: process.env.AWS_REGION });
+
+      const params = {
+        name: 'premium-tenant-onboarding-pipeline',
+        clientRequestToken: 'requestToken-' + getTimeString(),
+      };
+
+      const command = new StartPipelineExecutionCommand(params);
+      const response = await client.send(command);
+      console.log(
+        'Successfully started premium tenant onboarding pipeline. Response:',
+        response,
+      );
+    }
   }
 }

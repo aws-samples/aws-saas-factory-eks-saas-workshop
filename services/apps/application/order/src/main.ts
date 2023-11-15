@@ -8,7 +8,7 @@ import { OrdersModule } from './orders/orders.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(OrdersModule);
-  app.setGlobalPrefix('/*/api');
+  app.setGlobalPrefix('/*');
   await app.listen(3010);
 }
 bootstrap();

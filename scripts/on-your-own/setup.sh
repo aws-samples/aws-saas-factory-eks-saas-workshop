@@ -10,10 +10,10 @@ sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 export NVM_DIR=$HOME/.nvm;
 source $NVM_DIR/nvm.sh;
 
-nvm use 16
+nvm use 18
 
 echo "Installing Node and CDK"
-npm install -g aws-cdk@2.81.0 --force
+npm install -g aws-cdk
 
 echo "Installing yarn"
 corepack enable
@@ -27,6 +27,19 @@ sudo ./aws/install --update
 echo "Installing helper tools"
 sudo yum -y install jq gettext bash-completion moreutils
 
+echo "Installing Helm"
+curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 > get_helm.sh
+chmod 700 get_helm.sh
+./get_helm.sh -v 3.12.3
+
+echo "Installing eksctl"
+# for ARM systems, set ARCH to: `arm64`, `armv6` or `armv7`
+ARCH=amd64
+PLATFORM=$(uname -s)_$ARCH
+curl -sLO "https://github.com/eksctl-io/eksctl/releases/latest/download/eksctl_$PLATFORM.tar.gz"
+tar -xzf eksctl_$PLATFORM.tar.gz -C /tmp && rm eksctl_$PLATFORM.tar.gz
+sudo mv /tmp/eksctl /usr/local/bin
+
 export ACCOUNT_ID=$(aws sts get-caller-identity --output text --query Account)
 export AWS_REGION=$(curl -s 169.254.169.254/latest/dynamic/instance-identity/document | jq -r '.region')
 export AWS_DEFAULT_REGION=$AWS_REGION
@@ -37,7 +50,7 @@ echo "export AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}" | tee -a ~/.bash_profile
 aws configure set default.region ${AWS_REGION}
 aws configure get default.region
 
-echo Resizing Cloud9 instance EBS Volume
+#echo Resizing Cloud9 instance EBS Volume
 sh scripts/resize-cloud9-ebs-volume.sh 40
 
 for command in kubectl jq envsubst aws
@@ -52,6 +65,4 @@ kubectl completion bash >>  ~/.bash_completion
 cd $CWD
 # resource our bash config to ensure we're binding to the right version of the AWS CLI (v2, vs. v1)
 . ~/.bashrc
-aws sts get-caller-identity --query Arn | grep saas-factory-eks-workshop-admin -q && echo "IAM role valid. You can continue setting up the EKS Cluster." || echo "IAM role NOT valid. Do not proceed with creating the EKS Cluster or you won't be able to authenticate. Ensure you assigned the role to your EC2 instance as detailed in the README.md of the eks-saas repo"
- 
- 
+aws sts get-caller-identity --query Arn | grep eks-ref-arch-admin -q && echo "IAM role valid. You can continue setting up the EKS Cluster." || echo "IAM role NOT valid. Do not proceed with creating the EKS Cluster or you won't be able to authenticate. Ensure you assigned the role to your EC2 instance as detailed in the README.md of the eks-saas repo"

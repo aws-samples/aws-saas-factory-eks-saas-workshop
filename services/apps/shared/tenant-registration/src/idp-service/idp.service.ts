@@ -29,12 +29,12 @@ export class IdpService {
   async getPlanBasedUserPool(tenantId: string, path: string, plan: PLAN_TYPE) {
     // Our pool type is based solely on Plan
     const poolType =
-      plan === PLAN_TYPE.Premium ? USERPOOL_TYPE.Siloed : USERPOOL_TYPE.Pooled;
+      plan === PLAN_TYPE.Basic ? USERPOOL_TYPE.Pooled : USERPOOL_TYPE.Siloed;
     // Our incoming 'Path' parameter is a shortened version of the company name
     // It's only used in the case this tenant is siloed.
     // All non-premium tenants will use the pooled compute which runs at http://abc.com/app
     // Premium tenants will run at http://abc.com/{pathToUse}
-    const pathToUse = plan === PLAN_TYPE.Premium ? path : 'app';
+    const pathToUse = plan === PLAN_TYPE.Basic ? 'app' : path;
     console.log('Fetching pool for this path:', pathToUse);
     // See if we have an existing entry based on the path.
     const existingPoolId = await this.fetchForPath(pathToUse);

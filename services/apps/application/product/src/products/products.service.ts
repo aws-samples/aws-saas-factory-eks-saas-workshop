@@ -15,13 +15,20 @@ import {
 import { ClientFactoryService } from '@app/client-factory';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { PolicyType } from '@app/auth/credential-vendor';
+import { InjectMetric } from '@willsoto/nestjs-prometheus';
+import { Counter } from 'prom-client';
 
 @Injectable()
 export class ProductsService {
-  constructor(private clientFac: ClientFactoryService) {}
+  constructor(
+    private clientFac: ClientFactoryService,
+    @InjectMetric('api_products_requests_total')
+    public counter: Counter<string>,
+  ) {}
   tableName: string = process.env.PRODUCT_TABLE_NAME;
 
   async create(createProductDto: CreateProductDto, tenantId: string) {
+    this.counter.labels({ tenantId: tenantId, method: 'create' }).inc();
     const newProduct = {
       ...createProductDto,
       product_id: uuid(),
@@ -37,6 +44,7 @@ export class ProductsService {
   }
 
   async findAll(tenantId: string) {
+    this.counter.labels({ tenantId: tenantId, method: 'findAll' }).inc();
     console.log('Getting All Products for Tenant:', tenantId);
     const client = await this.fetchClient(tenantId);
     const cmd = new QueryCommand({
@@ -51,6 +59,7 @@ export class ProductsService {
   }
 
   async findOne(id: string, tenantId: string) {
+    this.counter.labels({ tenantId: tenantId, method: 'findOne' }).inc();
     console.log('Getting Product: ', id);
     const client = await this.fetchClient(tenantId);
     const cmd = new QueryCommand({
@@ -70,6 +79,7 @@ export class ProductsService {
     tenantId: string,
     updateProductDto: UpdateProductDto,
   ) {
+    this.counter.labels({ tenantId: tenantId, method: 'update' }).inc();
     console.log('Updating Product: ', id);
     const client = await this.fetchClient(tenantId);
     const cmd = new UpdateCommand({
@@ -97,5 +107,19 @@ export class ProductsService {
 
   async fetchClient(tenantId: string) {
     return DynamoDBDocumentClient.from(new DynamoDBClient({}));
+  }
+
+  perf(tenantId: string, baseNumber: number = 8): number {
+    this.counter.labels({ tenantId: tenantId, method: 'perf' }).inc();
+    const start = performance.now();
+    const num = Math.min(Math.abs(baseNumber), 12);
+    let result = 0;
+    for (let i = Math.pow(num, 7); i >= 0; i--) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      result += Math.atan(i) * Math.tan(i);
+    }
+    const end = performance.now();
+    console.log('Perf result:', end - start);
+    return end - start;
   }
 }

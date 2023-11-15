@@ -4,7 +4,7 @@
 #Once deployment is complete, copy the output values and apply to cdk/root/lib/root-stack.ts
 CWD=$(pwd)
 
-cd cdk/eks
+cd cdk/on-your-own/eks
 yarn && yarn run build 
 cdk bootstrap  
 cdk deploy 

@@ -15,6 +15,9 @@ spec:
       containers:
         - name: product
           image: public.ecr.aws/o2b5n0j5/eks-saas-product:latest
+          resources:
+            requests:
+              cpu: 1
           imagePullPolicy: Always
           ports:
             - containerPort: 3005
@@ -32,6 +35,12 @@ spec:
               value: "us-west-2"
             - name: PRODUCT_TABLE_NAME
               value: "Products-Pooled-20220725142746"
+      tolerations:
+      - key: "premiumnodes"
+        operator: "Exists"
+        effect: "NoSchedule"
+      nodeSelector:
+        tenant-tier: premium
 ---
 apiVersion: v1
 kind: Service

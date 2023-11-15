@@ -23,7 +23,7 @@ export class TenantsService {
     });
     const response = await client.send(cmd);
     console.log('Response:', response);
-    return JSON.stringify(response.Items);    
+    return JSON.stringify(response.Items);
   }
 
   findOne(id: number) {
@@ -38,7 +38,7 @@ export class TenantsService {
     return `This action removes a #${id} tenant`;
   }
 
-  async getAuthInfo(referer: string) {    
+  async getAuthInfo(referer: string) {
     //grab the path of the referer header
     console.log('Referer:', referer);
     const path = this.getPath(referer);
@@ -57,7 +57,7 @@ export class TenantsService {
       aws_cognito_region: this.region,
       aws_user_pools_id: item.Item.user_pool_id,
       aws_user_pools_web_client_id: item.Item.client_id,
-    };    
+    };
   }
 
   getPath(referer: string) {
