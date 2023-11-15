@@ -4,6 +4,8 @@ cognito:
   userPoolId: $USERPOOLID
   clientId: $APPCLIENTID
 loadBalancerAddress: $ELBURL
+v1v2:
+  enabled: false
 
 admin:
   image: public.ecr.aws/o2b5n0j5/eks-saas-admin:latest
