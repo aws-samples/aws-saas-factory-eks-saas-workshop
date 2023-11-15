@@ -55,6 +55,10 @@ echo "export ACCOUNT_ID=${ACCOUNT_ID}" | tee -a ~/.bash_profile
 echo "export AWS_REGION=${AWS_REGION}" | tee -a ~/.bash_profile
 echo "export AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}" | tee -a ~/.bash_profile
 echo "export ELBURL=${ELBURL}" | tee -a ~/.bashrc
+# Install kubectl aliases. So good.
+cd ~ && { curl -O https://raw.githubusercontent.com/ahmetb/kubectl-aliases/master/.kubectl_aliases; cd -; }
+echo "[ -f ~/.kubectl_aliases ] && source ~/.kubectl_aliases" | tee -a ~/.bashrc
+
 aws configure set default.region ${AWS_REGION}
 aws configure get default.region
 
