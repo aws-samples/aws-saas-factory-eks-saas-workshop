@@ -20,13 +20,11 @@ import { DetailComponent } from './detail/detail.component';
 import { ListComponent } from './list/list.component';
 import { TenantsRoutingModule } from './tenants-routing.module';
 import { CreateComponent } from './create/create.component';
-import { FlexLayoutModule } from '@angular/flex-layout';
 
 @NgModule({
   declarations: [DetailComponent, ListComponent, CreateComponent],
   imports: [
     CommonModule,
-    FlexLayoutModule,
     TenantsRoutingModule,
     MatButtonModule,
     MatCardModule,

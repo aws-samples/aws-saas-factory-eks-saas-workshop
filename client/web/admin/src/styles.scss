@@ -3,7 +3,9 @@
 @import "@aws-amplify/ui-angular/theme.css";
 
 @import "styles/variables";
+$enable-dark-mode: false;
 // Import functions, variables, and mixins needed by other Bootstrap files
+
 @import "bootstrap/scss/functions";
 @import "bootstrap/scss/variables";
 @import "bootstrap/scss/maps";
