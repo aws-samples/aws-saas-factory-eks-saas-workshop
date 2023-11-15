@@ -46,6 +46,7 @@ app:
     
   order:
     image: public.ecr.aws/o2b5n0j5/eks-saas-order:v1.1
+    imagev2: public.ecr.aws/o2b5n0j5/eks-saas-order:v2
     orderTable: $ORDERTABLE
     port: 80
     targetPort: 3010
