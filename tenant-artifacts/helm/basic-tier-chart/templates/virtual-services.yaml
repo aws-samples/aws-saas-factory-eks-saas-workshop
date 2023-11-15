@@ -36,26 +36,11 @@ spec:
     - match:
         - uri:
             prefix: /{{.Values.app.tenantPath}}/api/orders
-          headers:
-            "@request.auth.claims.custom:tenant-id":
-              exact: "tenantId" ## REPLACE THIS VALUE WITH YOUR TENANT1'S ID
-      route:
-        - destination:
-            port:
-              number: 80
-            host: order-service
-            subset: v2
-          weight: 100
-    - match:
-        - uri:
-            prefix: /{{.Values.app.tenantPath}}/api/orders
       route:
         - destination:
             host: order-service
             port:
               number: 80
-            subset: v1
-          weight: 100
     - match:
         - uri:
             prefix: /{{.Values.app.tenantPath}}
