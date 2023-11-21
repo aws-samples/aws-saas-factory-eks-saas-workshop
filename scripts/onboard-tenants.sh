@@ -28,3 +28,10 @@ curl -H 'Content-Type: application/json' \
        -X POST \
        $SERVER
 
+sleep 2
+
+aws cognito-idp admin-set-user-password \
+  --user-pool-id $USERPOOLID \
+  --username $EMAILBASIC \
+  --password "$PASSWORD" \
+  --permanent
