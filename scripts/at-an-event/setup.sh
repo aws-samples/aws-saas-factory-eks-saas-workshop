@@ -12,9 +12,6 @@ source $NVM_DIR/nvm.sh;
 
 nvm use 18
 
-echo "Installing Node and CDK"
-npm install -g aws-cdk
-
 echo "Installing yarn"
 corepack enable
 corepack prepare yarn@3.2.4 --activate
