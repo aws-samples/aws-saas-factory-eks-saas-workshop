@@ -51,7 +51,7 @@ main() {
     corepack prepare yarn@3.6.4 --activate || echo "default to yarn v1"
 
     cd eks-stack
-    yarn install
+    npm install
     cdk bootstrap
 
     if [[ "$STACK_OPERATION" == "create" || "$STACK_OPERATION" == "update" ]]; then
