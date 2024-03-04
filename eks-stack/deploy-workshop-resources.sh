@@ -8,7 +8,7 @@
 echo "Deploying workshop resources..."
 
 STACK_NAME="WorkshopStack"
-REPO_URL="https://github.com/aws-saas-factory-eks-saas-workshop.git"
+REPO_URL="https://github.com/aws-samples/aws-saas-factory-eks-saas-workshop.git"
 REPO_BRANCH_NAME="fix/on-your-own"
 PARTICIPANT_ASSUMED_ROLE_ARN="$(aws sts get-caller-identity --query 'Arn' --output text)"
 
