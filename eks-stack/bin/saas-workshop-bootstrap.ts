@@ -19,6 +19,7 @@ import {
   ResourceContext,
 } from "@aws-quickstart/eks-blueprints";
 import { MyCustomAwsForFluentBitAddOn } from "../lib/fluentbit";
+import { EksStack } from "../lib/eks-stack";
 
 const app = new cdk.App();
 const account = process.env.CDK_DEFAULT_ACCOUNT;
@@ -29,11 +30,13 @@ const cloud9ConnectionType = "CONNECT_SSM";
 const cloud9InstanceTypes = ["m5.large", "m4.large"];
 const cloud9ImageId = "amazonlinux-2023-x86_64";
 
-new Cloud9Resources(app, "Cloud9Resources", {
-  createCloud9Instance: true,
-  workshopSSMPrefix: workshopSSMPrefix,
-  cloud9MemberArn: participantAssumedRoleArn,
-  cloud9ConnectionType: cloud9ConnectionType,
-  cloud9InstanceTypes: cloud9InstanceTypes,
-  cloud9ImageId: cloud9ImageId,
-});
+new EksStack(app, "Cloud9Resources", {});
+
+// new Cloud9Resources(app, "Cloud9Resources", {
+//   createCloud9Instance: true,
+//   workshopSSMPrefix: workshopSSMPrefix,
+//   cloud9MemberArn: participantAssumedRoleArn,
+//   cloud9ConnectionType: cloud9ConnectionType,
+//   cloud9InstanceTypes: cloud9InstanceTypes,
+//   cloud9ImageId: cloud9ImageId,
+// });
