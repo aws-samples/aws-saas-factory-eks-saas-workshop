@@ -30,7 +30,7 @@ const cloud9ConnectionType = "CONNECT_SSM";
 const cloud9InstanceTypes = ["m5.large", "m4.large"];
 const cloud9ImageId = "amazonlinux-2023-x86_64";
 
-new EksStack(app, "Cloud9Resources", {});
+new EksStack(app, "SaaSWorkshopBootstrap", {});
 
 // new Cloud9Resources(app, "Cloud9Resources", {
 //   createCloud9Instance: true,
