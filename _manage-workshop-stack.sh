@@ -58,6 +58,7 @@ main() {
         echo "Starting cdk deploy..."
         cdk deploy SaaSWorkshopBootstrap \
             --require-approval never
+            --no-rollback
         echo "Done cdk deploy!"
 
         if [[ "$STACK_OPERATION" == "create" ]]; then

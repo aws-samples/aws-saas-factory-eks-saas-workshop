@@ -27,90 +27,9 @@ const participantAssumedRoleArn = process.env.PARTICIPANT_ASSUMED_ROLE_ARN;
 const workshopSSMPrefix = "/workshop";
 const cloud9ConnectionType = "CONNECT_SSM";
 const cloud9InstanceTypes = ["m5.large", "m4.large"];
-const cloud9ImageId = "ubuntu-22.04-x86_64";
+const cloud9ImageId = "amazonlinux-2023-x86_64";
 
-export class LogGroupResourceProvider implements ResourceProvider<ILogGroup> {
-  provide(context: ResourceContext): ILogGroup {
-    const scope = context.scope;
-    return new logs.LogGroup(scope, "fluent-bit-log-group", {
-      logGroupName: `${workshopSSMPrefix}/fluent-bit-logs`,
-      retention: logs.RetentionDays.ONE_WEEK,
-    });
-  }
-}
-
-const blueprint = blueprints.EksBlueprint.builder()
-  .resourceProvider("LogGroup", new LogGroupResourceProvider())
-  .account(account)
-  .region(region)
-  .teams(
-    new blueprints.PlatformTeam({
-      name: "admins",
-      userRoleArn: `arn:aws:iam::${account}:role/Admin`,
-    })
-  )
-  .addOns(
-    new MyCustomAwsForFluentBitAddOn(),
-    new blueprints.addons.KedaAddOn({
-      podSecurityContextFsGroup: 1001,
-      securityContextRunAsGroup: 1001,
-      securityContextRunAsUser: 1001,
-      irsaRoles: ["AmazonSQSReadOnlyAccess"],
-    }),
-    new blueprints.addons.IstioBaseAddOn(),
-    new blueprints.addons.IstioControlPlaneAddOn()
-  )
-  .clusterProvider(
-    new blueprints.MngClusterProvider({
-      version: KubernetesVersion.V1_27,
-      minSize: 2,
-      desiredSize: 2,
-      maxSize: 4,
-      nodeGroupCapacityType: CapacityType.ON_DEMAND,
-      amiType: eks.NodegroupAmiType.BOTTLEROCKET_X86_64,
-      instanceTypes: [
-        new ec2.InstanceType("m6i.xlarge"),
-        new ec2.InstanceType("r6i.xlarge"),
-        new ec2.InstanceType("m5.xlarge"),
-        new ec2.InstanceType("m4.xlarge"),
-        new ec2.InstanceType("c4.xlarge"),
-        new ec2.InstanceType("c5.xlarge"),
-      ],
-    })
-  )
-  .build(app, "SaaSWorkshopBootstrap");
-
-blueprint
-  .getClusterInfo()
-  .nodeGroups?.forEach((nodeGroup) =>
-    nodeGroup.role.addManagedPolicy(
-      iam.ManagedPolicy.fromAwsManagedPolicyName("AmazonSSMManagedInstanceCore")
-    )
-  );
-
-const kubectlRole = blueprint.getClusterInfo().cluster.kubectlRole;
-if (kubectlRole) {
-  const role = kubectlRole as iam.Role;
-  role.assumeRolePolicy?.addStatements(
-    new iam.PolicyStatement({
-      actions: ["sts:AssumeRole"],
-      principals: [
-        new iam.AnyPrincipal().withConditions({
-          ArnEquals: {
-            "aws:PrincipalArn": `arn:aws:iam::${account}:role/*`,
-          },
-        }),
-      ],
-    })
-  );
-}
-
-new SSMResources(blueprint, "SSMResources", {
-  clusterInfo: blueprint.getClusterInfo(),
-  workshopSSMPrefix: workshopSSMPrefix,
-});
-
-new Cloud9Resources(blueprint, "Cloud9Resources", {
+new Cloud9Resources(app, "Cloud9Resources", {
   createCloud9Instance: true,
   workshopSSMPrefix: workshopSSMPrefix,
   cloud9MemberArn: participantAssumedRoleArn,
@@ -118,6 +37,3 @@ new Cloud9Resources(blueprint, "Cloud9Resources", {
   cloud9InstanceTypes: cloud9InstanceTypes,
   cloud9ImageId: cloud9ImageId,
 });
-
-cdk.Aspects.of(blueprint).add(new DestroyPolicySetter());
-cdk.Tags.of(blueprint).add("EksSaaSWorkshop", "BootstrapResources");
