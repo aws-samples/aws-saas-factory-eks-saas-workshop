@@ -16,6 +16,7 @@ STACK_ID=$(aws cloudformation create-stack \
     --stack-name "$STACK_NAME" \
     --template-body file://WorkshopStack.yaml \
     --capabilities CAPABILITY_IAM \
+    --disable-rollback \
     --parameters \
         ParameterKey=RepoUrl,ParameterValue="$REPO_URL" \
         ParameterKey=RepoBranchName,ParameterValue="$REPO_BRANCH_NAME" \

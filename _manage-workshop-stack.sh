@@ -57,7 +57,7 @@ main() {
     if [[ "$STACK_OPERATION" == "create" || "$STACK_OPERATION" == "update" ]]; then
         echo "Starting cdk deploy..."
         cdk deploy SaaSWorkshopBootstrap \
-            --require-approval never
+            --require-approval never \
             --no-rollback
         echo "Done cdk deploy!"
 
