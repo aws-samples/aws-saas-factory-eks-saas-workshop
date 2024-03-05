@@ -45,8 +45,8 @@ main() {
 
     npm install --force --global aws-cdk@$CDK_VERSION
 
-    # TARGET_USER="ec2-user"
-    TARGET_USER="ubuntu"
+    TARGET_USER="ec2-user"
+    # TARGET_USER="ubuntu"
     corepack enable || echo "default to yarn v1"
     corepack prepare yarn@3.6.4 --activate || echo "default to yarn v1"
 
