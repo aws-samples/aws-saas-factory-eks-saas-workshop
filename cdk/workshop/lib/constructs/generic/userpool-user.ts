@@ -5,6 +5,7 @@ import {
   AwsCustomResourcePolicy,
   PhysicalResourceId,
 } from 'aws-cdk-lib/custom-resources';
+import { Duration } from 'aws-cdk-lib';
 
 export class UserPoolUser extends Construct {
   constructor(
@@ -25,6 +26,7 @@ export class UserPoolUser extends Construct {
 
     // Create the user inside the Cognito user pool using Lambda backed AWS Custom resource
     const adminCreateUser = new AwsCustomResource(this, 'AwsCustomResource-CreateUser', {
+      timeout: Duration.minutes(5),
       onCreate: {
         service: 'CognitoIdentityServiceProvider',
         action: 'adminCreateUser',
@@ -54,6 +56,7 @@ export class UserPoolUser extends Construct {
     // Force the password for the user, because by default when new users are created
     // they are in FORCE_PASSWORD_CHANGE status. The newly created user has no way to change it though
     const adminSetUserPassword = new AwsCustomResource(this, 'AwsCustomResource-ForcePassword', {
+      timeout: Duration.minutes(5),
       onCreate: {
         service: 'CognitoIdentityServiceProvider',
         action: 'adminSetUserPassword',
