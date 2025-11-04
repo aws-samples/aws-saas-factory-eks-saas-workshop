@@ -12,6 +12,7 @@ spec:
       labels:
         app: user-management
     spec:
+      serviceAccountName: default
       containers:
         - name: user-management
           image: {{.Values.core.userManagement.image}}

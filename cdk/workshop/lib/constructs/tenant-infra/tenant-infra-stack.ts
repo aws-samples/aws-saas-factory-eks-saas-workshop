@@ -84,6 +84,7 @@ export class TenantInfraStack extends NestedStack {
      */
     const pipeline = new codepipeline.Pipeline(this, 'Pipeline', {
       pipelineName: `eks-saas-tenant-onboarding-pipeline`,
+      pipelineType: codepipeline.PipelineType.V1
     });
 
     // Import existing CodeCommit sam-app repository
@@ -286,6 +287,7 @@ export class TenantInfraStack extends NestedStack {
 
     const pipelinePremium = new codepipeline.Pipeline(this, 'PremiumTenantPipeline', {
       pipelineName: `premium-tenant-onboarding-pipeline`,
+      pipelineType: codepipeline.PipelineType.V1,
     });
 
     // Declare source code as an artifact

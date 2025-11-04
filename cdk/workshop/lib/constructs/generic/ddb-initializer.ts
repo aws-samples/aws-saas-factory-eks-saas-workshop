@@ -7,7 +7,7 @@ import {
   PhysicalResourceId,
 } from 'aws-cdk-lib/custom-resources';
 import { Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
-import { RetentionDays } from 'aws-cdk-lib/aws-logs';
+import { LogGroup, RetentionDays } from 'aws-cdk-lib/aws-logs';
 import { Duration } from 'aws-cdk-lib';
 
 export class DynamoDbInitializer extends Construct {
@@ -36,7 +36,9 @@ export class DynamoDbInitializer extends Construct {
       {
         onCreate: awsSdkCall,
         onUpdate: awsSdkCall,
-        logRetention: RetentionDays.ONE_WEEK,
+        logGroup: new LogGroup(this, tableName + '_log_group', {
+          retention: RetentionDays.ONE_WEEK,
+        }),
         policy: AwsCustomResourcePolicy.fromStatements([
           new PolicyStatement({
             sid: 'DynamoWriteAccess',

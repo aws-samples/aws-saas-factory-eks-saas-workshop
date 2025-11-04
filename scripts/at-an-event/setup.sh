@@ -47,11 +47,13 @@ export ACCOUNT_ID=$(aws sts get-caller-identity --output text --query Account)
 export AWS_REGION=$(curl -s 169.254.169.254/latest/dynamic/instance-identity/document | jq -r '.region')
 export AWS_DEFAULT_REGION=$AWS_REGION
 export ELBURL=$(aws cloudformation describe-stacks --query "Stacks[].Outputs[]" | jq -r '.[] | select(.OutputKey | startswith("ELBURL")) | .OutputValue')
+export EKS_NG_ROLE_ARN=$(aws cloudformation describe-stacks --query "Stacks[].Outputs[]" | jq -r '.[] | select(.OutputKey | startswith("NodegroupRoleArn")) | .OutputValue')
 test -n "$AWS_REGION" && echo AWS_REGION is "$AWS_REGION" || echo AWS_REGION is not set
 echo "export ACCOUNT_ID=${ACCOUNT_ID}" | tee -a ~/.bash_profile
 echo "export AWS_REGION=${AWS_REGION}" | tee -a ~/.bash_profile
 echo "export AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}" | tee -a ~/.bash_profile
 echo "export ELBURL=${ELBURL}" | tee -a ~/.bashrc
+echo "export EKS_NG_ROLE_ARN=${EKS_NG_ROLE_ARN}" | tee -a ~/.bashrc
 # Install kubectl aliases. So good.
 cd ~ && { curl -O https://raw.githubusercontent.com/ahmetb/kubectl-aliases/master/.kubectl_aliases; cd -; }
 echo "[ -f ~/.kubectl_aliases ] && source ~/.kubectl_aliases" | tee -a ~/.bashrc

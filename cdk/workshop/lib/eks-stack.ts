@@ -88,11 +88,32 @@ export class EksStack extends cdk.NestedStack {
       ],
     });
 
+    // Create custom nodegroup role with additional trusted principals
+    const customNodegroupRole = new iam.Role(this, 'CustomNodegroupRole', {
+      assumedBy: new iam.CompositePrincipal(
+        new iam.ServicePrincipal('ec2.amazonaws.com')
+      ),
+      managedPolicies: [
+        iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonEKSWorkerNodePolicy'),
+        iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonEKS_CNI_Policy'),
+        iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonEC2ContainerRegistryReadOnly'),
+      ],
+    });
+
+    const tagSession = customNodegroupRole.assumeRolePolicy?.addStatements(new iam.PolicyStatement({
+      effect: iam.Effect.ALLOW,
+      actions: ['sts:TagSession', 'sts:AssumeRole'],
+      principals: [
+        new iam.ServicePrincipal('pods.eks.amazonaws.com')
+      ], 
+    }));
+
     // Create Managed Nodegroup.
     const nodegroup = new eks.Nodegroup(this, 'ng-1', {
       cluster,
       desiredSize: 3,
       instanceTypes: [ec2.InstanceType.of(ec2.InstanceClass.M5, ec2.InstanceSize.LARGE)],
+      nodeRole: customNodegroupRole,
       launchTemplateSpec: {
         // See https://github.com/aws/aws-cdk/issues/6734
         id: (launchTemplate.node.defaultChild as ec2.CfnLaunchTemplate).ref,
@@ -102,6 +123,19 @@ export class EksStack extends cdk.NestedStack {
     nodegroup.role.addManagedPolicy(
       iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonSSMManagedInstanceCore')
     );
+
+    const podIdentityAddon = new eks.Addon(this, 'eks-pod-identity-agent', {
+      cluster,
+      addonName: 'eks-pod-identity-agent',
+    });
+    podIdentityAddon.node.addDependency(customNodegroupRole)
+
+    const podIdentityAssociationSharedServices = new eks.CfnPodIdentityAssociation(this, 'podIdentityAssociationSharedServices', {
+      clusterName: cluster.clusterName,
+      roleArn: customNodegroupRole.roleArn,
+      serviceAccount: 'default',
+      namespace: 'default',
+    });
 
     //Export this for later use in the TVM
     const role = nodegroup.role;
@@ -119,6 +153,15 @@ export class EksStack extends cdk.NestedStack {
     // cleanup.
     new cdk.CfnOutput(this, 'NodegroupRoleName', {
       value: nodegroup.role.roleName,
+    });
+
+    // This Pod Identity Association enables the Karpenter service account in the 'karpenter' namespace
+    // to assume the specified IAM role, allowing Karpenter to manage resources in the cluster.
+    const podIdentityAssociationKarpenter = new eks.CfnPodIdentityAssociation(this, 'podIdentityAssociationKarpenter', {
+      clusterName: cluster.clusterName,
+      roleArn: customNodegroupRole.roleArn,
+      serviceAccount: 'karpenter',
+      namespace: 'karpenter',
     });
 
     this.cluster = cluster;
@@ -139,6 +182,11 @@ export class EksStack extends cdk.NestedStack {
             }),
             new iam.PolicyStatement({
               effect: iam.Effect.ALLOW,
+              actions: ['eks:CreatePodIdentityAssociation'],
+              resources: [`arn:aws:eks:${this.region}:${this.account}:cluster/*`],
+            }),
+            new iam.PolicyStatement({
+              effect: iam.Effect.ALLOW,
               actions: ['dynamodb:CreateTable'],
               resources: ['*'],
             }),
@@ -151,6 +199,11 @@ export class EksStack extends cdk.NestedStack {
               effect: iam.Effect.ALLOW,
               actions: ['cloudformation:DescribeStacks'],
               resources: ['*'],
+            }),
+            new iam.PolicyStatement({
+              effect: iam.Effect.ALLOW,
+              actions: ['iam:PassRole', 'iam:GetRole'],
+              resources: [customNodegroupRole.roleArn],
             }),
           ],
         }),
@@ -187,5 +240,7 @@ export class EksStack extends cdk.NestedStack {
 
     new cdk.CfnOutput(this, 'EksCodebuildArn', { value: this.eksCodebuildRole.roleArn });
     new cdk.CfnOutput(this, 'RoleUsedByTVM', { value: roleUsedByTokenVendingMachine.roleArn });
+    new cdk.CfnOutput(this, 'NodegroupRoleArn', { value: nodegroup.role.roleArn });
+    new cdk.CfnOutput(this, 'KarpenterNodeRoleArn', { value: karpenter.nodeRole.roleArn });
   }
 }

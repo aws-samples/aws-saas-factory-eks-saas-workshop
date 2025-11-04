@@ -1,5 +1,6 @@
 region: $AWS_REGION
 eksStackName: $EKSSTACKNAME
+eksNodegroupRoleArn: $EKS_NG_ROLE_ARN
 cognito:
   userPoolId: $USERPOOLID
   clientId: $APPCLIENTID

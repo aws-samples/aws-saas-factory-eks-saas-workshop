@@ -12,6 +12,7 @@ spec:
       labels:
         app: tenant-registration
     spec:
+      serviceAccountName: default
       containers:
         - name: tenant-registration
           image: {{.Values.core.tenantRegistration.image}}

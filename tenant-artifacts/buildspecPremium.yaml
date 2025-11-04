@@ -39,6 +39,10 @@ phases:
       - kubectl create ns ${TENANT_PATH}
       - kubectl label ns ${TENANT_PATH} istio-injection=enabled
 
+      # Create EKS Pod Identity association
+      - export EKS_NG_ROLE_ARN=$(aws cloudformation describe-stacks --query "Stacks[].Outputs[]" | jq -r '.[] | select(.OutputKey | startswith("NodegroupRoleArn")) | .OutputValue')
+      - eksctl create podidentityassociation --cluster eksworkshop-eksctl --namespace ${TENANT_PATH} --service-account-name default --role-arn ${EKS_NG_ROLE_ARN}
+
       # Create Silo Tenant Product table
       - echo "Create Silo Tenant Product table"
       - CREATE_PRODUCT_TABLE=$(aws dynamodb create-table --table-name Products-silo-$TENANT_PATH --attribute-definitions AttributeName=tenant_id,AttributeType=S AttributeName=product_id,AttributeType=S --key-schema AttributeName=tenant_id,KeyType=HASH AttributeName=product_id,KeyType=RANGE --provisioned-throughput ReadCapacityUnits=5,WriteCapacityUnits=5)

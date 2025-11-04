@@ -12,6 +12,7 @@ spec:
       labels:
         app: tenant-management
     spec:
+      serviceAccountName: default
       containers:
         - name: tenant-management
           image: {{.Values.core.tenantManagement.image}}
