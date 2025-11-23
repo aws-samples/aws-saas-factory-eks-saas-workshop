@@ -22,7 +22,7 @@ unzip awscliv2.zip
 sudo ./aws/install --update
 
 echo "Installing helper tools"
-sudo yum -y install jq gettext bash-completion moreutils
+sudo yum -y install jq gettext bash-completion
 
 echo "Installing Helm"
 curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 > get_helm.sh
@@ -34,7 +34,7 @@ echo "Installing eksctl"
 ARCH=amd64
 PLATFORM=$(uname -s)_$ARCH
 curl -sLO "https://github.com/eksctl-io/eksctl/releases/latest/download/eksctl_$PLATFORM.tar.gz"
-tar -xzf eksctl_$PLATFORM.tar.gz -C /tmp && rm eksctl_$PLATFORM.tar.gz
+tar -xzf eksctl_$PLATFORM.tar.gz -C /tmp && rm -rf eksctl_$PLATFORM.tar.gz
 sudo mv /tmp/eksctl /usr/local/bin
 
 echo "Installing Hey load generator"
@@ -42,10 +42,18 @@ curl -sLO "https://hey-release.s3.us-east-2.amazonaws.com/hey_linux_amd64"
 chmod +x hey_linux_amd64
 sudo mv hey_linux_amd64 /usr/local/bin/hey
 
-
-export ACCOUNT_ID=$(aws sts get-caller-identity --output text --query Account)
-export AWS_REGION=$(curl -s 169.254.169.254/latest/dynamic/instance-identity/document | jq -r '.region')
+# Get AWS Region and Account ID from EC2 metadata
+TOKEN=$(curl -s -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600")
+export AWS_REGION=$(curl -s -H "X-aws-ec2-metadata-token: $TOKEN" http://169.254.169.254/latest/meta-data/placement/region)
+export AWS_ACCOUNT_ID=$(curl -s -H "X-aws-ec2-metadata-token: $TOKEN" http://169.254.169.254/latest/dynamic/instance-identity/document | jq -r .accountId)
+export ACCOUNT_ID=$AWS_ACCOUNT_ID
 export AWS_DEFAULT_REGION=$AWS_REGION
+
+echo $AWS_REGION
+echo $AWS_ACCOUNT_ID
+
+# export ACCOUNT_ID=$(aws sts get-caller-identity --output text --query Account)
+# export AWS_REGION=$(curl -s 169.254.169.254/latest/dynamic/instance-identity/document | jq -r '.region')
 export ELBURL=$(aws cloudformation describe-stacks --query "Stacks[].Outputs[]" | jq -r '.[] | select(.OutputKey | startswith("ELBURL")) | .OutputValue')
 export EKS_NG_ROLE_ARN=$(aws cloudformation describe-stacks --query "Stacks[].Outputs[]" | jq -r '.[] | select(.OutputKey | startswith("NodegroupRoleArn")) | .OutputValue')
 test -n "$AWS_REGION" && echo AWS_REGION is "$AWS_REGION" || echo AWS_REGION is not set
@@ -62,7 +70,7 @@ aws configure set default.region ${AWS_REGION}
 aws configure get default.region
 
 #echo Resizing Cloud9 instance EBS Volume
-sh scripts/resize-cloud9-ebs-volume.sh 40
+# sh scripts/resize-cloud9-ebs-volume.sh 40
 
 for command in kubectl jq envsubst aws
   do
@@ -77,7 +85,7 @@ UPDATE_KUBECONFIG=$(aws cloudformation describe-stacks --query "Stacks[].Outputs
 eval $UPDATE_KUBECONFIG
 
 # Loading up the Docker images
-cd $HOME/environment
+cd $(pwd)
 ASSETS_BUCKET=$(aws cloudformation describe-stacks --query "Stacks[].Parameters[]" | jq -r '.[] | select(.ParameterKey | startswith("EEAssetsBucket")) | .ParameterValue')
 ASSETS_PREFIX=$(aws cloudformation describe-stacks --query "Stacks[].Parameters[]" | jq -r '.[] | select(.ParameterKey | startswith("EEAssetsKeyPrefix")) | .ParameterValue')
 aws s3 sync s3://$ASSETS_BUCKET/$ASSETS_PREFIX ./workshop_docker_images/
@@ -112,7 +120,7 @@ docker push $ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/aws-workshop/eks-saas-
 docker push $ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/aws-workshop/eks-saas-tenant-registration:latest
 docker push $ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/aws-workshop/eks-saas-tenant-management:latest
 
-rm -r workshop_docker_images
+rm -rf workshop_docker_images
 
 cd $CWD
 # resource our bash config to ensure we're binding to the right version of the AWS CLI (v2, vs. v1)
