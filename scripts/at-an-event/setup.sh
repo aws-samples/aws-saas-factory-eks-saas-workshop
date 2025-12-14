@@ -17,9 +17,9 @@ corepack enable
 corepack prepare yarn@3.2.4 --activate
 
 echo "Upgrading AWS CLI"
-curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-unzip awscliv2.zip
-sudo ./aws/install --update
+curl -s "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip -q awscliv2.zip
+sudo ./aws/install --update > /dev/null 2>&1
 
 echo "Installing helper tools"
 sudo yum -y install jq gettext bash-completion
