@@ -57,7 +57,8 @@ export IAM_ROLE_ARN=$(echo $STACKS | jq -r '.Stacks[]?.Outputs[]? | select(.Outp
 export POOLED_TENANT_APPCLIENT_ID=$(echo $STACKS | jq -r '.Stacks[]?.Outputs[]? | select(.OutputKey=="PooledTenantAppClientId") | .OutputValue')
 export POOLED_TENANT_USERPOOL_ID=$(echo $STACKS | jq -r '.Stacks[]?.Outputs[]? | select(.OutputKey=="PooledTenantUserPoolId") | .OutputValue')
 
-# aws cognito-idp admin-set-user-password --user-pool-id $ADMINUSERPOOLID --username admin@saas.com --password "Admin123*" --permanent
+# Export ADMIN_PASSWORD to a value you choose before uncommenting; there is no default.
+# aws cognito-idp admin-set-user-password --user-pool-id $ADMINUSERPOOLID --username "${ADMIN_USERNAME:-admin@saas.com}" --password "$ADMIN_PASSWORD" --permanent
 
 # aws dynamodb put-item \
 # --table-name $AUTH_INFO_TABLE_NAME \

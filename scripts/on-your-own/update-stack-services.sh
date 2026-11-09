@@ -21,7 +21,16 @@ export POOLED_TENANT_USERPOOL_ID=$(echo $STACKS | jq -r '.Stacks[]?.Outputs[]? |
 export EKSSAAS_STACKMETADATA_TABLE=$(echo $STACKS | jq -r '.Stacks[]?.Outputs[]? | select(.OutputKey=="EksSaaSStackMetadataTable") | .OutputValue')
 export ADMINUSERPOOLID=$(echo $STACKS | jq -r '.Stacks[]?.Outputs[]? | select(.OutputKey=="AdminUserPoolId") | .OutputValue')
 
-aws cognito-idp admin-set-user-password --user-pool-id $ADMINUSERPOOLID --username admin@saas.com --password "Admin123*" --permanent
+# No default. A committed value here would be an administrator credential published in this
+# repository and identical in every deployment of this workshop.
+if [ -z "${ADMIN_PASSWORD:-}" ]; then
+  echo "ADMIN_PASSWORD is not set. Choose a value and export it before running this script:" >&2
+  echo "  export ADMIN_PASSWORD='<a value you choose>'" >&2
+  echo "It must satisfy the admin user pool's password policy." >&2
+  exit 1
+fi
+
+aws cognito-idp admin-set-user-password --user-pool-id $ADMINUSERPOOLID --username "${ADMIN_USERNAME:-admin@saas.com}" --password "$ADMIN_PASSWORD" --permanent
 
 aws dynamodb put-item \
 --table-name $AUTH_INFO_TABLE_NAME \

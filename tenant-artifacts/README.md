@@ -77,7 +77,12 @@ datasources:
 EoF
 ```
 
-Now we'll install the helm chart:
+Now we'll install the helm chart. Choose a Grafana admin password first — there is no
+default, and this Grafana is exposed through a public load balancer:
+
+```bash
+export GRAFANA_ADMIN_PASSWORD='<a value you choose>'
+```
 
 ```bash
 kubectl create namespace grafana
@@ -88,7 +93,7 @@ helm install grafana grafana/grafana \
     --namespace grafana \
     --set persistence.storageClassName="gp2" \
     --set persistence.enabled=true \
-    --set adminPassword='Admin123*' \
+    --set adminPassword="$GRAFANA_ADMIN_PASSWORD" \
     --values ${HOME}/environment/grafana/grafana.yaml \
     --set service.type=LoadBalancer
 ```
@@ -99,7 +104,7 @@ export GRAFANA_URL=$(kubectl get svc -n grafana grafana -o jsonpath='{.status.lo
 echo "http://$GRAFANA_URL"
 ```
 
-Login should be `admin/Admin123*`
+Log in as `admin` with the password you set in `GRAFANA_ADMIN_PASSWORD` above.
 
 # Install Artillery - Need to rethink Artillery because there is a bit of a delay
 # to start pushing load. The simple wget in a loop seems to be a better fit and

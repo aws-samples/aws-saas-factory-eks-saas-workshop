@@ -14,6 +14,14 @@ export class UserPoolUser extends Construct {
     props: {
       userPool: IUserPool;
       username: string;
+      /*
+       * The user's permanent password.
+       *
+       * NOTE: this value is passed to an AwsCustomResource, so it is rendered into the
+       * synthesized CloudFormation template and delivered to the custom resource's Lambda in
+       * its event. Treat it as readable by anyone with CloudFormation read access on the
+       * deploying account. Never commit a value; supply it at deploy time.
+       */
       password: string;
       attributes?: { Name: string; Value: string }[];
       groupName?: string;
@@ -23,6 +31,13 @@ export class UserPoolUser extends Construct {
 
     const username = props.username;
     const password = props.password;
+
+    if (!password || password.trim().length === 0) {
+      throw new Error(
+        `UserPoolUser "${username}" was given an empty password. Supply one at deploy time ` +
+          'rather than creating an account without a usable credential.'
+      );
+    }
 
     // Create the user inside the Cognito user pool using Lambda backed AWS Custom resource
     const adminCreateUser = new AwsCustomResource(this, 'AwsCustomResource-CreateUser', {
