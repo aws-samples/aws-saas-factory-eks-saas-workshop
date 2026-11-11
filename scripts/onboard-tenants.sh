@@ -8,7 +8,15 @@ STACKS=$(aws cloudformation describe-stacks)
 export USERPOOLID=$(echo $STACKS | jq -r '.Stacks[]?.Outputs[]? | select(.OutputKey=="PooledTenantUserPoolId") | .OutputValue')
 export EMAILBASIC='basic-tier-user@saasco.com'
 export EMAILSTANDARD='standard-tier-user@saasco.com'
-export PASSWORD='ABCdef123*'
+
+# No default. A committed value here would be a tenant credential published in this
+# repository and identical in every deployment of this workshop.
+if [ -z "${PASSWORD:-}" ]; then
+  echo "PASSWORD is not set. Choose a value and export it before running this script:" >&2
+  echo "  export PASSWORD='<a value you choose>'" >&2
+  echo "It must satisfy the tenant user pool's password policy." >&2
+  exit 1
+fi
 
 export HOST=$(kubectl get svc -l istio=ingress -n istio-ingress -o json | jq -r '.items[0].status.loadBalancer.ingress[0].hostname')
 export SERVER=http://$HOST/api/registration

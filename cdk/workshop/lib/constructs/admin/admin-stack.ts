@@ -20,6 +20,30 @@ export class AdminStack extends NestedStack {
   constructor(scope: Construct, id: string, props?: AdminStackProps) {
     super(scope, id, props);
 
+    /*
+     * The administrator password. There is deliberately no default.
+     *
+     * This account administers every tenant in the deployment, so any value committed here
+     * would be an administrator credential published in a public repository and identical in
+     * every deployment of this workshop. Supply it at deploy time instead:
+     *
+     *   cdk deploy -c adminPassword='<a value you choose>'
+     *
+     * It must satisfy the user pool's password policy. See the security notice in the
+     * repository README for where this value remains visible after deployment.
+     */
+    const adminPassword = this.node.tryGetContext('adminPassword');
+    if (typeof adminPassword !== 'string' || adminPassword.trim().length === 0) {
+      throw new Error(
+        'Missing required context value "adminPassword". It has no default, because a default ' +
+          'would be an administrator credential published in this repository.\n\n' +
+          "Deploy with:  cdk deploy -c adminPassword='<a value you choose>'\n"
+      );
+    }
+
+    // The username is not a secret, so a default is fine here.
+    const adminUsername = this.node.tryGetContext('adminUsername') ?? 'admin@saas.com';
+
     const adminPool = new cognito.UserPool(this, 'AdminUserPool', {
       removalPolicy: RemovalPolicy.DESTROY,
       userInvitation: {
@@ -36,8 +60,8 @@ export class AdminStack extends NestedStack {
     });
 
     const adminUser = new UserPoolUser(this, 'AdminUser', {
-      username: 'admin@saas.com',
-      password: 'Admin123*',
+      username: adminUsername,
+      password: adminPassword,
       userPool: adminPool,
     });
 
