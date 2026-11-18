@@ -10,7 +10,9 @@ import {
   Param,
   Delete,
   Req,
+  UseGuards,
 } from '@nestjs/common';
+import { JwtAuthGuard } from '@app/auth/jwt-auth.guard';
 import { TenantsService } from './tenants.service';
 import { UpdateTenantDto } from './dto/update-tenant.dto';
 import { Request } from 'express';
@@ -33,6 +35,14 @@ export class TenantsController {
     console.debug('AWS_REGION', process.env.AWS_REGION);
   }
 
+  // Guards are applied per method rather than to the whole controller, deliberately.
+  // Two routes below must stay reachable without a token:
+  //   - getAuthInfo, because the clients call it BEFORE they can authenticate. The tenant
+  //     app fetches /api/tenants/auth-info from an Angular APP_INITIALIZER and feeds the
+  //     result to Amplify.configure(), so guarding it would make login impossible.
+  //   - healthCheck, which is a liveness/readiness endpoint.
+  // A controller-level @UseGuards would have broken both.
+  @UseGuards(JwtAuthGuard)
   @Get()
   findAll() {
     return this.tenantsService.findAll();
@@ -63,16 +73,19 @@ export class TenantsController {
     };
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.tenantsService.findOne(+id);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateTenantDto: UpdateTenantDto) {
     return this.tenantsService.update(+id, updateTenantDto);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.tenantsService.remove(+id);

@@ -27,6 +27,7 @@ import { NavComponent } from './nav/nav.component';
 import { Amplify } from 'aws-amplify';
 import { AuthComponent } from './views/auth/auth.component';
 import { environment } from 'src/environments/environment';
+import { httpInterceptorProviders } from './interceptors';
 
 @NgModule({
   declarations: [AppComponent, NavComponent, AuthComponent],
@@ -61,6 +62,9 @@ import { environment } from 'src/environments/environment';
       deps: [HttpClient],
       multi: true,
     },
+    // Attaches the operations user's Cognito ID token to API requests. Required now that
+    // GET /api/tenants is guarded server-side; without it the Tenants page would get 401.
+    ...httpInterceptorProviders,
   ],
   bootstrap: [AppComponent],
 })

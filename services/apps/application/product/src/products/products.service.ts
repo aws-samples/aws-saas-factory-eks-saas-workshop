@@ -105,8 +105,22 @@ export class ProductsService {
     return JSON.stringify(updateProductDto);
   }
 
+  // Vend per-tenant scoped credentials rather than using the pod's own role.
+  // See the matching comment in order/src/orders/orders.service.ts: this previously
+  // discarded the tenantId and used the pod's unconditioned IRSA role, leaving the token
+  // vending machine built, injected as `clientFac`, and never called.
+  //
+  // `table` must be passed explicitly -- policies.json interpolates {{table}} into the
+  // Resource ARN and getClient's default config supplies only `tenant`, so relying on the
+  // default renders an empty table ARN and grants nothing.
   async fetchClient(tenantId: string) {
-    return DynamoDBDocumentClient.from(new DynamoDBClient({}));
+    return this.clientFac.getClient(tenantId, {
+      policyType: PolicyType.DynamoDBLeadingKey,
+      attributes: {
+        tenant: tenantId,
+        table: this.tableName,
+      },
+    });
   }
 
   perf(tenantId: string, baseNumber: number = 8): number {

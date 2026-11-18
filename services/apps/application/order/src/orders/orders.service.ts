@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: MIT-0
  */
 
+import { PolicyType } from '@app/auth/credential-vendor';
 import { ClientFactoryService } from '@app/client-factory';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import {
@@ -98,8 +99,31 @@ export class OrdersService {
     return order;
   }
 
+  // Vend per-tenant scoped credentials rather than using the pod's own role.
+  //
+  // This previously returned `DynamoDBDocumentClient.from(new DynamoDBClient({}))`, which
+  // discarded the tenantId argument entirely and used the pod's IRSA role. That role is
+  // not conditioned on a tenant, so the IAM-layer isolation this workshop is built to
+  // demonstrate -- the token vending machine in @app/client-factory and
+  // @app/auth/credential-vendor -- was constructed, injected into this service as
+  // `clientFac`, and then never called. Every tenant's pod held live credentials able to
+  // read and write every other tenant's rows, independently of anything this application
+  // code does, so an application bug, SSRF or compromised dependency reached straight
+  // across the tenant boundary.
+  //
+  // `table` must be passed explicitly. The policy template in
+  // services/libs/auth/src/policies.json interpolates {{table}} into the statement's
+  // Resource ARN, and ClientFactoryService.getClient's default config supplies only
+  // `tenant` -- relying on that default renders `table/` empty and produces a session
+  // policy that grants nothing, failing every request.
   async fetchClient(tenantId: string) {
-    return DynamoDBDocumentClient.from(new DynamoDBClient({}));
+    return this.clientFac.getClient(tenantId, {
+      policyType: PolicyType.DynamoDBLeadingKey,
+      attributes: {
+        tenant: tenantId,
+        table: this.tableName,
+      },
+    });
   }
 
   perf(tenantId: string, baseNumber: number = 8): number {
