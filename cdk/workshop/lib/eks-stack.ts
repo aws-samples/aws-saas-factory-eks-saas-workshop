@@ -212,6 +212,22 @@ export class EksStack extends cdk.NestedStack {
 
     cluster.awsAuth.addMastersRole(this.eksCodebuildRole);
 
+    // Permission ceiling for the token vending machine's role. An assumed-role session's
+    // effective permissions are the INTERSECTION of this identity policy and the session
+    // policy passed at AssumeRole time, so an action missing here is denied however
+    // permissive services/libs/auth/src/policies.json is. The per-tenant scoping lives in
+    // that session policy (dynamodb:LeadingKeys); this list is only about which verbs the
+    // application is allowed to use at all.
+    //
+    // dynamodb:UpdateItem is required by ProductsService.update() -> UpdateCommand, reached
+    // from PATCH /api/products/:id and the tenant app's Edit Product form. It was absent
+    // while fetchClient() still returned the pod's own unconditioned role, because nothing
+    // ever exercised this policy; activating the vending machine makes that gap a live
+    // AccessDeniedException on every product edit.
+    //
+    // Deliberately not adding dynamodb:DeleteItem or BatchWriteItem: no code path in
+    // orders.service.ts or products.service.ts issues either, and this is the ceiling for
+    // every tenant session. Add them only alongside a caller that needs them.
     const dynamoDbDoc = new iam.PolicyDocument({
       assignSids: false,
       statements: [
@@ -220,6 +236,7 @@ export class EksStack extends cdk.NestedStack {
           actions: [
             'dynamodb:GetItem',
             'dynamodb:PutItem',
+            'dynamodb:UpdateItem',
             'dynamodb:BatchGetItem',
             'dynamodb:Query',
             'dynamodb:Scan',
